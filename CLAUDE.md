@@ -6,6 +6,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 Single-page laundry guidance application optimized for soft water households (~19 mg/L). Mobile-first SPA using vanilla HTML/CSS/JavaScript with no build tools or external dependencies.
 
+- **Repository:** https://github.com/dcszabo/laundry
+- **Live site:** https://dcszabo.github.io/laundry/
+- **Deployment:** GitHub Pages from master branch (no build step)
+
 ## Development
 
 No build, test, or lint commands - static files that can be opened directly in a browser or served from any web server.
@@ -36,3 +40,21 @@ Tab navigation switches between content sections. Collapsible panels (`.collapsi
 - `updateResult()` - Main calculation function, called on any input change
 - `setCalculator()` - Populates calculator from Quick Reference cards
 - Event handlers for tabs, collapsibles, selectors, and close buttons
+
+### PWA Assets
+
+Favicon and PWA icons configured in `index.html` and `site.webmanifest`:
+- `favicon.ico`, `favicon-16x16.png`, `favicon-32x32.png` - Browser favicons
+- `apple-touch-icon.png` - iOS home screen (180x180)
+- `android-chrome-192x192.png`, `android-chrome-512x512.png` - Android PWA icons
+- `site.webmanifest` - Web app manifest for "Add to Home Screen" functionality
+
+The header icon uses `android-chrome-192x192.png` scaled to 44x44px.
+
+### Theme Colors
+
+Dark theme defined in `:root` CSS custom properties:
+- `--bg-primary: #0f1419` - Main background (also used in webmanifest)
+- `--bg-secondary: #1a1f26` - Secondary background
+- `--bg-card: #232a33` - Card backgrounds
+- `--accent-blue: #4da3ff`, `--accent-cyan: #00d4aa` - Primary accents
