@@ -651,13 +651,14 @@ body {
 /* Load Type Cards */
 .load-type-grid {
     display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 12px;
 }
 
 .load-type-card {
     background: var(--bg-card);
     border-radius: var(--radius-lg);
-    padding: 16px;
+    padding: 12px;
     border: 1px solid var(--border-subtle);
     cursor: pointer;
     transition: all 0.2s ease;
@@ -672,28 +673,29 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
+    margin-bottom: 8px;
 }
 
 .load-type-name {
     font-weight: 600;
-    font-size: 15px;
+    font-size: 13px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 
 .load-type-name .emoji {
-    font-size: 18px;
+    font-size: 15px;
 }
 
 .quick-dose {
     display: flex;
-    gap: 12px;
+    flex-direction: column;
+    gap: 4px;
 }
 
 .quick-dose-item {
-    text-align: center;
+    text-align: left;
 }
 
 .quick-dose-label {
@@ -705,7 +707,7 @@ body {
 
 .quick-dose-value {
     font-weight: 700;
-    font-size: 16px;
+    font-size: 14px;
     color: var(--accent-blue);
 }
 

@@ -29,10 +29,10 @@
         <!-- Navigation -->
         <nav class="nav-tabs">
             <button class="nav-tab active" data-section="calculator">
-                <span class="tab-icon">🧮</span> Calculator
+                <span class="tab-icon">🧼</span> Wash
             </button>
             <button class="nav-tab" data-section="quick">
-                <span class="tab-icon">⚡</span> Quick Ref
+                <span class="tab-icon">⚡</span> Ref
             </button>
             <button class="nav-tab" data-section="rules">
                 <span class="tab-icon">📋</span> Rules
@@ -178,7 +178,7 @@
             <div class="load-type-grid">
                 <div class="load-type-card" onclick="setCalculator('medium', 'normal', 'mixed', 'everyday')">
                     <div class="load-type-header">
-                        <span class="load-type-name"><span class="emoji">👕</span> Everyday Clothes</span>
+                        <span class="load-type-name"><span class="emoji">👕</span> Everyday</span>
                     </div>
                     <div class="quick-dose">
                         <div class="quick-dose-item">
@@ -194,7 +194,7 @@
 
                 <div class="load-type-card" onclick="setCalculator('large', 'heavy', 'whites', 'bedding')">
                     <div class="load-type-header">
-                        <span class="load-type-name"><span class="emoji">🛏️</span> Bedding & Towels</span>
+                        <span class="load-type-name"><span class="emoji">🛏️</span> Bedding</span>
                     </div>
                     <div class="quick-dose">
                         <div class="quick-dose-item">
@@ -208,9 +208,41 @@
                     </div>
                 </div>
 
+                <div class="load-type-card" onclick="setCalculator('large', 'normal', 'whites', 'bedding')">
+                    <div class="load-type-header">
+                        <span class="load-type-name"><span class="emoji">🛁</span> Towels</span>
+                    </div>
+                    <div class="quick-dose">
+                        <div class="quick-dose-item">
+                            <div class="quick-dose-label">Detergent</div>
+                            <div class="quick-dose-value">25–35 mL</div>
+                        </div>
+                        <div class="quick-dose-item">
+                            <div class="quick-dose-label">Temp</div>
+                            <div class="quick-dose-value temp">40–60°C</div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="load-type-card" onclick="setCalculator('small', 'light', 'mixed', 'delicates')">
                     <div class="load-type-header">
-                        <span class="load-type-name"><span class="emoji">🩱</span> Delicates & Wool</span>
+                        <span class="load-type-name"><span class="emoji">🩱</span> Delicates</span>
+                    </div>
+                    <div class="quick-dose">
+                        <div class="quick-dose-item">
+                            <div class="quick-dose-label">Detergent</div>
+                            <div class="quick-dose-value">10–15 mL</div>
+                        </div>
+                        <div class="quick-dose-item">
+                            <div class="quick-dose-label">Temp</div>
+                            <div class="quick-dose-value temp">20–30°C</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="load-type-card" onclick="setCalculator('small', 'light', 'mixed', 'delicates')">
+                    <div class="load-type-header">
+                        <span class="load-type-name"><span class="emoji">🧶</span> Wool</span>
                     </div>
                     <div class="quick-dose">
                         <div class="quick-dose-item">
@@ -226,7 +258,7 @@
 
                 <div class="load-type-card" onclick="setCalculator('medium', 'heavy', 'darks', 'everyday')">
                     <div class="load-type-header">
-                        <span class="load-type-name"><span class="emoji">💪</span> Gym & Activewear</span>
+                        <span class="load-type-name"><span class="emoji">💪</span> Activewear</span>
                     </div>
                     <div class="quick-dose">
                         <div class="quick-dose-item">
@@ -242,7 +274,7 @@
 
                 <div class="load-type-card" onclick="setCalculator('medium', 'heavy', 'darks', 'everyday')">
                     <div class="load-type-header">
-                        <span class="load-type-name"><span class="emoji">👖</span> Jeans & Workwear</span>
+                        <span class="load-type-name"><span class="emoji">👖</span> Jeans</span>
                     </div>
                     <div class="quick-dose">
                         <div class="quick-dose-item">
@@ -258,7 +290,7 @@
 
                 <div class="load-type-card" onclick="setCalculator('small', 'normal', 'whites', 'everyday')">
                     <div class="load-type-header">
-                        <span class="load-type-name"><span class="emoji">🩲</span> Underwear & Socks</span>
+                        <span class="load-type-name"><span class="emoji">🩲</span> Underwear</span>
                     </div>
                     <div class="quick-dose">
                         <div class="quick-dose-item">
@@ -268,38 +300,6 @@
                         <div class="quick-dose-item">
                             <div class="quick-dose-label">Temp</div>
                             <div class="quick-dose-value temp">40–60°C</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="load-type-card" onclick="setCalculator('medium', 'normal', 'whites', 'everyday')">
-                    <div class="load-type-header">
-                        <span class="load-type-name"><span class="emoji">⬜</span> Whites Only</span>
-                    </div>
-                    <div class="quick-dose">
-                        <div class="quick-dose-item">
-                            <div class="quick-dose-label">Detergent</div>
-                            <div class="quick-dose-value">20–25 mL</div>
-                        </div>
-                        <div class="quick-dose-item">
-                            <div class="quick-dose-label">Temp</div>
-                            <div class="quick-dose-value temp">40–60°C</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="load-type-card" onclick="setCalculator('medium', 'normal', 'darks', 'everyday')">
-                    <div class="load-type-header">
-                        <span class="load-type-name"><span class="emoji">⬛</span> Darks Only</span>
-                    </div>
-                    <div class="quick-dose">
-                        <div class="quick-dose-item">
-                            <div class="quick-dose-label">Detergent</div>
-                            <div class="quick-dose-value">20–25 mL</div>
-                        </div>
-                        <div class="quick-dose-item">
-                            <div class="quick-dose-label">Temp</div>
-                            <div class="quick-dose-value temp">20–30°C</div>
                         </div>
                     </div>
                 </div>
