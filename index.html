@@ -1,876 +1,780 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Laundry Guide | Soft Water</title>
-    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-    <link rel="manifest" href="site.webmanifest">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Laundry Guide | Soft Water</title>
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="manifest" href="site.webmanifest">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
-    <div class="app-container">
-        <!-- Header -->
-        <header class="header">
-            <div class="header-content">
-                <img class="header-icon" src="android-chrome-192x192.png" alt="">
-                <div class="header-text">
-                    <h1>Laundry Guide</h1>
-                    <div class="water-badge">How to wash your clothes</div>
-                </div>
-            </div>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-content">
+                <img class="header-icon" src="android-chrome-192x192.png" alt="">
+                <div class="header-text">
+                    <h1>Laundry Guide</h1>
+                    <div class="water-badge">How to wash your clothes</div>
+                </div>
+            </div>
         </header>
+
+        <div class="install-nudge" id="installNudge" hidden>
+            <div class="install-text">Add this guide to your home screen for quick access.</div>
+            <button class="install-dismiss" id="installDismiss" type="button">Got it</button>
+        </div>
 
         <!-- Navigation -->
         <nav class="nav-tabs">
-            <button class="nav-tab active" data-section="calculator">
-                <span class="tab-icon">🧼</span> Wash
-            </button>
-            <button class="nav-tab" data-section="quick">
-                <span class="tab-icon">⚡</span> Ref
-            </button>
-            <button class="nav-tab" data-section="rules">
-                <span class="tab-icon">📋</span> Rules
-            </button>
-            <button class="nav-tab" data-section="machine">
-                <span class="tab-icon">🌀</span> Machine
-            </button>
-            <button class="nav-tab" data-section="maintenance">
-                <span class="tab-icon">🔧</span> Care
-            </button>
-        </nav>
-
-        <!-- Calculator Section -->
+            <button class="nav-tab active" data-section="calculator">
+                <span class="tab-icon">🧼</span> Wash
+            </button>
+            <button class="nav-tab" data-section="quick">
+                <span class="tab-icon">⚡</span> Ref
+            </button>
+            <button class="nav-tab" data-section="rules">
+                <span class="tab-icon">📋</span> Rules
+            </button>
+            <button class="nav-tab" data-section="machine">
+                <span class="tab-icon">🌀</span> Machine
+            </button>
+            <button class="nav-tab" data-section="maintenance">
+                <span class="tab-icon">🔧</span> Care
+            </button>
+        </nav>
+
+        <!-- Calculator Section -->
         <section class="section active" id="calculator">
-            <div class="key-fact">
-                <button class="key-fact-close" aria-label="Dismiss">×</button>
-                <div class="key-fact-title">💡 Soft Water = Less Detergent</div>
+            <div class="key-fact" data-key="soft-water-fact">
+                <button class="key-fact-close" aria-label="Dismiss" data-dismiss="soft-water-fact">×</button>
+                <div class="key-fact-title">
+                    💡 Soft Water = Less Detergent
+                    <span class="why-tip" title="Soft water has fewer minerals, so detergent lathers and cleans more efficiently.">Why?</span>
+                </div>
                 <div class="key-fact-text">Your water needs only ~15mL for normal loads. Standard caps suggest 50–60mL — that's 3× more than you need!</div>
             </div>
-
-            <div class="calculator-card">
-                <div class="calc-label">Load Size</div>
-                <div class="selector-group" id="sizeGroup">
-                    <button class="selector-btn" data-size="small">
-                        Small
-                        <span class="size-hint">2–3 kg</span>
-                    </button>
-                    <button class="selector-btn active" data-size="medium">
-                        Medium
-                        <span class="size-hint">4–5 kg</span>
-                    </button>
-                    <button class="selector-btn" data-size="large">
-                        Large
-                        <span class="size-hint">6–10 kg</span>
-                    </button>
+
+            <div class="calculator-card">
+                <div class="calc-label">Load Size</div>
+                <div class="selector-group" id="sizeGroup">
+                    <button class="selector-btn" data-size="small">
+                        Small
+                        <span class="size-hint">2–3 kg</span>
+                    </button>
+                    <button class="selector-btn active" data-size="medium">
+                        Medium
+                        <span class="size-hint">4–5 kg</span>
+                    </button>
+                    <button class="selector-btn" data-size="large">
+                        Large
+                        <span class="size-hint">6–10 kg</span>
+                    </button>
+                </div>
+
+                <div class="calc-label">Soil Level</div>
+                <div class="selector-group" id="soilGroup">
+                    <button class="selector-btn" data-soil="light">Light</button>
+                    <button class="selector-btn active" data-soil="normal">Normal</button>
+                    <button class="selector-btn" data-soil="heavy">Heavy</button>
+                </div>
+
+                <div class="calc-label">Colour Category</div>
+                <div class="selector-group" id="colourGroup">
+                    <button class="selector-btn colour-white" data-colour="whites">Whites</button>
+                    <button class="selector-btn colour-light" data-colour="lights">Lights</button>
+                    <button class="selector-btn colour-colours" data-colour="colours">Colours</button>
+                    <button class="selector-btn colour-darks" data-colour="darks">Darks</button>
+                    <button class="selector-btn colour-mixed active" data-colour="mixed">Mixed</button>
+                </div>
+
+                <div class="calc-label">Load Type</div>
+                <div class="selector-group" id="typeGroup">
+                    <button class="selector-btn active" data-type="everyday">Everyday</button>
+                    <button class="selector-btn" data-type="bedding">Bedding</button>
+                    <button class="selector-btn" data-type="delicates">Delicates</button>
+                </div>
+
+                <div class="calc-label">Detergent Type</div>
+                <div class="selector-group" id="detergentGroup">
+                    <button class="selector-btn active" data-detergent="liquid">Liquid</button>
+                    <button class="selector-btn" data-detergent="powder">Powder</button>
+                    <button class="selector-btn" data-detergent="pods">Pods</button>
                 </div>
+                <div class="detergent-guide" id="detergentGuide">Liquid is the default for front loaders.</div>
 
-                <div class="calc-label">Soil Level</div>
-                <div class="selector-group" id="soilGroup">
-                    <button class="selector-btn" data-soil="light">Light</button>
-                    <button class="selector-btn active" data-soil="normal">Normal</button>
-                    <button class="selector-btn" data-soil="heavy">Heavy</button>
+                <div class="calc-label">Detergent Concentration</div>
+                <div class="range-control">
+                    <input type="range" id="concentrationRange" min="0.7" max="1.3" step="0.05" value="1">
+                    <div class="range-value" id="concentrationValue">100%</div>
                 </div>
-
-                <div class="calc-label">Colour Category</div>
-                <div class="selector-group" id="colourGroup">
-                    <button class="selector-btn colour-white" data-colour="whites">Whites</button>
-                    <button class="selector-btn colour-light" data-colour="lights">Lights</button>
-                    <button class="selector-btn colour-colours" data-colour="colours">Colours</button>
-                    <button class="selector-btn colour-darks" data-colour="darks">Darks</button>
-                    <button class="selector-btn colour-mixed active" data-colour="mixed">Mixed</button>
-                </div>
-
-                <div class="calc-label">Load Type</div>
-                <div class="selector-group" id="typeGroup">
-                    <button class="selector-btn active" data-type="everyday">Everyday</button>
-                    <button class="selector-btn" data-type="bedding">Bedding</button>
-                    <button class="selector-btn" data-type="delicates">Delicates</button>
-                </div>
+                <div class="concentration-note">Adjust lower for ultra-concentrated detergents, higher for diluted ones.</div>
 
                 <div class="result-display">
                     <div class="result-grid">
                         <div class="result-text">
                             <div class="result-label">Detergent</div>
-                            <div class="result-value"><span id="doseAmount">20–25</span><span class="result-unit"> mL</span></div>
+                            <div class="result-value"><span id="doseAmount">20–25</span><span class="result-unit" id="doseUnit"> mL</span></div>
                             <div class="result-temp-row">
                                 <span class="temp-badge" id="tempBadge">🌡️ 30–40°C</span>
                             </div>
                         </div>
                         <div class="cup-container">
-                            <div class="cup-wrapper">
-                                <svg class="cup-svg" viewBox="0 0 80 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <!-- Cup outline -->
-                                    <path d="M10 15 L10 85 Q10 95 20 95 L60 95 Q70 95 70 85 L70 15 Z"
-                                          fill="rgba(255,255,255,0.05)"
-                                          stroke="rgba(255,255,255,0.3)"
-                                          stroke-width="2"/>
-
-                                    <!-- Measurement lines and labels -->
-                                    <line x1="12" y1="20" x2="22" y2="20" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
-                                    <text x="25" y="23" fill="rgba(255,255,255,0.3)" font-size="8">75</text>
-
-                                    <line x1="12" y1="35" x2="22" y2="35" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
-                                    <text x="25" y="38" fill="rgba(255,255,255,0.3)" font-size="8">50</text>
-
-                                    <line x1="12" y1="50" x2="22" y2="50" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
-                                    <text x="25" y="53" fill="rgba(255,255,255,0.3)" font-size="8">35</text>
-
-                                    <line x1="12" y1="65" x2="22" y2="65" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
-                                    <text x="25" y="68" fill="rgba(255,255,255,0.3)" font-size="8">25</text>
-
-                                    <line x1="12" y1="80" x2="22" y2="80" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
-                                    <text x="25" y="83" fill="rgba(255,255,255,0.3)" font-size="8">15</text>
-
-                                    <!-- Liquid fill - this will be animated -->
-                                    <clipPath id="cupClip">
-                                        <path d="M12 17 L12 83 Q12 93 20 93 L60 93 Q68 93 68 83 L68 17 Z"/>
-                                    </clipPath>
-                                    <rect id="liquidFill" class="cup-fill"
-                                          x="12" y="65" width="56" height="28"
-                                          fill="url(#liquidGradient)"
-                                          clip-path="url(#cupClip)"/>
-
-                                    <!-- Gradient for liquid -->
-                                    <defs>
-                                        <linearGradient id="liquidGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                                            <stop offset="0%" style="stop-color:#4da3ff;stop-opacity:0.8" />
-                                            <stop offset="100%" style="stop-color:#00d4aa;stop-opacity:0.6" />
-                                        </linearGradient>
-                                    </defs>
-
-                                    <!-- "MAX" label at top -->
-                                    <text x="55" y="23" fill="rgba(255,107,157,0.5)" font-size="7" font-weight="bold">MAX</text>
-                                </svg>
-                            </div>
-                            <div class="cup-label">75mL Cup</div>
-                            <div class="cup-comparison" id="cupComparison">⅓ of cap line!</div>
-                        </div>
-                    </div>
-
+                            <div class="cup-wrapper">
+                                <svg class="cup-svg" viewBox="0 0 80 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <!-- Cup outline -->
+                                    <path d="M10 15 L10 85 Q10 95 20 95 L60 95 Q70 95 70 85 L70 15 Z"
+                                          fill="rgba(255,255,255,0.05)"
+                                          stroke="rgba(255,255,255,0.3)"
+                                          stroke-width="2"/>
+
+                                    <!-- Measurement lines and labels -->
+                                    <line x1="12" y1="20" x2="22" y2="20" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                                    <text x="25" y="23" fill="rgba(255,255,255,0.3)" font-size="8">75</text>
+
+                                    <line x1="12" y1="35" x2="22" y2="35" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                                    <text x="25" y="38" fill="rgba(255,255,255,0.3)" font-size="8">50</text>
+
+                                    <line x1="12" y1="50" x2="22" y2="50" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                                    <text x="25" y="53" fill="rgba(255,255,255,0.3)" font-size="8">35</text>
+
+                                    <line x1="12" y1="65" x2="22" y2="65" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                                    <text x="25" y="68" fill="rgba(255,255,255,0.3)" font-size="8">25</text>
+
+                                    <line x1="12" y1="80" x2="22" y2="80" stroke="rgba(255,255,255,0.2)" stroke-width="1"/>
+                                    <text x="25" y="83" fill="rgba(255,255,255,0.3)" font-size="8">15</text>
+
+                                    <!-- Liquid fill - this will be animated -->
+                                    <clipPath id="cupClip">
+                                        <path d="M12 17 L12 83 Q12 93 20 93 L60 93 Q68 93 68 83 L68 17 Z"/>
+                                    </clipPath>
+                                    <rect id="liquidFill" class="cup-fill"
+                                          x="12" y="65" width="56" height="28"
+                                          fill="url(#liquidGradient)"
+                                          clip-path="url(#cupClip)"/>
+
+                                    <!-- Gradient for liquid -->
+                                    <defs>
+                                        <linearGradient id="liquidGradient" x1="0%" y1="0%" x2="0%" y2="100%">
+                                            <stop offset="0%" style="stop-color:#4da3ff;stop-opacity:0.8" />
+                                            <stop offset="100%" style="stop-color:#00d4aa;stop-opacity:0.6" />
+                                        </linearGradient>
+                                    </defs>
+
+                                    <!-- "MAX" label at top -->
+                                    <text x="55" y="23" fill="rgba(255,107,157,0.5)" font-size="7" font-weight="bold">MAX</text>
+                                </svg>
+                            </div>
+                            <div class="cup-label">75mL Cup</div>
+                            <div class="cup-comparison" id="cupComparison">⅓ of cap line!</div>
+                        </div>
+                    </div>
+
                     <div class="colour-tip" id="colourTip">
                         <span class="colour-tip-icon">💡</span>
                         <span id="colourTipText">Mixed loads work best at 30°C — safe for all colours.</span>
                     </div>
+                    <div class="warning-banner" id="warningBanner" hidden></div>
                 </div>
             </div>
 
             <div class="info-card">
                 <div class="info-card-header">
                     <div class="info-card-icon cyan">📏</div>
-                    <div class="info-card-title">Measuring Tip</div>
+                    <div class="info-card-title">Measuring Tip</div>
+                </div>
+                <div class="info-card-content">
+                    <strong>Ignore the cap lines!</strong> They're designed for hard water. Use a syringe or marked container for accuracy. Your soft water needs far less.
+                </div>
+            </div>
+        </section>
+
+        <!-- Quick Reference Section -->
+        <section class="section" id="quick">
+            <h2 class="section-header">Quick Reference by Load</h2>
+
+            <div class="load-type-grid" id="quickGrid"></div>
+            <div class="status-banner" id="quickStatus" hidden></div>
+
+            <div class="bottom-note">
+                <div class="bottom-note-text">
+                    Tap any card to load settings into the calculator.<br>
+                    <strong>Ultra-concentrated detergent?</strong> Reduce by 20–30%.
+                </div>
+            </div>
+        </section>
+
+        <!-- Rules Section -->
+        <section class="section" id="rules">
+            <h2 class="section-header">Essential Rules</h2>
+
+            <div class="collapsible open">
+                <div class="collapsible-header">
+                    <div class="collapsible-header-left">
+                        <div class="collapsible-icon blue">💧</div>
+                        <span class="collapsible-title">Soft Water Rules</span>
+                    </div>
+                    <span class="collapsible-chevron">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-inner">
+                        <div class="tips-list">
+                            <div class="tip-item">
+                                <span class="tip-icon">❌</span>
+                                <span class="tip-text"><strong>Ignore cap lines</strong> — they're designed for hard water and suggest 2–3× what you need</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">⚖️</span>
+                                <span class="tip-text"><strong>More detergent ≠ cleaner clothes</strong> — excess causes residue, odours, and stiffness</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">🌡️</span>
+                                <span class="tip-text"><strong>Lower temps work better</strong> — soft water cleans effectively at 30°C</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">📈</span>
+                                <span class="tip-text"><strong>Increase in 5mL steps only</strong> if clothes aren't clean</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapsible">
+                <div class="collapsible-header">
+                    <div class="collapsible-header-left">
+                        <div class="collapsible-icon warm">🌡️</div>
+                        <span class="collapsible-title">Temperature by Colour</span>
+                    </div>
+                    <span class="collapsible-chevron">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-inner">
+                        <table class="ref-table">
+                            <thead>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Temp</th>
+                                    <th>Why</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>⬜ Whites</td>
+                                    <td><strong>40–60°C</strong></td>
+                                    <td>Hot brightens whites</td>
+                                </tr>
+                                <tr>
+                                    <td>🟨 Lights/Pastels</td>
+                                    <td><strong>30–40°C</strong></td>
+                                    <td>Low bleed risk</td>
+                                </tr>
+                                <tr>
+                                    <td>🟪 Colours/Brights</td>
+                                    <td><strong>30°C</strong></td>
+                                    <td>Prevents fading</td>
+                                </tr>
+                                <tr>
+                                    <td>⬛ Darks</td>
+                                    <td><strong>20–30°C</strong></td>
+                                    <td>Cold prevents fade & bleed</td>
+                                </tr>
+                                <tr>
+                                    <td>🔀 Mixed</td>
+                                    <td><strong>30°C</strong></td>
+                                    <td>Safe for all</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="info-card" style="margin-top: 12px; margin-bottom: 0;">
+                            <div class="info-card-content">
+                                <strong>NHS recommends 60°C</strong> for underwear, towels and household linen to kill germs — or 40°C with a bleach-based detergent.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapsible">
+                <div class="collapsible-header">
+                    <div class="collapsible-header-left">
+                        <div class="collapsible-icon cyan">📦</div>
+                        <span class="collapsible-title">Loading & Prep</span>
+                    </div>
+                    <span class="collapsible-chevron">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-inner">
+                        <div class="tips-list">
+                            <div class="tip-item">
+                                <span class="tip-icon">✅</span>
+                                <span class="tip-text">Fill drum to <strong>~¾ full</strong> maximum</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">✅</span>
+                                <span class="tip-text">Clothes must be able to <strong>tumble freely</strong></span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">🔄</span>
+                                <span class="tip-text"><strong>Turn darks inside out</strong> to prevent fading</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">🆕</span>
+                                <span class="tip-text"><strong>New items bleed more</strong> — wash separately first</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">🧺</span>
+                                <span class="tip-text"><strong>Mesh bags</strong> for delicates, bras, lingerie</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">🎯</span>
+                                <span class="tip-text"><strong>Pre-treat stains</strong> before washing</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">🔒</span>
+                                <span class="tip-text"><strong>Close zips & fastenings</strong> to prevent snags</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapsible">
+                <div class="collapsible-header">
+                    <div class="collapsible-header-left">
+                        <div class="collapsible-icon pink">🌸</div>
+                        <span class="collapsible-title">Fabric Softener</span>
+                    </div>
+                    <span class="collapsible-chevron">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-inner">
+                        <div class="info-card" style="margin-bottom: 12px;">
+                            <div class="info-card-header">
+                                <div class="info-card-icon pink">⚠️</div>
+                                <div class="info-card-title">Use With Caution</div>
+                            </div>
+                            <div class="info-card-content">
+                                In soft water, fabric softener builds up quickly, reduces towel absorbency, and can trap odours. Your machine manual says <strong>max 25mL</strong>.
+                            </div>
+                        </div>
+                        <div class="tips-list">
+                            <div class="tip-item">
+                                <span class="tip-icon">🚫</span>
+                                <span class="tip-text"><strong>Skip it entirely</strong> — your soft water already helps</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">½</span>
+                                <span class="tip-text">Or use <strong>max 25mL</strong> (half a cap)</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">🫗</span>
+                                <span class="tip-text">Try <strong>¼ cup white vinegar</strong> in softener drawer instead</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">🧶</span>
+                                <span class="tip-text"><strong>Never on towels</strong> — reduces absorbency</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapsible">
+                <div class="collapsible-header">
+                    <div class="collapsible-header-left">
+                        <div class="collapsible-icon warm">🚨</div>
+                        <span class="collapsible-title">Signs of Too Much Detergent</span>
+                    </div>
+                    <span class="collapsible-chevron">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-inner">
+                        <div class="tips-list">
+                            <div class="tip-item">
+                                <span class="tip-icon">🧱</span>
+                                <span class="tip-text">Clothes feel stiff or waxy</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">💧</span>
+                                <span class="tip-text">Towels repel water instead of absorbing</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">👃</span>
+                                <span class="tip-text">Lingering "clean" smell after drying</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">🦠</span>
+                                <span class="tip-text">Musty washer smell</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">🫧</span>
+                                <span class="tip-text">Excessive suds during wash</span>
+                            </div>
+                        </div>
+                        <div class="info-card" style="margin-top: 12px; margin-bottom: 0; background: rgba(255, 159, 67, 0.1); border-color: rgba(255, 159, 67, 0.2);">
+                            <div class="info-card-content">
+                                <strong style="color: var(--accent-warm);">Fix:</strong> Cut detergent by 5–10mL and reassess after a few washes.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Machine Section -->
+        <section class="section" id="machine">
+            <h2 class="section-header">Your Machine</h2>
+
+            <div class="machine-card">
+                <div class="machine-header">
+                    <div class="machine-icon">🌀</div>
+                    <div>
+                        <div class="machine-name">Fisher & Paykel Series 7</div>
+                        <div class="machine-model">WH1060P4 · 10kg Front Loader · Steam Care</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapsible open">
+                <div class="collapsible-header">
+                    <div class="collapsible-header-left">
+                        <div class="collapsible-icon purple">📋</div>
+                        <span class="collapsible-title">Available Cycles</span>
+                    </div>
+                    <span class="collapsible-chevron">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-inner">
+                        <table class="ref-table">
+                            <thead>
+                                <tr>
+                                    <th>Cycle</th>
+                                    <th>Max Load</th>
+                                    <th>Best For</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td><strong>Cottons</strong></td>
+                                    <td>10 kg</td>
+                                    <td>Normally soiled cotton</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Everyday</strong></td>
+                                    <td>10 kg</td>
+                                    <td>Mixed loads, faster</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Heavy</strong></td>
+                                    <td>10 kg</td>
+                                    <td>Heavily soiled items</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Delicate</strong></td>
+                                    <td>4 kg</td>
+                                    <td>Delicate fabrics</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Wool</strong></td>
+                                    <td>2 kg</td>
+                                    <td>Machine-washable wool</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Quick 30</strong></td>
+                                    <td>4 kg</td>
+                                    <td>Lightly soiled, fast</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Quick 15</strong></td>
+                                    <td>2 kg</td>
+                                    <td>Very light refresh</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Sanitise</strong></td>
+                                    <td>9 kg</td>
+                                    <td>75°C — illness, nappies</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Steam Refresh</strong></td>
+                                    <td>2 items</td>
+                                    <td>De-wrinkle, light odours</td>
+                                </tr>
+                                <tr>
+                                    <td><strong>Drum Clean</strong></td>
+                                    <td>Empty</td>
+                                    <td>90°C machine clean</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapsible">
+                <div class="collapsible-header">
+                    <div class="collapsible-header-left">
+                        <div class="collapsible-icon cyan">⚡</div>
+                        <span class="collapsible-title">Cycle Options</span>
+                    </div>
+                    <span class="collapsible-chevron">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-inner">
+                        <div class="tips-list">
+                            <div class="tip-item">
+                                <span class="tip-icon">🌿</span>
+                                <span class="tip-text"><strong>ECO</strong> — Saves water & energy, slightly lower temp</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">⚡</span>
+                                <span class="tip-text"><strong>Speed</strong> — Shorter cycle, good wash</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">🤫</span>
+                                <span class="tip-text"><strong>Quiet</strong> — Lower spin, night washing</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">🔄</span>
+                                <span class="tip-text"><strong>Pre Wash</strong> — Extra dirty loads</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">💧</span>
+                                <span class="tip-text"><strong>Rinse+</strong> — Extra rinse, sensitive skin</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">🧼</span>
+                                <span class="tip-text"><strong>Wash+</strong> — Extended wash time</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">⏱️</span>
+                                <span class="tip-text"><strong>Soak</strong> — 30 min soak for stains</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">👕</span>
+                                <span class="tip-text"><strong>Wrinkle Free</strong> — Tumbles after cycle</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapsible">
+                <div class="collapsible-header">
+                    <div class="collapsible-header-left">
+                        <div class="collapsible-icon warm">🌡️</div>
+                        <span class="collapsible-title">Temperature Settings</span>
+                    </div>
+                    <span class="collapsible-chevron">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-inner">
+                        <div class="temp-guide">
+                            <div class="temp-item">
+                                <span class="temp-badge-sm cold">Cold</span>
+                                <span class="temp-desc">Tap temp or 20°C (heated)</span>
+                            </div>
+                            <div class="temp-item">
+                                <span class="temp-badge-sm cold">30°C</span>
+                                <span class="temp-desc">Colours, darks, everyday</span>
+                            </div>
+                            <div class="temp-item">
+                                <span class="temp-badge-sm warm">40°C</span>
+                                <span class="temp-desc">Cotton, synthetics, underwear</span>
+                            </div>
+                            <div class="temp-item">
+                                <span class="temp-badge-sm warm">60°C</span>
+                                <span class="temp-desc">Whites, towels, bedding</span>
+                            </div>
+                            <div class="temp-item">
+                                <span class="temp-badge-sm hot">90°C</span>
+                                <span class="temp-desc">Drum Clean only</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="info-card">
+                <div class="info-card-header">
+                    <div class="info-card-icon purple">💨</div>
+                    <div class="info-card-title">Steam Refresh Tip</div>
+                </div>
+                <div class="info-card-content">
+                    Use <strong>Steam Refresh</strong> (max 2 items) to de-wrinkle and remove light odours — no detergent needed! Items will be slightly damp after, just hang to dry.
+                </div>
+            </div>
+
+            <div class="info-card">
+                <div class="info-card-header">
+                    <div class="info-card-icon cyan">🧴</div>
+                    <div class="info-card-title">Detergent Requirements</div>
+                </div>
+                <div class="info-card-content">
+                    Your machine requires <strong>low-sudsing / HE detergent</strong> (labelled "front loader" or "high efficiency"). Using top-loader detergent causes excess suds and longer cycles.
+                </div>
+            </div>
+        </section>
+
+        <!-- Maintenance Section -->
+        <section class="section" id="maintenance">
+            <h2 class="section-header">Machine Care</h2>
+
+            <div class="key-fact" data-key="drum-clean-fact">
+                <button class="key-fact-close" aria-label="Dismiss" data-dismiss="drum-clean-fact">×</button>
+                <div class="key-fact-title">
+                    🔄 Drum Clean Reminder
+                    <span class="why-tip" title="Regular drum cleans prevent buildup and odors in front loaders.">Why?</span>
                 </div>
-                <div class="info-card-content">
-                    <strong>Ignore the cap lines!</strong> They're designed for hard water. Use a syringe or marked container for accuracy. Your soft water needs far less.
-                </div>
-            </div>
-        </section>
-
-        <!-- Quick Reference Section -->
-        <section class="section" id="quick">
-            <h2 class="section-header">Quick Reference by Load</h2>
-
-            <div class="load-type-grid">
-                <div class="load-type-card" onclick="setCalculator('medium', 'normal', 'mixed', 'everyday')">
-                    <div class="load-type-header">
-                        <span class="load-type-name"><span class="emoji">👕</span> Everyday</span>
-                    </div>
-                    <div class="quick-dose">
-                        <div class="quick-dose-item">
-                            <div class="quick-dose-label">Detergent</div>
-                            <div class="quick-dose-value">15–25 mL</div>
-                        </div>
-                        <div class="quick-dose-item">
-                            <div class="quick-dose-label">Temp</div>
-                            <div class="quick-dose-value temp">30–40°C</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="load-type-card" onclick="setCalculator('large', 'heavy', 'whites', 'bedding')">
-                    <div class="load-type-header">
-                        <span class="load-type-name"><span class="emoji">🛏️</span> Bedding</span>
-                    </div>
-                    <div class="quick-dose">
-                        <div class="quick-dose-item">
-                            <div class="quick-dose-label">Detergent</div>
-                            <div class="quick-dose-value">30–40 mL</div>
-                        </div>
-                        <div class="quick-dose-item">
-                            <div class="quick-dose-label">Temp</div>
-                            <div class="quick-dose-value temp">60°C</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="load-type-card" onclick="setCalculator('large', 'normal', 'whites', 'bedding')">
-                    <div class="load-type-header">
-                        <span class="load-type-name"><span class="emoji">🛁</span> Towels</span>
-                    </div>
-                    <div class="quick-dose">
-                        <div class="quick-dose-item">
-                            <div class="quick-dose-label">Detergent</div>
-                            <div class="quick-dose-value">25–35 mL</div>
-                        </div>
-                        <div class="quick-dose-item">
-                            <div class="quick-dose-label">Temp</div>
-                            <div class="quick-dose-value temp">40–60°C</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="load-type-card" onclick="setCalculator('small', 'light', 'mixed', 'delicates')">
-                    <div class="load-type-header">
-                        <span class="load-type-name"><span class="emoji">🩱</span> Delicates</span>
-                    </div>
-                    <div class="quick-dose">
-                        <div class="quick-dose-item">
-                            <div class="quick-dose-label">Detergent</div>
-                            <div class="quick-dose-value">10–15 mL</div>
-                        </div>
-                        <div class="quick-dose-item">
-                            <div class="quick-dose-label">Temp</div>
-                            <div class="quick-dose-value temp">20–30°C</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="load-type-card" onclick="setCalculator('small', 'light', 'mixed', 'delicates')">
-                    <div class="load-type-header">
-                        <span class="load-type-name"><span class="emoji">🧶</span> Wool</span>
-                    </div>
-                    <div class="quick-dose">
-                        <div class="quick-dose-item">
-                            <div class="quick-dose-label">Detergent</div>
-                            <div class="quick-dose-value">10–15 mL</div>
-                        </div>
-                        <div class="quick-dose-item">
-                            <div class="quick-dose-label">Temp</div>
-                            <div class="quick-dose-value temp">20–30°C</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="load-type-card" onclick="setCalculator('medium', 'heavy', 'darks', 'everyday')">
-                    <div class="load-type-header">
-                        <span class="load-type-name"><span class="emoji">💪</span> Activewear</span>
-                    </div>
-                    <div class="quick-dose">
-                        <div class="quick-dose-item">
-                            <div class="quick-dose-label">Detergent</div>
-                            <div class="quick-dose-value">20–25 mL</div>
-                        </div>
-                        <div class="quick-dose-item">
-                            <div class="quick-dose-label">Temp</div>
-                            <div class="quick-dose-value temp">30–40°C</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="load-type-card" onclick="setCalculator('medium', 'heavy', 'darks', 'everyday')">
-                    <div class="load-type-header">
-                        <span class="load-type-name"><span class="emoji">👖</span> Jeans</span>
-                    </div>
-                    <div class="quick-dose">
-                        <div class="quick-dose-item">
-                            <div class="quick-dose-label">Detergent</div>
-                            <div class="quick-dose-value">25–30 mL</div>
-                        </div>
-                        <div class="quick-dose-item">
-                            <div class="quick-dose-label">Temp</div>
-                            <div class="quick-dose-value temp">30–40°C</div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="load-type-card" onclick="setCalculator('small', 'normal', 'whites', 'everyday')">
-                    <div class="load-type-header">
-                        <span class="load-type-name"><span class="emoji">🩲</span> Underwear</span>
-                    </div>
-                    <div class="quick-dose">
-                        <div class="quick-dose-item">
-                            <div class="quick-dose-label">Detergent</div>
-                            <div class="quick-dose-value">15–20 mL</div>
-                        </div>
-                        <div class="quick-dose-item">
-                            <div class="quick-dose-label">Temp</div>
-                            <div class="quick-dose-value temp">40–60°C</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bottom-note">
-                <div class="bottom-note-text">
-                    Tap any card to load settings into the calculator.<br>
-                    <strong>Ultra-concentrated detergent?</strong> Reduce by 20–30%.
-                </div>
-            </div>
-        </section>
-
-        <!-- Rules Section -->
-        <section class="section" id="rules">
-            <h2 class="section-header">Essential Rules</h2>
-
-            <div class="collapsible open">
-                <div class="collapsible-header">
-                    <div class="collapsible-header-left">
-                        <div class="collapsible-icon blue">💧</div>
-                        <span class="collapsible-title">Soft Water Rules</span>
-                    </div>
-                    <span class="collapsible-chevron">▼</span>
-                </div>
-                <div class="collapsible-content">
-                    <div class="collapsible-inner">
-                        <div class="tips-list">
-                            <div class="tip-item">
-                                <span class="tip-icon">❌</span>
-                                <span class="tip-text"><strong>Ignore cap lines</strong> — they're designed for hard water and suggest 2–3× what you need</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">⚖️</span>
-                                <span class="tip-text"><strong>More detergent ≠ cleaner clothes</strong> — excess causes residue, odours, and stiffness</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">🌡️</span>
-                                <span class="tip-text"><strong>Lower temps work better</strong> — soft water cleans effectively at 30°C</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">📈</span>
-                                <span class="tip-text"><strong>Increase in 5mL steps only</strong> if clothes aren't clean</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="collapsible">
-                <div class="collapsible-header">
-                    <div class="collapsible-header-left">
-                        <div class="collapsible-icon warm">🌡️</div>
-                        <span class="collapsible-title">Temperature by Colour</span>
-                    </div>
-                    <span class="collapsible-chevron">▼</span>
-                </div>
-                <div class="collapsible-content">
-                    <div class="collapsible-inner">
-                        <table class="ref-table">
-                            <thead>
-                                <tr>
-                                    <th>Category</th>
-                                    <th>Temp</th>
-                                    <th>Why</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>⬜ Whites</td>
-                                    <td><strong>40–60°C</strong></td>
-                                    <td>Hot brightens whites</td>
-                                </tr>
-                                <tr>
-                                    <td>🟨 Lights/Pastels</td>
-                                    <td><strong>30–40°C</strong></td>
-                                    <td>Low bleed risk</td>
-                                </tr>
-                                <tr>
-                                    <td>🟪 Colours/Brights</td>
-                                    <td><strong>30°C</strong></td>
-                                    <td>Prevents fading</td>
-                                </tr>
-                                <tr>
-                                    <td>⬛ Darks</td>
-                                    <td><strong>20–30°C</strong></td>
-                                    <td>Cold prevents fade & bleed</td>
-                                </tr>
-                                <tr>
-                                    <td>🔀 Mixed</td>
-                                    <td><strong>30°C</strong></td>
-                                    <td>Safe for all</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <div class="info-card" style="margin-top: 12px; margin-bottom: 0;">
-                            <div class="info-card-content">
-                                <strong>NHS recommends 60°C</strong> for underwear, towels and household linen to kill germs — or 40°C with a bleach-based detergent.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="collapsible">
-                <div class="collapsible-header">
-                    <div class="collapsible-header-left">
-                        <div class="collapsible-icon cyan">📦</div>
-                        <span class="collapsible-title">Loading & Prep</span>
-                    </div>
-                    <span class="collapsible-chevron">▼</span>
-                </div>
-                <div class="collapsible-content">
-                    <div class="collapsible-inner">
-                        <div class="tips-list">
-                            <div class="tip-item">
-                                <span class="tip-icon">✅</span>
-                                <span class="tip-text">Fill drum to <strong>~¾ full</strong> maximum</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">✅</span>
-                                <span class="tip-text">Clothes must be able to <strong>tumble freely</strong></span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">🔄</span>
-                                <span class="tip-text"><strong>Turn darks inside out</strong> to prevent fading</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">🆕</span>
-                                <span class="tip-text"><strong>New items bleed more</strong> — wash separately first</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">🧺</span>
-                                <span class="tip-text"><strong>Mesh bags</strong> for delicates, bras, lingerie</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">🎯</span>
-                                <span class="tip-text"><strong>Pre-treat stains</strong> before washing</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">🔒</span>
-                                <span class="tip-text"><strong>Close zips & fastenings</strong> to prevent snags</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="collapsible">
-                <div class="collapsible-header">
-                    <div class="collapsible-header-left">
-                        <div class="collapsible-icon pink">🌸</div>
-                        <span class="collapsible-title">Fabric Softener</span>
-                    </div>
-                    <span class="collapsible-chevron">▼</span>
-                </div>
-                <div class="collapsible-content">
-                    <div class="collapsible-inner">
-                        <div class="info-card" style="margin-bottom: 12px;">
-                            <div class="info-card-header">
-                                <div class="info-card-icon pink">⚠️</div>
-                                <div class="info-card-title">Use With Caution</div>
-                            </div>
-                            <div class="info-card-content">
-                                In soft water, fabric softener builds up quickly, reduces towel absorbency, and can trap odours. Your machine manual says <strong>max 25mL</strong>.
-                            </div>
-                        </div>
-                        <div class="tips-list">
-                            <div class="tip-item">
-                                <span class="tip-icon">🚫</span>
-                                <span class="tip-text"><strong>Skip it entirely</strong> — your soft water already helps</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">½</span>
-                                <span class="tip-text">Or use <strong>max 25mL</strong> (half a cap)</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">🫗</span>
-                                <span class="tip-text">Try <strong>¼ cup white vinegar</strong> in softener drawer instead</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">🧶</span>
-                                <span class="tip-text"><strong>Never on towels</strong> — reduces absorbency</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="collapsible">
-                <div class="collapsible-header">
-                    <div class="collapsible-header-left">
-                        <div class="collapsible-icon warm">🚨</div>
-                        <span class="collapsible-title">Signs of Too Much Detergent</span>
-                    </div>
-                    <span class="collapsible-chevron">▼</span>
-                </div>
-                <div class="collapsible-content">
-                    <div class="collapsible-inner">
-                        <div class="tips-list">
-                            <div class="tip-item">
-                                <span class="tip-icon">🧱</span>
-                                <span class="tip-text">Clothes feel stiff or waxy</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">💧</span>
-                                <span class="tip-text">Towels repel water instead of absorbing</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">👃</span>
-                                <span class="tip-text">Lingering "clean" smell after drying</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">🦠</span>
-                                <span class="tip-text">Musty washer smell</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">🫧</span>
-                                <span class="tip-text">Excessive suds during wash</span>
-                            </div>
-                        </div>
-                        <div class="info-card" style="margin-top: 12px; margin-bottom: 0; background: rgba(255, 159, 67, 0.1); border-color: rgba(255, 159, 67, 0.2);">
-                            <div class="info-card-content">
-                                <strong style="color: var(--accent-warm);">Fix:</strong> Cut detergent by 5–10mL and reassess after a few washes.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Machine Section -->
-        <section class="section" id="machine">
-            <h2 class="section-header">Your Machine</h2>
-
-            <div class="machine-card">
-                <div class="machine-header">
-                    <div class="machine-icon">🌀</div>
-                    <div>
-                        <div class="machine-name">Fisher & Paykel Series 7</div>
-                        <div class="machine-model">WH1060P4 · 10kg Front Loader · Steam Care</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="collapsible open">
-                <div class="collapsible-header">
-                    <div class="collapsible-header-left">
-                        <div class="collapsible-icon purple">📋</div>
-                        <span class="collapsible-title">Available Cycles</span>
-                    </div>
-                    <span class="collapsible-chevron">▼</span>
-                </div>
-                <div class="collapsible-content">
-                    <div class="collapsible-inner">
-                        <table class="ref-table">
-                            <thead>
-                                <tr>
-                                    <th>Cycle</th>
-                                    <th>Max Load</th>
-                                    <th>Best For</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td><strong>Cottons</strong></td>
-                                    <td>10 kg</td>
-                                    <td>Normally soiled cotton</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Everyday</strong></td>
-                                    <td>10 kg</td>
-                                    <td>Mixed loads, faster</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Heavy</strong></td>
-                                    <td>10 kg</td>
-                                    <td>Heavily soiled items</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Delicate</strong></td>
-                                    <td>4 kg</td>
-                                    <td>Delicate fabrics</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Wool</strong></td>
-                                    <td>2 kg</td>
-                                    <td>Machine-washable wool</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Quick 30</strong></td>
-                                    <td>4 kg</td>
-                                    <td>Lightly soiled, fast</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Quick 15</strong></td>
-                                    <td>2 kg</td>
-                                    <td>Very light refresh</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Sanitise</strong></td>
-                                    <td>9 kg</td>
-                                    <td>75°C — illness, nappies</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Steam Refresh</strong></td>
-                                    <td>2 items</td>
-                                    <td>De-wrinkle, light odours</td>
-                                </tr>
-                                <tr>
-                                    <td><strong>Drum Clean</strong></td>
-                                    <td>Empty</td>
-                                    <td>90°C machine clean</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <div class="collapsible">
-                <div class="collapsible-header">
-                    <div class="collapsible-header-left">
-                        <div class="collapsible-icon cyan">⚡</div>
-                        <span class="collapsible-title">Cycle Options</span>
-                    </div>
-                    <span class="collapsible-chevron">▼</span>
-                </div>
-                <div class="collapsible-content">
-                    <div class="collapsible-inner">
-                        <div class="tips-list">
-                            <div class="tip-item">
-                                <span class="tip-icon">🌿</span>
-                                <span class="tip-text"><strong>ECO</strong> — Saves water & energy, slightly lower temp</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">⚡</span>
-                                <span class="tip-text"><strong>Speed</strong> — Shorter cycle, good wash</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">🤫</span>
-                                <span class="tip-text"><strong>Quiet</strong> — Lower spin, night washing</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">🔄</span>
-                                <span class="tip-text"><strong>Pre Wash</strong> — Extra dirty loads</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">💧</span>
-                                <span class="tip-text"><strong>Rinse+</strong> — Extra rinse, sensitive skin</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">🧼</span>
-                                <span class="tip-text"><strong>Wash+</strong> — Extended wash time</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">⏱️</span>
-                                <span class="tip-text"><strong>Soak</strong> — 30 min soak for stains</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">👕</span>
-                                <span class="tip-text"><strong>Wrinkle Free</strong> — Tumbles after cycle</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="collapsible">
-                <div class="collapsible-header">
-                    <div class="collapsible-header-left">
-                        <div class="collapsible-icon warm">🌡️</div>
-                        <span class="collapsible-title">Temperature Settings</span>
-                    </div>
-                    <span class="collapsible-chevron">▼</span>
-                </div>
-                <div class="collapsible-content">
-                    <div class="collapsible-inner">
-                        <div class="temp-guide">
-                            <div class="temp-item">
-                                <span class="temp-badge-sm cold">Cold</span>
-                                <span class="temp-desc">Tap temp or 20°C (heated)</span>
-                            </div>
-                            <div class="temp-item">
-                                <span class="temp-badge-sm cold">30°C</span>
-                                <span class="temp-desc">Colours, darks, everyday</span>
-                            </div>
-                            <div class="temp-item">
-                                <span class="temp-badge-sm warm">40°C</span>
-                                <span class="temp-desc">Cotton, synthetics, underwear</span>
-                            </div>
-                            <div class="temp-item">
-                                <span class="temp-badge-sm warm">60°C</span>
-                                <span class="temp-desc">Whites, towels, bedding</span>
-                            </div>
-                            <div class="temp-item">
-                                <span class="temp-badge-sm hot">90°C</span>
-                                <span class="temp-desc">Drum Clean only</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="info-card">
-                <div class="info-card-header">
-                    <div class="info-card-icon purple">💨</div>
-                    <div class="info-card-title">Steam Refresh Tip</div>
-                </div>
-                <div class="info-card-content">
-                    Use <strong>Steam Refresh</strong> (max 2 items) to de-wrinkle and remove light odours — no detergent needed! Items will be slightly damp after, just hang to dry.
-                </div>
-            </div>
-
-            <div class="info-card">
-                <div class="info-card-header">
-                    <div class="info-card-icon cyan">🧴</div>
-                    <div class="info-card-title">Detergent Requirements</div>
-                </div>
-                <div class="info-card-content">
-                    Your machine requires <strong>low-sudsing / HE detergent</strong> (labelled "front loader" or "high efficiency"). Using top-loader detergent causes excess suds and longer cycles.
-                </div>
-            </div>
-        </section>
-
-        <!-- Maintenance Section -->
-        <section class="section" id="maintenance">
-            <h2 class="section-header">Machine Care</h2>
-
-            <div class="key-fact">
-                <button class="key-fact-close" aria-label="Dismiss">×</button>
-                <div class="key-fact-title">🔄 Drum Clean Reminder</div>
                 <div class="key-fact-text">Your machine shows a reminder after every 100 cycles. Don't ignore it — prevents smells and buildup!</div>
             </div>
-
-            <div class="collapsible open">
-                <div class="collapsible-header">
-                    <div class="collapsible-header-left">
-                        <div class="collapsible-icon cyan">📅</div>
-                        <span class="collapsible-title">Monthly Drum Clean</span>
-                    </div>
-                    <span class="collapsible-chevron">▼</span>
-                </div>
-                <div class="collapsible-content">
-                    <div class="collapsible-inner">
-                        <div class="checklist">
-                            <div class="check-item">
-                                <div class="check-circle">1</div>
-                                <div class="check-content">
-                                    <div class="check-title">Empty the drum</div>
-                                    <div class="check-desc">No clothes or items inside</div>
-                                </div>
-                            </div>
-                            <div class="check-item">
-                                <div class="check-circle">2</div>
-                                <div class="check-content">
-                                    <div class="check-title">Select Drum Clean cycle</div>
-                                    <div class="check-desc">Runs at 90°C automatically</div>
-                                </div>
-                            </div>
-                            <div class="check-item">
-                                <div class="check-circle">3</div>
-                                <div class="check-content">
-                                    <div class="check-title">Add cleaner to detergent drawer</div>
-                                    <div class="check-desc">Machine cleaner tablet, OR half-dose detergent</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="info-card" style="margin-top: 12px; margin-bottom: 0;">
-                            <div class="info-card-content">
-                                <strong>Alternative:</strong> 1–2 cups white vinegar + 1 tbsp dish liquid in the drum. Run Drum Clean cycle.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="collapsible">
-                <div class="collapsible-header">
-                    <div class="collapsible-header-left">
-                        <div class="collapsible-icon blue">✨</div>
-                        <span class="collapsible-title">Regular Habits</span>
-                    </div>
-                    <span class="collapsible-chevron">▼</span>
-                </div>
-                <div class="collapsible-content">
-                    <div class="collapsible-inner">
-                        <div class="tips-list">
-                            <div class="tip-item">
-                                <span class="tip-icon">🚪</span>
-                                <span class="tip-text"><strong>Leave door ajar</strong> after every wash to air out</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">🧽</span>
-                                <span class="tip-text"><strong>Wipe door gasket</strong> weekly — check under rubber folds</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">📤</span>
-                                <span class="tip-text"><strong>Remove clothes promptly</strong> — or use Wrinkle Free option</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">🧴</span>
-                                <span class="tip-text"><strong>Clean detergent drawer</strong> monthly with warm water</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">🔍</span>
-                                <span class="tip-text"><strong>Check pump filter</strong> every few months (bottom right)</span>
-                            </div>
-                            <div class="tip-item">
-                                <span class="tip-icon">🌡️</span>
-                                <span class="tip-text"><strong>Run 40°C+ occasionally</strong> if you mostly wash cold</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="collapsible">
-                <div class="collapsible-header">
-                    <div class="collapsible-header-left">
-                        <div class="collapsible-icon warm">🔧</div>
-                        <span class="collapsible-title">Pump Filter Clean</span>
-                    </div>
-                    <span class="collapsible-chevron">▼</span>
-                </div>
-                <div class="collapsible-content">
-                    <div class="collapsible-inner">
-                        <div class="checklist">
-                            <div class="check-item">
-                                <div class="check-circle">1</div>
-                                <div class="check-content">
-                                    <div class="check-title">Open filter cover</div>
-                                    <div class="check-desc">Bottom right of machine — use coin in slot</div>
-                                </div>
-                            </div>
-                            <div class="check-item">
-                                <div class="check-circle">2</div>
-                                <div class="check-content">
-                                    <div class="check-title">Drain residual water</div>
-                                    <div class="check-desc">Pull out hose, remove plug, drain into dish (~250mL)</div>
-                                </div>
-                            </div>
-                            <div class="check-item">
-                                <div class="check-circle">3</div>
-                                <div class="check-content">
-                                    <div class="check-title">Remove & clean filter</div>
-                                    <div class="check-desc">Turn anti-clockwise, rinse under tap</div>
-                                </div>
-                            </div>
-                            <div class="check-item">
-                                <div class="check-circle">4</div>
-                                <div class="check-content">
-                                    <div class="check-title">Replace & close</div>
-                                    <div class="check-desc">Turn clockwise until handle is vertical</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
+
+            <div class="collapsible open">
+                <div class="collapsible-header">
+                    <div class="collapsible-header-left">
+                        <div class="collapsible-icon cyan">📅</div>
+                        <span class="collapsible-title">Monthly Drum Clean</span>
+                    </div>
+                    <span class="collapsible-chevron">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-inner">
+                        <div class="checklist">
+                            <div class="check-item">
+                                <div class="check-circle">1</div>
+                                <div class="check-content">
+                                    <div class="check-title">Empty the drum</div>
+                                    <div class="check-desc">No clothes or items inside</div>
+                                </div>
+                            </div>
+                            <div class="check-item">
+                                <div class="check-circle">2</div>
+                                <div class="check-content">
+                                    <div class="check-title">Select Drum Clean cycle</div>
+                                    <div class="check-desc">Runs at 90°C automatically</div>
+                                </div>
+                            </div>
+                            <div class="check-item">
+                                <div class="check-circle">3</div>
+                                <div class="check-content">
+                                    <div class="check-title">Add cleaner to detergent drawer</div>
+                                    <div class="check-desc">Machine cleaner tablet, OR half-dose detergent</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="info-card" style="margin-top: 12px; margin-bottom: 0;">
+                            <div class="info-card-content">
+                                <strong>Alternative:</strong> 1–2 cups white vinegar + 1 tbsp dish liquid in the drum. Run Drum Clean cycle.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapsible">
+                <div class="collapsible-header">
+                    <div class="collapsible-header-left">
+                        <div class="collapsible-icon blue">✨</div>
+                        <span class="collapsible-title">Regular Habits</span>
+                    </div>
+                    <span class="collapsible-chevron">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-inner">
+                        <div class="tips-list">
+                            <div class="tip-item">
+                                <span class="tip-icon">🚪</span>
+                                <span class="tip-text"><strong>Leave door ajar</strong> after every wash to air out</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">🧽</span>
+                                <span class="tip-text"><strong>Wipe door gasket</strong> weekly — check under rubber folds</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">📤</span>
+                                <span class="tip-text"><strong>Remove clothes promptly</strong> — or use Wrinkle Free option</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">🧴</span>
+                                <span class="tip-text"><strong>Clean detergent drawer</strong> monthly with warm water</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">🔍</span>
+                                <span class="tip-text"><strong>Check pump filter</strong> every few months (bottom right)</span>
+                            </div>
+                            <div class="tip-item">
+                                <span class="tip-icon">🌡️</span>
+                                <span class="tip-text"><strong>Run 40°C+ occasionally</strong> if you mostly wash cold</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="collapsible">
+                <div class="collapsible-header">
+                    <div class="collapsible-header-left">
+                        <div class="collapsible-icon warm">🔧</div>
+                        <span class="collapsible-title">Pump Filter Clean</span>
+                    </div>
+                    <span class="collapsible-chevron">▼</span>
+                </div>
+                <div class="collapsible-content">
+                    <div class="collapsible-inner">
+                        <div class="checklist">
+                            <div class="check-item">
+                                <div class="check-circle">1</div>
+                                <div class="check-content">
+                                    <div class="check-title">Open filter cover</div>
+                                    <div class="check-desc">Bottom right of machine — use coin in slot</div>
+                                </div>
+                            </div>
+                            <div class="check-item">
+                                <div class="check-circle">2</div>
+                                <div class="check-content">
+                                    <div class="check-title">Drain residual water</div>
+                                    <div class="check-desc">Pull out hose, remove plug, drain into dish (~250mL)</div>
+                                </div>
+                            </div>
+                            <div class="check-item">
+                                <div class="check-circle">3</div>
+                                <div class="check-content">
+                                    <div class="check-title">Remove & clean filter</div>
+                                    <div class="check-desc">Turn anti-clockwise, rinse under tap</div>
+                                </div>
+                            </div>
+                            <div class="check-item">
+                                <div class="check-circle">4</div>
+                                <div class="check-content">
+                                    <div class="check-title">Replace & close</div>
+                                    <div class="check-desc">Turn clockwise until handle is vertical</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="bottom-note">
                 <div class="bottom-note-text">
                     Your water is <strong>very soft</strong> — use less detergent than almost all guides suggest.<br><br>
                     Let temperature + correct loading do the work.<br>
                     <strong>Result:</strong> Cleaner clothes, fewer smells, longer machine life.
+                    <br><br>
+                    Detergent strengths vary by brand — always check the label and adjust as needed.
+                    <br><br>
+                    <span class="version-tag">Version 1.0</span>
                 </div>
             </div>
-        </section>
-    </div>
-
+        </section>
+    </div>
+
     <script src="app.js"></script>
-</body>
-</html>
+</body>
+</html>
