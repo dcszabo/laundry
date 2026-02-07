@@ -26,20 +26,35 @@ app.js       - Data-driven dosage calculator and UI event handlers
 
 ### Key Data Structures (app.js)
 
-Three lookup objects drive the calculator:
+Four lookup objects drive the calculator:
 - `dosageData[size][soil]` - Base dose ranges in mL
 - `colourData[colour]` - Temperature recommendations and adjustments
 - `typeModifiers[type]` - Load type-specific modifications
+- `presetMeta[preset]` - Per-preset tips, cautions, and recommended detergent type
 
 ### UI Pattern
 
-Tab navigation switches between content sections. Collapsible panels (`.collapsible`) organize detailed information. The detergent cup SVG provides visual feedback for calculated doses. Dismissible `.key-fact` banners can be closed via `.key-fact-close` button.
+Tab navigation switches between content sections. Collapsible panels (`.collapsible`) organize detailed information. The detergent cup SVG provides visual feedback for calculated doses. Dismissible `.key-fact` banners can be closed via `.key-fact-close` button. Detergent type/strength is selected via a compact bar that opens a bottom sheet modal.
 
 ### Key Functions (app.js)
 
 - `updateResult()` - Main calculation function, called on any input change
 - `setCalculator()` - Populates calculator from Quick Reference cards
 - Event handlers for tabs, collapsibles, selectors, and close buttons
+
+### Sticky/Scroll Layout (Calculator Tab)
+
+The calculator tab has a layered sticky layout:
+- `.header` is `position: sticky; top: 0; z-index: 100`
+- `.result-display-sticky` is `position: sticky; top: 80px; z-index: 40` with `background: var(--bg-primary)`
+- `.calculator-card` scrolls normally with the page beneath the sticky result card
+- A `::after` gradient on `.result-display-sticky` fades out content scrolling under it
+
+**Important constraints — do NOT do any of the following:**
+- **Do NOT change the `#calculator` section to `display: flex` with a fixed height.** This breaks the natural page flow and creates large gaps or clipped content. The section must remain `display: block`.
+- **Do NOT add `overflow-y: auto` to `.calculator-card` to create an internal scroll area.** This creates two competing scroll regions (page scroll + card scroll) which feels broken on mobile touch devices.
+- **Do NOT use negative `margin-bottom` on `.result-display-sticky` to pull the calculator card up behind it.** The sticky wrapper has `z-index: 40`, so its background paints over the card even at rest, hiding the top border before any scrolling occurs.
+- **Do NOT make `.calculator-card` itself `position: sticky`.** Combined with internal scroll, this again creates two competing scroll areas on mobile.
 
 ### PWA Assets
 
