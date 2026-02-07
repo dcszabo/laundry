@@ -94,6 +94,49 @@ const fallbackContent = {
     ]
 };
 
+const presetMeta = {
+    'Everyday': {
+        recDetergent: 'liquid',
+        tips: ['Empty pockets and close zips before washing.', 'Sort by colour when possible to extend garment life.'],
+        cautions: []
+    },
+    'Bedding': {
+        recDetergent: 'powder',
+        tips: ['Wash sheets every 1\u20132 weeks.', 'Ensure bedding has room to tumble freely \u2014 don\'t overfill.'],
+        cautions: ['Use 60\u00B0C to kill dust mites and bacteria.', 'Skip fabric softener \u2014 it reduces breathability.']
+    },
+    'Towels': {
+        recDetergent: 'powder',
+        tips: ['Shake towels out before loading for better results.', '60\u00B0C keeps towels hygienic and fresh.'],
+        cautions: ['Never use fabric softener \u2014 it coats fibres and ruins absorbency.']
+    },
+    'Delicates': {
+        recDetergent: 'liquid',
+        tips: ['Use mesh bags for bras, lingerie, and anything with hooks.', 'Select the Delicate cycle (max 4 kg).'],
+        cautions: ['Never tumble dry delicates.', 'Air dry flat and reshape while damp.']
+    },
+    'Wool': {
+        recDetergent: 'liquid',
+        tips: ['Use the Wool cycle (max 2 kg).', 'Lay flat to dry \u2014 never hang or tumble dry.'],
+        cautions: ['Use wool-safe or gentle detergent only \u2014 enzymes in regular detergent damage wool fibres.', 'Never wring or twist woollen items.']
+    },
+    'Activewear': {
+        recDetergent: 'liquid',
+        tips: ['Turn inside out before washing.', 'Use cold water to preserve elasticity and technical fabrics.'],
+        cautions: ['Never use fabric softener \u2014 it destroys moisture-wicking properties.', 'Air dry rather than tumble drying.']
+    },
+    'Jeans': {
+        recDetergent: 'liquid',
+        tips: ['Turn inside out to prevent fading and white streaks.', 'Wash less often if only lightly worn \u2014 spot clean between washes.'],
+        cautions: ['Use cold water only (20\u201330\u00B0C) to preserve colour and stretch.']
+    },
+    'Underwear': {
+        recDetergent: 'liquid',
+        tips: ['NHS recommends 60\u00B0C for underwear to kill bacteria.', 'Separate whites from colours.'],
+        cautions: ['40\u00B0C is acceptable only with antibacterial or bleach-based detergent.']
+    }
+};
+
 const storageKeys = {
     concentration: 'laundry.concentrationFactor',
     detergent: 'laundry.detergentType',
@@ -137,7 +180,19 @@ const ui = {
     quickGrid: document.getElementById('quickGrid'),
     quickStatus: document.getElementById('quickStatus'),
     installNudge: document.getElementById('installNudge'),
-    installDismiss: document.getElementById('installDismiss')
+    installDismiss: document.getElementById('installDismiss'),
+    presetTip: document.getElementById('presetTip'),
+    presetTipTitle: document.getElementById('presetTipTitle'),
+    presetTipBody: document.getElementById('presetTipBody'),
+    presetTipClose: document.getElementById('presetTipClose'),
+    detergentBar: document.getElementById('detergentBar'),
+    detBarType: document.getElementById('detBarType'),
+    detBarConc: document.getElementById('detBarConc'),
+    detergentRec: document.getElementById('detergentRec'),
+    detergentBackdrop: document.getElementById('detergentBackdrop'),
+    detergentSheet: document.getElementById('detergentSheet'),
+    sheetDone: document.getElementById('sheetDone'),
+    sheetRec: document.getElementById('sheetRec')
 };
 
 const state = {
@@ -146,7 +201,8 @@ const state = {
     colour: 'mixed',
     type: 'everyday',
     detergent: readStorage(storageKeys.detergent, 'liquid'),
-    concentration: parseFloat(readStorage(storageKeys.concentration, '1')) || 1
+    concentration: parseFloat(readStorage(storageKeys.concentration, '1')) || 1,
+    activePreset: null
 };
 
 function setStatus(message) {
@@ -308,6 +364,58 @@ function updateCup(amount) {
     }
 }
 
+function updateDetergentBar() {
+    if (ui.detBarType) ui.detBarType.textContent = state.detergent.charAt(0).toUpperCase() + state.detergent.slice(1);
+    if (ui.detBarConc) ui.detBarConc.textContent = Math.round(state.concentration * 100) + '%';
+}
+
+function updateDetergentRec() {
+    if (!ui.detergentRec) return;
+    if (!state.activePreset || !presetMeta[state.activePreset]) {
+        ui.detergentRec.hidden = true;
+        return;
+    }
+    const meta = presetMeta[state.activePreset];
+    if (meta.recDetergent === state.detergent) {
+        ui.detergentRec.hidden = true;
+    } else {
+        const rec = meta.recDetergent.charAt(0).toUpperCase() + meta.recDetergent.slice(1);
+        const cur = state.detergent.charAt(0).toUpperCase() + state.detergent.slice(1);
+        ui.detergentRec.textContent = `\uD83D\uDCA1 ${rec} recommended for ${state.activePreset} \u2014 you\u2019re using ${cur}`;
+        ui.detergentRec.hidden = false;
+    }
+}
+
+function updateSheetRec() {
+    if (!ui.sheetRec || !state.activePreset || !presetMeta[state.activePreset]) {
+        if (ui.sheetRec) ui.sheetRec.hidden = true;
+        return;
+    }
+    const meta = presetMeta[state.activePreset];
+    const rec = meta.recDetergent.charAt(0).toUpperCase() + meta.recDetergent.slice(1);
+    ui.sheetRec.innerHTML = `\u2713 <strong>${rec}</strong> recommended for ${state.activePreset}`;
+    ui.sheetRec.hidden = false;
+}
+
+function updatePresetTip() {
+    if (!ui.presetTip) return;
+    if (!state.activePreset || !presetMeta[state.activePreset]) {
+        ui.presetTip.hidden = true;
+        return;
+    }
+    const meta = presetMeta[state.activePreset];
+    const preset = fallbackContent.quickReferenceFallback.find(p => p.label === state.activePreset);
+    const emoji = preset ? preset.emoji : '';
+
+    ui.presetTipTitle.textContent = `${emoji} ${state.activePreset} Tips`;
+
+    let html = '';
+    meta.tips.forEach(t => { html += `<div class="preset-tip-item">\u2022 ${t}</div>`; });
+    meta.cautions.forEach(c => { html += `<div class="preset-tip-caution">\u26A0\uFE0F ${c}</div>`; });
+    ui.presetTipBody.innerHTML = html;
+    ui.presetTip.hidden = false;
+}
+
 function updateResult() {
     if (!ui.doseAmount || !ui.doseUnit || !ui.tempBadge || !ui.colourTipText || !ui.cupComparison) {
         return;
@@ -339,6 +447,10 @@ function updateResult() {
             ui.warningBanner.hidden = true;
         }
     }
+
+    updatePresetTip();
+    updateDetergentBar();
+    updateDetergentRec();
 }
 
 function bindNavTabs() {
@@ -369,7 +481,9 @@ function bindKeyFactClose() {
             if (key) {
                 writeStorage(`${storageKeys.dismissPrefix}${key}`, 'yes');
             }
-            btn.parentElement.remove();
+            const fact = btn.parentElement;
+            fact.classList.add('key-fact-dismissing');
+            fact.addEventListener('animationend', () => fact.remove(), { once: true });
         });
     });
 }
@@ -395,6 +509,8 @@ function setupSelectors() {
         state.detergent = val;
         writeStorage(storageKeys.detergent, val);
         updateDetergentGuide();
+        updateDetergentBar();
+        updateSheetRec();
     });
 
     if (ui.concentrationRange && ui.concentrationValue) {
@@ -438,13 +554,14 @@ function renderQuickReference() {
         card.dataset.soil = item.soil;
         card.dataset.colour = item.colour;
         card.dataset.type = item.type;
+        card.dataset.label = item.label;
         card.innerHTML = `
             <div class="load-type-header">
                 <span class="load-type-name"><span class="emoji">${item.emoji}</span> ${item.label}</span>
             </div>
             <div class="quick-meta">
-                <span class="quick-chip ${soilInfo.className}">${soilInfo.icon} ${soilInfo.label}</span>
-                <span class="quick-chip ${colourInfo.className}">${colourInfo.icon} ${colourInfo.label}</span>
+                <span class="quick-chip ${soilInfo.className}">${soilInfo.label}</span>
+                <span class="quick-chip ${colourInfo.className}">${colourInfo.label}</span>
             </div>
             <div class="quick-dose">
                 <div class="quick-dose-item">
@@ -464,10 +581,13 @@ function renderQuickReference() {
     document.querySelectorAll('.load-type-card').forEach(card => {
         card.addEventListener('click', () => {
             triggerHaptic();
+            document.querySelectorAll('.load-type-card').forEach(c => c.classList.remove('selected'));
+            card.classList.add('selected');
             state.size = card.dataset.size;
             state.soil = card.dataset.soil;
             state.colour = card.dataset.colour;
             state.type = card.dataset.type;
+            state.activePreset = card.dataset.label;
 
             document.querySelectorAll('#sizeGroup .selector-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.size === state.size);
@@ -493,6 +613,44 @@ function renderQuickReference() {
     });
 }
 
+function openDetergentSheet() {
+    if (!ui.detergentBackdrop || !ui.detergentSheet) return;
+    ui.detergentBackdrop.hidden = false;
+    ui.detergentSheet.hidden = false;
+    // Trigger reflow before adding visible class for transition
+    void ui.detergentSheet.offsetHeight;
+    ui.detergentBackdrop.classList.add('visible');
+    ui.detergentSheet.classList.add('visible');
+    syncDetergentUI();
+    updateSheetRec();
+}
+
+function closeDetergentSheet() {
+    if (!ui.detergentBackdrop || !ui.detergentSheet) return;
+    ui.detergentBackdrop.classList.remove('visible');
+    ui.detergentSheet.classList.remove('visible');
+    const onEnd = () => {
+        ui.detergentSheet.hidden = true;
+        ui.detergentBackdrop.hidden = true;
+        ui.detergentSheet.removeEventListener('transitionend', onEnd);
+    };
+    ui.detergentSheet.addEventListener('transitionend', onEnd);
+    updateDetergentBar();
+    updateResult();
+}
+
+function setupDetergentSheet() {
+    if (ui.detergentBar) {
+        ui.detergentBar.addEventListener('click', openDetergentSheet);
+    }
+    if (ui.sheetDone) {
+        ui.sheetDone.addEventListener('click', closeDetergentSheet);
+    }
+    if (ui.detergentBackdrop) {
+        ui.detergentBackdrop.addEventListener('click', closeDetergentSheet);
+    }
+}
+
 function init() {
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('./sw.js').catch(() => {});
@@ -507,6 +665,15 @@ function init() {
     renderQuickReference();
     syncDetergentUI();
     updateResult();
+    setupDetergentSheet();
+
+    if (ui.presetTipClose) {
+        ui.presetTipClose.addEventListener('click', () => {
+            state.activePreset = null;
+            if (ui.presetTip) ui.presetTip.hidden = true;
+            updateDetergentRec();
+        });
+    }
 }
 
 init();
