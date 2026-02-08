@@ -2,6 +2,8 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+> Read CONTRACT.md at session start and follow all rules defined there.
+
 ## Project Overview
 
 Single-page laundry guidance application optimized for soft water households (~19 mg/L). Mobile-first SPA using vanilla HTML/CSS/JavaScript with no build tools or external dependencies.
@@ -28,7 +30,7 @@ app.js       - Data-driven dosage calculator and UI event handlers
 
 Four lookup objects drive the calculator:
 - `dosageData[size][soil]` - Base dose ranges in mL
-- `colourData[colour]` - Temperature recommendations and adjustments
+- `detergentTypes[type]` - Detergent type multipliers and guide keys
 - `typeModifiers[type]` - Load type-specific modifications
 - `presetMeta[preset]` - Per-preset tips, cautions, and recommended detergent type
 
@@ -39,7 +41,7 @@ Tab navigation switches between content sections. Collapsible panels (`.collapsi
 ### Key Functions (app.js)
 
 - `updateResult()` - Main calculation function, called on any input change
-- `setCalculator()` - Populates calculator from Quick Reference cards
+- `renderQuickReference()` - Builds preset cards and binds click-to-load handlers
 - Event handlers for tabs, collapsibles, selectors, and close buttons
 
 ### Sticky/Scroll Layout (Calculator Tab)

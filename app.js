@@ -432,8 +432,8 @@ function updateResult() {
         updateCup(0);
         ui.cupComparison.textContent = fallbackContent.ui.podsComparison;
     } else {
-        updateCup((result.doseLow + result.doseHigh) / 2);
         const avgDose = (result.doseLow + result.doseHigh) / 2;
+        updateCup(avgDose);
         const percentOfMax = Math.round((avgDose / 75) * 100);
         ui.cupComparison.textContent = fallbackContent.ui.capComparison.replace('{percent}', String(percentOfMax));
     }
@@ -511,6 +511,7 @@ function setupSelectors() {
         updateDetergentGuide();
         updateDetergentBar();
         updateSheetRec();
+        renderQuickReference();
     });
 
     if (ui.concentrationRange && ui.concentrationValue) {
@@ -521,6 +522,7 @@ function setupSelectors() {
             ui.concentrationValue.textContent = `${Math.round(state.concentration * 100)}%`;
             writeStorage(storageKeys.concentration, String(state.concentration));
             updateResult();
+            renderQuickReference();
         });
     }
 }
@@ -629,12 +631,16 @@ function closeDetergentSheet() {
     if (!ui.detergentBackdrop || !ui.detergentSheet) return;
     ui.detergentBackdrop.classList.remove('visible');
     ui.detergentSheet.classList.remove('visible');
+    let cleaned = false;
     const onEnd = () => {
+        if (cleaned) return;
+        cleaned = true;
         ui.detergentSheet.hidden = true;
         ui.detergentBackdrop.hidden = true;
         ui.detergentSheet.removeEventListener('transitionend', onEnd);
     };
     ui.detergentSheet.addEventListener('transitionend', onEnd);
+    setTimeout(onEnd, 350);
     updateDetergentBar();
     updateResult();
 }
