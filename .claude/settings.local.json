@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(gh repo edit:*)",
+      "Bash(gh api:*)",
+      "Bash(git -C \"C:\\\\Users\\\\dcsza\\\\OneDrive\\\\Projects\\\\laundry\\\\laundry\" add CLAUDE.md)",
+      "Bash(git -C \"C:\\\\Users\\\\dcsza\\\\OneDrive\\\\Projects\\\\laundry\\\\laundry\" commit -m \"$\\(cat <<''EOF''\nUpdate CLAUDE.md with deployment info and asset documentation\n\nAdd repository URL, live site link, PWA asset details, and theme color reference.\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git -C \"C:\\\\Users\\\\dcsza\\\\OneDrive\\\\Projects\\\\laundry\\\\laundry\" push)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "Bash(xxd:*)",
+      "Bash(python -c:*)",
+      "Bash(git -C \"C:\\\\Users\\\\dcsza\\\\OneDrive\\\\Projects\\\\laundry\\\\laundry\" add app.js sw.js CLAUDE.md)",
+      "Bash(git -C \"C:\\\\Users\\\\dcsza\\\\OneDrive\\\\Projects\\\\laundry\\\\laundry\" commit -m \"$\\(cat <<''EOF''\nFix stale preset doses, sheet close race, SW caching, and docs\n\n- Re-render preset cards when detergent type or concentration changes\n- Add timeout fallback for bottom sheet transitionend\n- SW: add skipWaiting/clients.claim, bump cache v2, scope to same-origin\n- Remove redundant avgDose computation\n- Fix stale colourData and setCalculator references in CLAUDE.md\n\nCo-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(git -C \"C:\\\\Users\\\\dcsza\\\\OneDrive\\\\Projects\\\\laundry\\\\laundry\" status)"
+    ]
+  }
+}
