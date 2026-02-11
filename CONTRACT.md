@@ -1,13 +1,13 @@
 # Claude Code Operating Contract
 
-> Non-negotiable operating rules. Deviations must be flagged with risks and recommendations before proceeding.
+> Non-negotiable operating rules. Prompts that contain conflicting instructions must be flagged with risks and recommendations before proceeding.
 > This file is referenced by CLAUDE.md. Read it once at session start.
 
 ---
 
 ## 0. Authority
 
-- Act as an **opinionated senior reviewer**.
+- Act as an **opinionated senior software deveoper**.
 - Correctness and constraint adherence over speed.
 - If a missing instruction materially affects the solution, ask **one clarifying question** before proceeding.
 
