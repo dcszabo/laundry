@@ -1,26 +1,27 @@
 // @ts-check
 const dosageData = {
     small: {
-        light: { dose: [10, 15] },
-        normal: { dose: [15, 20] },
-        heavy: { dose: [20, 25] }
+        light: { dose: 10 },
+        normal: { dose: 15 },
+        heavy: { dose: 20 }
     },
     medium: {
-        light: { dose: [15, 20] },
-        normal: { dose: [20, 25] },
-        heavy: { dose: [25, 30] }
+        light: { dose: 15 },
+        normal: { dose: 20 },
+        heavy: { dose: 25 }
     },
     large: {
-        light: { dose: [20, 25] },
-        normal: { dose: [25, 30] },
-        heavy: { dose: [30, 35] }
+        light: { dose: 20 },
+        normal: { dose: 25 },
+        heavy: { dose: 30 }
     }
 };
 
 const typeModifiers = {
     everyday: { doseAdjust: 0 },
-    bedding: { doseAdjust: 5 },
-    delicates: { doseAdjust: -5 }
+    cottons: { doseAdjust: 5 },
+    delicates: { doseAdjust: -5 },
+    wool: { doseAdjust: -5 }
 };
 
 const detergentTypes = {
@@ -31,16 +32,16 @@ const detergentTypes = {
 
 const fallbackContent = {
     temps: {
-        whites: '40–60°C',
-        lights: '30–40°C',
+        whites: '60°C',
+        lights: '40°C',
         colours: '30°C',
-        darks: '20–30°C',
+        darks: '30°C',
         mixed: '30°C',
-        bedding: '60°C',
-        delicates: '20–30°C'
+        wool: '30°C',
+        delicates: '30°C'
     },
     tips: {
-        whites: 'Whites can handle higher temps. Use 60°C for towels/sheets to kill germs.',
+        whites: 'Use 60°C for towels, bedding and underwear to kill germs. 40°C is fine for everyday cotton shirts.',
         lights: 'Light colours have low bleed risk. 40°C is safe for most items.',
         colours: 'Wash bright colours at 30°C to prevent fading. Turn inside out.',
         darks: 'Cold water prevents fading and dye bleed. Always turn inside out!',
@@ -48,7 +49,7 @@ const fallbackContent = {
     },
     warnings: {
         delicatesHeavy: 'Delicates + heavy soil: pre-treat stains or switch to Everyday.',
-        beddingDarks: 'Hot bedding cycles can fade darks/brights. Consider 40°C or split loads.',
+        beddingDarks: 'High temp cotton cycles can fade darks/brights. Consider 40°C or split loads.',
         podsSmallLight: 'Pods may be too strong for very small/light loads.'
     },
     guides: {
@@ -84,10 +85,10 @@ const fallbackContent = {
     },
     quickReferenceFallback: [
         { label: 'Everyday', emoji: '👕', size: 'medium', soil: 'normal', colour: 'mixed', type: 'everyday' },
-        { label: 'Bedding', emoji: '🛏️', size: 'large', soil: 'heavy', colour: 'whites', type: 'bedding' },
-        { label: 'Towels', emoji: '🧺', size: 'large', soil: 'normal', colour: 'whites', type: 'bedding' },
+        { label: 'Bedding', emoji: '🛏️', size: 'large', soil: 'heavy', colour: 'whites', type: 'cottons' },
+        { label: 'Towels', emoji: '🧺', size: 'large', soil: 'normal', colour: 'whites', type: 'cottons' },
         { label: 'Delicates', emoji: '🩱', size: 'small', soil: 'light', colour: 'mixed', type: 'delicates' },
-        { label: 'Wool', emoji: '🧶', size: 'small', soil: 'light', colour: 'mixed', type: 'delicates' },
+        { label: 'Wool', emoji: '🧶', size: 'small', soil: 'light', colour: 'mixed', type: 'wool' },
         { label: 'Activewear', emoji: '🏃', size: 'medium', soil: 'heavy', colour: 'darks', type: 'everyday' },
         { label: 'Jeans', emoji: '👖', size: 'medium', soil: 'heavy', colour: 'darks', type: 'everyday' },
         { label: 'Underwear', emoji: '🩲', size: 'small', soil: 'normal', colour: 'whites', type: 'everyday' }
@@ -97,43 +98,59 @@ const fallbackContent = {
 const presetMeta = {
     'Everyday': {
         recDetergent: 'liquid',
+        cycle: 'Everyday',
+        maxLoad: '10 kg',
         tips: ['Empty pockets and close zips before washing.', 'Sort by colour when possible to extend garment life.'],
         cautions: []
     },
     'Bedding': {
         recDetergent: 'powder',
-        tips: ['Wash sheets every 1\u20132 weeks.', 'Ensure bedding has room to tumble freely \u2014 don\'t overfill.'],
+        cycle: 'Cottons 60\u00B0C',
+        maxLoad: '10 kg',
+        tips: ['Wash sheets every 1\u20132 weeks.', 'Ensure bedding has room to tumble freely \u2014 don\'t overfill.', 'Use the Bulky cycle for duvets and large single items.'],
         cautions: ['Use 60\u00B0C to kill dust mites and bacteria.', 'Skip fabric softener \u2014 it reduces breathability.']
     },
     'Towels': {
         recDetergent: 'powder',
+        cycle: 'Cottons 60\u00B0C',
+        maxLoad: '10 kg',
         tips: ['Shake towels out before loading for better results.', '60\u00B0C keeps towels hygienic and fresh.'],
         cautions: ['Never use fabric softener \u2014 it coats fibres and ruins absorbency.']
     },
     'Delicates': {
         recDetergent: 'liquid',
-        tips: ['Use mesh bags for bras, lingerie, and anything with hooks.', 'Select the Delicate cycle (max 4 kg).'],
+        cycle: 'Delicate',
+        maxLoad: '4 kg',
+        tips: ['Use mesh bags for bras, lingerie, and anything with hooks.'],
         cautions: ['Never tumble dry delicates.', 'Air dry flat and reshape while damp.']
     },
     'Wool': {
         recDetergent: 'liquid',
-        tips: ['Use the Wool cycle (max 2 kg).', 'Lay flat to dry \u2014 never hang or tumble dry.'],
+        cycle: 'Wool',
+        maxLoad: '2 kg',
+        tips: ['Lay flat to dry \u2014 never hang or tumble dry.'],
         cautions: ['Use wool-safe or gentle detergent only \u2014 enzymes in regular detergent damage wool fibres.', 'Never wring or twist woollen items.']
     },
     'Activewear': {
         recDetergent: 'liquid',
+        cycle: 'Everyday Cold',
+        maxLoad: '10 kg',
         tips: ['Turn inside out before washing.', 'Use cold water to preserve elasticity and technical fabrics.'],
         cautions: ['Never use fabric softener \u2014 it destroys moisture-wicking properties.', 'Air dry rather than tumble drying.']
     },
     'Jeans': {
         recDetergent: 'liquid',
+        cycle: 'Everyday Cold',
+        maxLoad: '10 kg',
         tips: ['Turn inside out to prevent fading and white streaks.', 'Wash less often if only lightly worn \u2014 spot clean between washes.'],
         cautions: ['Use cold water only (20\u201330\u00B0C) to preserve colour and stretch.']
     },
     'Underwear': {
         recDetergent: 'liquid',
+        cycle: 'Cottons 60\u00B0C',
+        maxLoad: '10 kg',
         tips: ['NHS recommends 60\u00B0C for underwear to kill bacteria.', 'Separate whites from colours.'],
-        cautions: ['40\u00B0C is acceptable only with antibacterial or bleach-based detergent.']
+        cautions: ['40\u00B0C is acceptable only with antibacterial or bleach-based detergent.', 'Synthetic underwear (nylon, microfibre) max 40\u00B0C \u2014 high heat damages elastics.']
     }
 };
 
@@ -271,7 +288,7 @@ function getWarnings(size, soil, colour, type, detergentType) {
     if (type === 'delicates' && soil === 'heavy') {
         warnings.push(fallbackContent.warnings.delicatesHeavy);
     }
-    if (type === 'bedding' && (colour === 'darks' || colour === 'colours')) {
+    if (type === 'cottons' && (colour === 'darks' || colour === 'colours')) {
         warnings.push(fallbackContent.warnings.beddingDarks);
     }
     if (detergentType === 'pods' && size === 'small' && soil === 'light') {
@@ -301,19 +318,17 @@ function getDoseAndTemp(size, soil, colour, type, detergentType = state.detergen
     const modifier = typeModifiers[type];
     const detergentInfo = detergentTypes[detergentType] || detergentTypes.liquid;
 
-    let [low, high] = baseData.dose;
-    low = Math.max(10, low + modifier.doseAdjust);
-    high = Math.max(15, high + modifier.doseAdjust);
+    let baseDose = Math.max(10, baseData.dose + modifier.doseAdjust);
 
-    if (type === 'bedding' && soil === 'heavy') {
-        high = Math.min(40, high);
+    if (type === 'cottons' && soil === 'heavy') {
+        baseDose = Math.min(35, baseDose);
     }
 
     let tempStr = fallbackContent.temps[colour];
-    if (type === 'bedding') {
-        tempStr = fallbackContent.temps.bedding;
-    } else if (type === 'delicates') {
+    if (type === 'delicates') {
         tempStr = fallbackContent.temps.delicates;
+    } else if (type === 'wool') {
+        tempStr = fallbackContent.temps.wool;
     }
 
     const warnings = getWarnings(size, soil, colour, type, detergentType);
@@ -322,8 +337,7 @@ function getDoseAndTemp(size, soil, colour, type, detergentType = state.detergen
         const podDose = getPodDose(size, soil);
         const podAmount = podDose.low === podDose.high ? `${podDose.low}` : `${podDose.low}–${podDose.high}`;
         return {
-            doseLow: 0,
-            doseHigh: 0,
+            dose: 0,
             doseAmount: podAmount,
             doseUnit: podDose.low === 1 && podDose.high === 1 ? fallbackContent.units.podSingular : fallbackContent.units.podPlural,
             tempStr,
@@ -333,13 +347,11 @@ function getDoseAndTemp(size, soil, colour, type, detergentType = state.detergen
         };
     }
 
-    const scaledLow = roundToFive(low * state.concentration * detergentInfo.doseMultiplier);
-    const scaledHigh = roundToFive(high * state.concentration * detergentInfo.doseMultiplier);
+    const scaledDose = roundToFive(baseDose * state.concentration * detergentInfo.doseMultiplier);
 
     return {
-        doseLow: scaledLow,
-        doseHigh: scaledHigh,
-        doseAmount: `${scaledLow}–${scaledHigh}`,
+        dose: scaledDose,
+        doseAmount: `${scaledDose}`,
         doseUnit: fallbackContent.units.ml,
         tempStr,
         tip: fallbackContent.tips[colour],
@@ -432,9 +444,8 @@ function updateResult() {
         updateCup(0);
         ui.cupComparison.textContent = fallbackContent.ui.podsComparison;
     } else {
-        const avgDose = (result.doseLow + result.doseHigh) / 2;
-        updateCup(avgDose);
-        const percentOfMax = Math.round((avgDose / 75) * 100);
+        updateCup(result.dose);
+        const percentOfMax = Math.round((result.dose / 75) * 100);
         ui.cupComparison.textContent = fallbackContent.ui.capComparison.replace('{percent}', String(percentOfMax));
     }
 
@@ -550,6 +561,7 @@ function renderQuickReference() {
         );
         const soilInfo = fallbackContent.meta.soil[item.soil] || fallbackContent.meta.soil.normal;
         const colourInfo = fallbackContent.meta.colour[item.colour] || fallbackContent.meta.colour.mixed;
+        const meta = presetMeta[item.label];
         const card = document.createElement('div');
         card.className = 'load-type-card';
         card.dataset.size = item.size;
@@ -564,6 +576,8 @@ function renderQuickReference() {
             <div class="quick-meta">
                 <span class="quick-chip ${soilInfo.className}">${soilInfo.label}</span>
                 <span class="quick-chip ${colourInfo.className}">${colourInfo.label}</span>
+                ${meta ? `<span class="quick-chip chip-cycle">\uD83C\uDF00 ${meta.cycle}</span>` : ''}
+                ${meta ? `<span class="quick-chip chip-maxload">\u2696\uFE0F ${meta.maxLoad}</span>` : ''}
             </div>
             <div class="quick-dose">
                 <div class="quick-dose-item">

@@ -617,6 +617,7 @@ body {
 
 .quick-meta {
     display: flex;
+    flex-wrap: wrap;
     gap: 6px;
     margin-bottom: 8px;
 }
@@ -672,6 +673,16 @@ body {
 .chip-colour-mixed {
     background: rgba(0, 212, 170, 0.12);
     color: var(--accent-cyan);
+}
+
+.chip-cycle {
+    background: rgba(168, 85, 247, 0.12);
+    color: #a855f7;
+}
+
+.chip-maxload {
+    background: rgba(148, 163, 184, 0.12);
+    color: #94a3b8;
 }
 
 /* Info Cards */
@@ -1183,6 +1194,11 @@ body {
 .load-type-card.selected {
     border-color: var(--accent-blue);
     box-shadow: 0 0 0 1px var(--accent-blue), 0 2px 12px rgba(77, 163, 255, 0.15);
+}
+
+/* Load Type 4-button 2×2 layout */
+#typeGroup .selector-btn {
+    min-width: calc(50% - 4px);
 }
 
 /* Calculator Section Breaks */
