@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <title>Laundry Guide | Soft Water</title>
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
@@ -31,26 +31,7 @@
             <button class="install-dismiss" id="installDismiss" type="button">Got it</button>
         </div>
 
-        <!-- Navigation -->
-        <div class="nav-tabs-wrapper">
-        <nav class="nav-tabs">
-            <button class="nav-tab active" data-section="calculator">
-                <span class="tab-icon">🧼</span> Wash
-            </button>
-            <button class="nav-tab" data-section="quick">
-                <span class="tab-icon">🔖</span> Presets
-            </button>
-            <button class="nav-tab" data-section="rules">
-                <span class="tab-icon">📋</span> Rules
-            </button>
-            <button class="nav-tab" data-section="machine">
-                <span class="tab-icon">🌀</span> Mach.
-            </button>
-            <button class="nav-tab" data-section="maintenance">
-                <span class="tab-icon">🔧</span> Care
-            </button>
-        </nav>
-        </div>
+        <!-- Navigation moved to bottom -->
 
         <!-- Calculator Section -->
         <section class="section active" id="calculator">
@@ -794,6 +775,31 @@
             </div>
         </section>
 
+    </div>
+
+    <div class="nav-tabs-wrapper">
+        <nav class="nav-tabs">
+            <button class="nav-tab active" data-section="calculator">
+                <span class="tab-icon">🧼</span>
+                <span class="tab-label">Wash</span>
+            </button>
+            <button class="nav-tab" data-section="quick">
+                <span class="tab-icon">🔖</span>
+                <span class="tab-label">Presets</span>
+            </button>
+            <button class="nav-tab" data-section="rules">
+                <span class="tab-icon">📋</span>
+                <span class="tab-label">Rules</span>
+            </button>
+            <button class="nav-tab" data-section="machine">
+                <span class="tab-icon">🌀</span>
+                <span class="tab-label">Mach.</span>
+            </button>
+            <button class="nav-tab" data-section="maintenance">
+                <span class="tab-icon">🔧</span>
+                <span class="tab-label">Care</span>
+            </button>
+        </nav>
     </div>
 
     <div class="modal-backdrop" id="detergentBackdrop" hidden></div>
