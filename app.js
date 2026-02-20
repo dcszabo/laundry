@@ -536,6 +536,14 @@ function updateResult() {
     updateDetergentRec();
 }
 
+const SECTION_SUBTITLES = {
+    calculator:  'Calculate your dose',
+    quick:       'Quick reference presets',
+    rules:       'Soft water guidelines',
+    machine:     'Fisher & Paykel Series 7',
+    maintenance: 'Keep your machine clean',
+};
+
 function bindNavTabs() {
     document.querySelectorAll('.nav-tab').forEach(tab => {
         tab.addEventListener('click', () => {
@@ -545,6 +553,8 @@ function bindNavTabs() {
             tab.classList.add('active');
             document.getElementById(tab.dataset.section).classList.add('active');
             tab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+            const subtitle = SECTION_SUBTITLES[tab.dataset.section];
+            if (subtitle) document.querySelector('.water-badge').textContent = subtitle;
         });
     });
 }
