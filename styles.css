@@ -309,11 +309,13 @@ body {
 .result-row {
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 8px;
+    justify-content: space-between;
 }
 
 .result-text {
-    text-align: left;
+    flex: 1;
+    text-align: center;
 }
 
 .result-label {
@@ -344,12 +346,14 @@ body {
 .result-dose-row {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 10px;
 }
 
 .result-meta-row {
     display: flex;
     align-items: center;
+    justify-content: center;
     gap: 8px;
     margin-top: 4px;
 }
@@ -364,6 +368,28 @@ body {
     color: var(--accent-warm);
     font-size: 13px;
     font-weight: 600;
+}
+
+/* Washer Visual */
+.washer-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.washer-wrapper {
+    position: relative;
+    width: 60px;
+    height: 75px;
+}
+
+.washer-svg {
+    width: 100%;
+    height: 100%;
+}
+
+#drumFill {
+    transition: fill 0.4s ease;
 }
 
 /* Detergent Cup Visual */
@@ -1055,12 +1081,14 @@ body {
 
 .quick-dose {
     display: flex;
-    flex-direction: column;
-    gap: 4px;
+    flex-direction: row;
+    align-items: center;
+    gap: 6px;
 }
 
-.quick-dose-item {
-    text-align: left;
+.quick-dose-sep {
+    color: var(--text-muted);
+    font-size: 12px;
 }
 
 .quick-dose-label {

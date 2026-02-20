@@ -331,6 +331,14 @@ function getDoseAndTemp(size, soil, colour, type, detergentType = state.detergen
         tempStr = fallbackContent.temps.wool;
     }
 
+    // Temperature modifier: cold washes need ~12% more (low enzyme activity),
+    // 60°C+ needs ~10% less (thermal cleaning compensates for enzyme inactivity).
+    const tempNum = parseInt(tempStr);
+    const tempMultiplier = (isNaN(tempNum) || tempNum <= 20) ? 1.12
+                         : tempNum >= 60                     ? 0.90
+                         : 1.0;
+    baseDose = baseDose * tempMultiplier;
+
     const warnings = getWarnings(size, soil, colour, type, detergentType);
 
     if (detergentType === 'pods') {
@@ -373,6 +381,69 @@ function updateCup(amount) {
         liquidFill.setAttribute('height', fillHeight);
     } catch (error) {
         return;
+    }
+}
+
+let washerFillY = 56;
+let washerAnimId = null;
+
+function animateWasherFill(targetFillY, domeH) {
+    const fill = document.getElementById('drumFill');
+    if (!fill) return;
+
+    if (washerAnimId) {
+        cancelAnimationFrame(washerAnimId);
+        washerAnimId = null;
+    }
+
+    const startFillY = washerFillY;
+    const duration = 500;
+    const startTime = performance.now();
+
+    function step(now) {
+        const t = Math.min((now - startTime) / duration, 1);
+        const eased = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+        const y = startFillY + (targetFillY - startFillY) * eased;
+        fill.setAttribute('d', `M 17 ${y.toFixed(1)} Q 40 ${(y - domeH).toFixed(1)} 63 ${y.toFixed(1)} L 63 90 L 17 90 Z`);
+        if (t < 1) {
+            washerAnimId = requestAnimationFrame(step);
+        } else {
+            washerFillY = targetFillY;
+            washerAnimId = null;
+        }
+    }
+
+    washerAnimId = requestAnimationFrame(step);
+}
+
+function updateWasher(size, colour, soil) {
+    const fill = document.getElementById('drumFill');
+    const soilGroup = document.getElementById('drumSoil');
+    if (!fill) return;
+
+    const drumBottom = 81;
+    const drumHeight = 46;
+    const domeH = 7;
+    const fillFractions = { small: 0.25, medium: 0.55, large: 0.80 };
+    const targetFillY = Math.round(drumBottom - (fillFractions[size] || 0.55) * drumHeight);
+
+    animateWasherFill(targetFillY, domeH);
+
+    const colourFills = {
+        whites:  'rgba(210, 230, 255, 0.70)',
+        lights:  'rgba(255, 215, 80,  0.55)',
+        colours: 'rgba(240, 100, 170, 0.50)',
+        darks:   'rgba(60,  50,  130, 0.78)',
+        mixed:   'rgba(0,   212, 170, 0.45)'
+    };
+    fill.setAttribute('fill', colourFills[colour] || colourFills.mixed);
+
+    if (soilGroup) {
+        const counts = { light: 2, normal: 4, heavy: 6 };
+        const count  = counts[soil] || 4;
+        soilGroup.querySelectorAll('circle').forEach((dot, i) => {
+            dot.style.display = i < count ? '' : 'none';
+        });
     }
 }
 
@@ -459,6 +530,7 @@ function updateResult() {
         }
     }
 
+    updateWasher(state.size, state.colour, state.soil);
     updatePresetTip();
     updateDetergentBar();
     updateDetergentRec();
@@ -580,14 +652,9 @@ function renderQuickReference() {
                 ${meta ? `<span class="quick-chip chip-maxload">\u2696\uFE0F ${meta.maxLoad}</span>` : ''}
             </div>
             <div class="quick-dose">
-                <div class="quick-dose-item">
-                    <div class="quick-dose-label">${fallbackContent.ui.detergentLabel}</div>
-                    <div class="quick-dose-value">${result.doseAmount}${result.doseUnit}</div>
-                </div>
-                <div class="quick-dose-item">
-                    <div class="quick-dose-label">${fallbackContent.ui.tempLabel}</div>
-                    <div class="quick-dose-value temp">${result.tempStr}</div>
-                </div>
+                <div class="quick-dose-value">${result.doseAmount}${result.doseUnit}</div>
+                <span class="quick-dose-sep">·</span>
+                <div class="quick-dose-value temp">${result.tempStr}</div>
             </div>
         `;
         fragment.appendChild(card);
