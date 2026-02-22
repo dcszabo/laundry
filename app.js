@@ -272,6 +272,27 @@ function triggerHaptic() {
     }
 }
 
+function syncSelectorGroup(groupId, dataKey, value) {
+    document.querySelectorAll('#' + groupId + ' .selector-btn').forEach(function(btn) {
+        btn.classList.toggle('active', btn.dataset[dataKey] === value);
+    });
+}
+
+function applyLoadTypeDefaults(loadType) {
+    const meta = loadTypeMeta[loadType];
+    if (!meta) return;
+
+    state.colour = meta.defaultColour;
+    state.soil   = meta.defaultSoil;
+    state.size   = meta.defaultSize;
+    state.cycle  = meta.recommendedCycle;
+
+    syncSelectorGroup('colourGroup', 'colour', state.colour);
+    syncSelectorGroup('soilGroup',   'soil',   state.soil);
+    syncSelectorGroup('sizeGroup',   'size',   state.size);
+    syncSelectorGroup('cycleGroup',  'cycle',  state.cycle);
+}
+
 const ui = {
     doseAmount: document.getElementById('doseAmount'),
     doseUnit: document.getElementById('doseUnit'),
@@ -282,14 +303,13 @@ const ui = {
     concentrationRange: document.getElementById('concentrationRange'),
     concentrationValue: document.getElementById('concentrationValue'),
     detergentGuide: document.getElementById('detergentGuide'),
-    quickGrid: document.getElementById('quickGrid'),
-    quickStatus: document.getElementById('quickStatus'),
+    loadTypeSelect: document.getElementById('loadTypeSelect'),
+    cycleRec: document.getElementById('cycleRec'),
     installNudge: document.getElementById('installNudge'),
     installDismiss: document.getElementById('installDismiss'),
     presetTip: document.getElementById('presetTip'),
     presetTipTitle: document.getElementById('presetTipTitle'),
     presetTipBody: document.getElementById('presetTipBody'),
-    presetTipClose: document.getElementById('presetTipClose'),
     detergentBar: document.getElementById('detergentBar'),
     detBarType: document.getElementById('detBarType'),
     detBarConc: document.getElementById('detBarConc'),
@@ -694,15 +714,25 @@ function setupSelectors() {
     setupSelector('sizeGroup', 'size', (val) => state.size = val);
     setupSelector('soilGroup', 'soil', (val) => state.soil = val);
     setupSelector('colourGroup', 'colour', (val) => state.colour = val);
-    setupSelector('typeGroup', 'type', (val) => state.type = val);
+    setupSelector('cycleGroup', 'cycle', (val) => { state.cycle = val; });
     setupSelector('detergentGroup', 'detergent', (val) => {
         state.detergent = val;
         writeStorage(storageKeys.detergent, val);
         updateDetergentGuide();
         updateDetergentBar();
         updateSheetRec();
-        renderQuickReference();
     });
+
+    if (ui.loadTypeSelect) {
+        ui.loadTypeSelect.value = state.loadType;
+        ui.loadTypeSelect.addEventListener('change', function() {
+            state.loadType = ui.loadTypeSelect.value;
+            writeStorage(storageKeys.loadType, state.loadType);
+            triggerHaptic();
+            applyLoadTypeDefaults(state.loadType);
+            updateResult();
+        });
+    }
 
     if (ui.concentrationRange && ui.concentrationValue) {
         ui.concentrationRange.value = String(state.concentration);
@@ -712,7 +742,6 @@ function setupSelectors() {
             ui.concentrationValue.textContent = `${Math.round(state.concentration * 100)}%`;
             writeStorage(storageKeys.concentration, String(state.concentration));
             updateResult();
-            renderQuickReference();
         });
     }
 }
@@ -856,18 +885,13 @@ function init() {
     applyDismissedKeyFacts();
     setupInstallNudge();
     setupSelectors();
-    renderQuickReference();
+    if (ui.loadTypeSelect) {
+        ui.loadTypeSelect.value = state.loadType;
+    }
+    applyLoadTypeDefaults(state.loadType);
     syncDetergentUI();
     updateResult();
     setupDetergentSheet();
-
-    if (ui.presetTipClose) {
-        ui.presetTipClose.addEventListener('click', () => {
-            state.activePreset = null;
-            if (ui.presetTip) ui.presetTip.hidden = true;
-            updateDetergentRec();
-        });
-    }
 }
 
 init();
