@@ -51,6 +51,19 @@ const cycleTemps = {
     easyiron:  [20, 30, 40, 60],
 };
 
+const cycleMaxLoad = {
+    cottons:   10,
+    everyday:  10,
+    heavy:     10,
+    delicates:  4,
+    wool:       3,
+    quick:      4,
+    bulky:     10,
+    easyiron:  10,
+};
+
+const sizeKg = { small: 3, medium: 6, large: 10 };
+
 const detergentTypes = {
     liquid: { doseMultiplier: 1, guideKey: 'liquid' },
     powder: { doseMultiplier: 0.9, guideKey: 'powder' },
@@ -310,6 +323,34 @@ function updateDetergentGuide() {
     }
     const info = detergentTypes[state.detergent] || detergentTypes.liquid;
     ui.detergentGuide.textContent = fallbackContent.guides[info.guideKey];
+}
+
+function updateSizeConstraints() {
+    const maxKg = cycleMaxLoad[state.cycle] ?? 10;
+    let sizeChanged = false;
+
+    document.querySelectorAll('#sizeGroup .selector-btn').forEach(function(btn) {
+        const kg = sizeKg[btn.dataset.size] ?? 10;
+        if (kg > maxKg) {
+            btn.disabled = true;
+        } else {
+            btn.disabled = false;
+        }
+    });
+
+    // If current size is now disabled, switch to largest valid size
+    if (sizeKg[state.size] > maxKg) {
+        const validSizes = ['large', 'medium', 'small'].filter(function(s) {
+            return (sizeKg[s] ?? 10) <= maxKg;
+        });
+        if (validSizes.length > 0) {
+            state.size = validSizes[0];
+            syncSelectorGroup('sizeGroup', 'size', state.size);
+            sizeChanged = true;
+        }
+    }
+
+    return sizeChanged;
 }
 
 function updateCycleIndicators() {
@@ -636,6 +677,8 @@ function updateResult() {
     if (!ui.doseAmount || !ui.doseUnit || !ui.tempBadge || !ui.colourTipText || !ui.cupComparison) {
         return;
     }
+
+    updateSizeConstraints();
 
     const result = getDoseAndTemp(state.size, state.soil, state.colour, state.loadType, state.cycle, state.detergent);
 
