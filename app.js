@@ -123,7 +123,6 @@ const loadTypeMeta = {
             'Use the Bulky cycle for duvets and large single items.'
         ],
         cautions: [
-            'Use 60°C for whites to kill dust mites and bacteria.',
             'Skip fabric softener — it reduces breathability.'
         ]
     },
@@ -134,8 +133,7 @@ const loadTypeMeta = {
         recDetergent: 'powder',
         cycle: 'Cottons', maxLoad: '10 kg',
         tips: [
-            'Shake towels out before loading for better results.',
-            'Whites: 60°C kills bacteria and dust mites. Colours: 40°C is the hygiene minimum.'
+            'Shake towels out before loading for better results.'
         ],
         cautions: [
             'Never use fabric softener — it coats fibres and ruins absorbency.'
@@ -207,7 +205,6 @@ const loadTypeMeta = {
         recDetergent: 'liquid',
         cycle: 'Cottons', maxLoad: '10 kg',
         tips: [
-            'NHS recommends 60°C for cotton underwear to kill bacteria.',
             'Synthetic underwear (nylon, microfibre): use Delicate cycle at 40°C max.'
         ],
         cautions: [
@@ -597,7 +594,21 @@ function updateLoadTypeTips() {
 
     if (ui.presetTipBody) {
         ui.presetTipBody.textContent = '';
-        const allItems = meta.tips.map(function(t) { return { icon: '\u{1F4A1}', text: t }; })
+        const loadTemps = tempMatrix[state.loadType];
+        const tempValues = loadTemps ? Object.values(loadTemps) : [];
+        const hasColourVariation = tempValues.length > 0 && new Set(tempValues).size > 1;
+
+        const dynamicItems = [];
+        if (hasColourVariation && loadTemps[state.colour] !== undefined) {
+            const t = loadTemps[state.colour];
+            const tipText = t >= 60
+                ? t + '\u00B0C kills bacteria and dust mites \u2014 recommended for ' + meta.label.toLowerCase() + '.'
+                : t + '\u00B0C is the hygiene minimum \u2014 safe for coloured ' + meta.label.toLowerCase() + '.';
+            dynamicItems.push({ icon: '\u{1F4A1}', text: tipText });
+        }
+
+        const allItems = dynamicItems
+            .concat(meta.tips.map(function(t) { return { icon: '\u{1F4A1}', text: t }; }))
             .concat(meta.cautions.map(function(c) { return { icon: '\u26A0\uFE0F', text: c }; }));
 
         allItems.forEach(function(item) {
