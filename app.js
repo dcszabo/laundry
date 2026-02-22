@@ -96,20 +96,6 @@ const fallbackContent = {
         podSingular: ' pod',
         podPlural: ' pods'
     },
-    meta: {
-        soil: {
-            light: { icon: 'L', label: 'Light', className: 'chip-soil-light' },
-            normal: { icon: 'N', label: 'Normal', className: 'chip-soil-normal' },
-            heavy: { icon: 'H', label: 'Heavy', className: 'chip-soil-heavy' }
-        },
-        colour: {
-            whites: { icon: 'W', label: 'Whites', className: 'chip-colour-whites' },
-            lights: { icon: 'L', label: 'Lights', className: 'chip-colour-lights' },
-            colours: { icon: 'C', label: 'Colours', className: 'chip-colour-colours' },
-            darks: { icon: 'D', label: 'Darks', className: 'chip-colour-darks' },
-            mixed: { icon: 'M', label: 'Mixed', className: 'chip-colour-mixed' }
-        }
-    }
 };
 
 const loadTypeMeta = {
@@ -422,7 +408,7 @@ function roundToFive(value) {
 
 function snapToNearest(temp, available) {
     if (!available || available.length === 0) return temp;
-    // Tie-break: prefers the lower value (arrays are expected sorted ascending).
+    // Tie-break: returns the first closest match (arrays sorted ascending means lower wins).
     return available.reduce((prev, cur) =>
         Math.abs(cur - temp) < Math.abs(prev - temp) ? cur : prev
     );
@@ -676,7 +662,6 @@ function updateResult() {
 
 const SECTION_SUBTITLES = {
     calculator:  'Calculate your dose',
-    quick:       'Quick reference presets',
     rules:       'Soft water guidelines',
     machine:     'Fisher & Paykel Series 7',
     maintenance: 'Keep your machine clean',
