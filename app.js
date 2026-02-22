@@ -403,6 +403,7 @@ function roundToFive(value) {
 
 function snapToNearest(temp, available) {
     if (!available || available.length === 0) return temp;
+    // Tie-break: prefers the lower value (arrays are expected sorted ascending).
     return available.reduce((prev, cur) =>
         Math.abs(cur - temp) < Math.abs(prev - temp) ? cur : prev
     );
