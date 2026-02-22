@@ -592,48 +592,68 @@ function updateDetergentBar() {
 
 function updateDetergentRec() {
     if (!ui.detergentRec) return;
-    if (!state.activePreset || !presetMeta[state.activePreset]) {
+    const meta = loadTypeMeta[state.loadType];
+    if (!meta) {
         ui.detergentRec.hidden = true;
         return;
     }
-    const meta = presetMeta[state.activePreset];
     if (meta.recDetergent === state.detergent) {
         ui.detergentRec.hidden = true;
-    } else {
-        const rec = meta.recDetergent.charAt(0).toUpperCase() + meta.recDetergent.slice(1);
-        const cur = state.detergent.charAt(0).toUpperCase() + state.detergent.slice(1);
-        ui.detergentRec.textContent = `\uD83D\uDCA1 ${rec} recommended for ${state.activePreset} \u2014 you\u2019re using ${cur}`;
-        ui.detergentRec.hidden = false;
+        return;
     }
+    const rec = meta.recDetergent.charAt(0).toUpperCase() + meta.recDetergent.slice(1);
+    const cur = state.detergent.charAt(0).toUpperCase() + state.detergent.slice(1);
+    ui.detergentRec.textContent = '\u{1F4A1} ' + rec + ' recommended for ' + meta.label + ' \u2014 you\u2019re using ' + cur;
+    ui.detergentRec.hidden = false;
 }
 
 function updateSheetRec() {
-    if (!ui.sheetRec || !state.activePreset || !presetMeta[state.activePreset]) {
-        if (ui.sheetRec) ui.sheetRec.hidden = true;
+    if (!ui.sheetRec) return;
+    const meta = loadTypeMeta[state.loadType];
+    if (!meta) {
+        ui.sheetRec.hidden = true;
         return;
     }
-    const meta = presetMeta[state.activePreset];
     const rec = meta.recDetergent.charAt(0).toUpperCase() + meta.recDetergent.slice(1);
-    ui.sheetRec.innerHTML = `\u2713 <strong>${rec}</strong> recommended for ${state.activePreset}`;
+    ui.sheetRec.textContent = '\u2713 ' + rec + ' recommended for ' + meta.label;
     ui.sheetRec.hidden = false;
 }
 
-function updatePresetTip() {
+function updateLoadTypeTips() {
     if (!ui.presetTip) return;
-    if (!state.activePreset || !presetMeta[state.activePreset]) {
+    const meta = loadTypeMeta[state.loadType];
+    if (!meta) {
         ui.presetTip.hidden = true;
         return;
     }
-    const meta = presetMeta[state.activePreset];
-    const preset = fallbackContent.quickReferenceFallback.find(p => p.label === state.activePreset);
-    const emoji = preset ? preset.emoji : '';
 
-    ui.presetTipTitle.textContent = `${emoji} ${state.activePreset} Tips`;
+    if (ui.presetTipTitle) {
+        ui.presetTipTitle.textContent = meta.emoji + ' ' + meta.label + ' Tips';
+    }
 
-    let html = '';
-    meta.tips.forEach(t => { html += `<div class="preset-tip-item">\u2022 ${t}</div>`; });
-    meta.cautions.forEach(c => { html += `<div class="preset-tip-caution">\u26A0\uFE0F ${c}</div>`; });
-    ui.presetTipBody.innerHTML = html;
+    if (ui.presetTipBody) {
+        ui.presetTipBody.textContent = '';
+        const allItems = meta.tips.map(function(t) { return { icon: '\u{1F4A1}', text: t }; })
+            .concat(meta.cautions.map(function(c) { return { icon: '\u26A0\uFE0F', text: c }; }));
+
+        allItems.forEach(function(item) {
+            const row = document.createElement('div');
+            row.className = 'tip-item';
+
+            const icon = document.createElement('span');
+            icon.className = 'tip-icon';
+            icon.textContent = item.icon;
+
+            const text = document.createElement('span');
+            text.className = 'tip-text';
+            text.textContent = item.text;
+
+            row.appendChild(icon);
+            row.appendChild(text);
+            ui.presetTipBody.appendChild(row);
+        });
+    }
+
     ui.presetTip.hidden = false;
 }
 
@@ -669,7 +689,7 @@ function updateResult() {
     }
 
     updateWasher(state.size, state.colour, state.soil);
-    updatePresetTip();
+    updateLoadTypeTips();
     updateDetergentBar();
     updateDetergentRec();
     updateCycleIndicators();
@@ -829,7 +849,6 @@ function renderQuickReference() {
             state.soil = card.dataset.soil;
             state.colour = card.dataset.colour;
             state.type = card.dataset.type;
-            state.activePreset = card.dataset.label;
 
             document.querySelectorAll('#sizeGroup .selector-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.size === state.size);
