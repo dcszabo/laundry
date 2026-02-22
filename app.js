@@ -109,17 +109,7 @@ const fallbackContent = {
             darks: { icon: 'D', label: 'Darks', className: 'chip-colour-darks' },
             mixed: { icon: 'M', label: 'Mixed', className: 'chip-colour-mixed' }
         }
-    },
-    quickReferenceFallback: [
-        { label: 'Everyday', emoji: '👕', size: 'medium', soil: 'normal', colour: 'mixed', type: 'everyday' },
-        { label: 'Bedding', emoji: '🛏️', size: 'large', soil: 'heavy', colour: 'whites', type: 'cottons' },
-        { label: 'Towels', emoji: '🧺', size: 'large', soil: 'normal', colour: 'whites', type: 'cottons' },
-        { label: 'Delicates', emoji: '🩱', size: 'small', soil: 'light', colour: 'mixed', type: 'delicates' },
-        { label: 'Wool', emoji: '🧶', size: 'small', soil: 'light', colour: 'mixed', type: 'wool' },
-        { label: 'Activewear', emoji: '🏃', size: 'medium', soil: 'heavy', colour: 'darks', type: 'everyday' },
-        { label: 'Jeans', emoji: '👖', size: 'medium', soil: 'heavy', colour: 'darks', type: 'everyday' },
-        { label: 'Underwear', emoji: '🩲', size: 'small', soil: 'normal', colour: 'whites', type: 'everyday' }
-    ]
+    }
 };
 
 const loadTypeMeta = {
@@ -330,18 +320,6 @@ const state = {
     loadType: readStorage(storageKeys.loadType, 'everyday'),
 };
 
-function setStatus(message) {
-    if (!ui.quickStatus) {
-        return;
-    }
-    if (!message) {
-        ui.quickStatus.textContent = '';
-        ui.quickStatus.hidden = true;
-        return;
-    }
-    ui.quickStatus.textContent = message;
-    ui.quickStatus.hidden = false;
-}
 
 function updateDetergentGuide() {
     if (!ui.detergentGuide) {
@@ -789,90 +767,6 @@ function setupSelectors() {
     }
 }
 
-function renderQuickReference() {
-    if (!ui.quickGrid) {
-        return;
-    }
-
-    const data = fallbackContent.quickReferenceFallback;
-    if (!Array.isArray(data) || data.length === 0) {
-        setStatus('Quick reference is unavailable right now.');
-        return;
-    }
-
-    setStatus('');
-    const fragment = document.createDocumentFragment();
-    ui.quickGrid.innerHTML = '';
-    data.forEach(item => {
-        const result = getDoseAndTemp(
-            item.size,
-            item.soil,
-            item.colour,
-            item.type
-        );
-        const soilInfo = fallbackContent.meta.soil[item.soil] || fallbackContent.meta.soil.normal;
-        const colourInfo = fallbackContent.meta.colour[item.colour] || fallbackContent.meta.colour.mixed;
-        const meta = presetMeta[item.label];
-        const card = document.createElement('div');
-        card.className = 'load-type-card';
-        card.dataset.size = item.size;
-        card.dataset.soil = item.soil;
-        card.dataset.colour = item.colour;
-        card.dataset.type = item.type;
-        card.dataset.label = item.label;
-        card.innerHTML = `
-            <div class="load-type-header">
-                <span class="load-type-name"><span class="emoji">${item.emoji}</span> ${item.label}</span>
-            </div>
-            <div class="quick-meta">
-                <span class="quick-chip ${soilInfo.className}">${soilInfo.label}</span>
-                <span class="quick-chip ${colourInfo.className}">${colourInfo.label}</span>
-                ${meta ? `<span class="quick-chip chip-cycle">\uD83C\uDF00 ${meta.cycle}</span>` : ''}
-                ${meta ? `<span class="quick-chip chip-maxload">\u2696\uFE0F ${meta.maxLoad}</span>` : ''}
-            </div>
-            <div class="quick-dose">
-                <div class="quick-dose-value">${result.doseAmount}${result.doseUnit}</div>
-                <span class="quick-dose-sep">·</span>
-                <div class="quick-dose-value temp">${result.tempStr}</div>
-            </div>
-        `;
-        fragment.appendChild(card);
-    });
-
-    ui.quickGrid.appendChild(fragment);
-    document.querySelectorAll('.load-type-card').forEach(card => {
-        card.addEventListener('click', () => {
-            triggerHaptic();
-            document.querySelectorAll('.load-type-card').forEach(c => c.classList.remove('selected'));
-            card.classList.add('selected');
-            state.size = card.dataset.size;
-            state.soil = card.dataset.soil;
-            state.colour = card.dataset.colour;
-            state.type = card.dataset.type;
-
-            document.querySelectorAll('#sizeGroup .selector-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.size === state.size);
-            });
-            document.querySelectorAll('#soilGroup .selector-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.soil === state.soil);
-            });
-            document.querySelectorAll('#colourGroup .selector-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.colour === state.colour);
-            });
-            document.querySelectorAll('#typeGroup .selector-btn').forEach(btn => {
-                btn.classList.toggle('active', btn.dataset.type === state.type);
-            });
-
-            updateResult();
-
-            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            document.querySelector('[data-section="calculator"]').classList.add('active');
-            document.getElementById('calculator').classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        });
-    });
-}
 
 function openDetergentSheet() {
     if (!ui.detergentBackdrop || !ui.detergentSheet) return;
