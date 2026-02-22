@@ -17,11 +17,38 @@ const dosageData = {
     }
 };
 
-const typeModifiers = {
-    everyday: { doseAdjust: 0 },
-    cottons: { doseAdjust: 5 },
+const cycleModifiers = {
+    cottons:   { doseAdjust: 5 },
+    everyday:  { doseAdjust: 0 },
+    heavy:     { doseAdjust: 5 },
     delicates: { doseAdjust: -5 },
-    wool: { doseAdjust: -5 }
+    wool:      { doseAdjust: -5 },
+    quick:     { doseAdjust: -5 },
+    bulky:     { doseAdjust: 5 },
+    easyiron:  { doseAdjust: 0 },
+};
+
+const tempMatrix = {
+    everyday:   { whites: 40, lights: 40, colours: 30, darks: 30, mixed: 30 },
+    towels:     { whites: 60, lights: 60, colours: 40, darks: 40, mixed: 40 },
+    bedding:    { whites: 60, lights: 60, colours: 40, darks: 40, mixed: 40 },
+    underwear:  { whites: 60, lights: 60, colours: 40, darks: 40, mixed: 40 },
+    delicates:  { whites: 30, lights: 30, colours: 30, darks: 30, mixed: 30 },
+    wool:       { whites: 30, lights: 30, colours: 30, darks: 30, mixed: 30 },
+    activewear: { whites: 30, lights: 30, colours: 30, darks: 30, mixed: 30 },
+    jeans:      { whites: 30, lights: 30, colours: 30, darks: 30, mixed: 30 },
+};
+
+// VERIFY these against the WH1060P4 manual before shipping — these are estimates.
+const cycleTemps = {
+    cottons:   [20, 30, 40, 60, 90],
+    everyday:  [20, 30, 40, 60],
+    heavy:     [20, 30, 40, 60, 90],
+    delicates: [20, 30, 40],
+    wool:      [30],
+    quick:     [20, 30],
+    bulky:     [30, 40, 60],
+    easyiron:  [20, 30, 40, 60],
 };
 
 const detergentTypes = {
@@ -95,68 +122,129 @@ const fallbackContent = {
     ]
 };
 
-const presetMeta = {
-    'Everyday': {
+const loadTypeMeta = {
+    'everyday': {
+        emoji: '👕', label: 'Everyday',
+        defaultColour: 'mixed', defaultSoil: 'normal', defaultSize: 'medium',
+        recommendedCycle: 'everyday',
         recDetergent: 'liquid',
-        cycle: 'Everyday',
-        maxLoad: '10 kg',
-        tips: ['Empty pockets and close zips before washing.', 'Sort by colour when possible to extend garment life.'],
+        cycle: 'Everyday', maxLoad: '10 kg',
+        tips: [
+            'Empty pockets and close zips before washing.',
+            'Sort by colour when possible to extend garment life.'
+        ],
         cautions: []
     },
-    'Bedding': {
+    'bedding': {
+        emoji: '🛏️', label: 'Bedding',
+        defaultColour: 'whites', defaultSoil: 'normal', defaultSize: 'large',
+        recommendedCycle: 'cottons',
         recDetergent: 'powder',
-        cycle: 'Cottons 60\u00B0C',
-        maxLoad: '10 kg',
-        tips: ['Wash sheets every 1\u20132 weeks.', 'Ensure bedding has room to tumble freely \u2014 don\'t overfill.', 'Use the Bulky cycle for duvets and large single items.'],
-        cautions: ['Use 60\u00B0C to kill dust mites and bacteria.', 'Skip fabric softener \u2014 it reduces breathability.']
+        cycle: 'Cottons 60°C', maxLoad: '10 kg',
+        tips: [
+            'Wash sheets every 1–2 weeks.',
+            'Ensure bedding has room to tumble freely — don\'t overfill.',
+            'Use the Bulky cycle for duvets and large single items.'
+        ],
+        cautions: [
+            'Use 60°C for whites to kill dust mites and bacteria.',
+            'Skip fabric softener — it reduces breathability.'
+        ]
     },
-    'Towels': {
+    'towels': {
+        emoji: '🧺', label: 'Towels',
+        defaultColour: 'whites', defaultSoil: 'normal', defaultSize: 'large',
+        recommendedCycle: 'cottons',
         recDetergent: 'powder',
-        cycle: 'Cottons 60\u00B0C',
-        maxLoad: '10 kg',
-        tips: ['Shake towels out before loading for better results.', '60\u00B0C keeps towels hygienic and fresh.'],
-        cautions: ['Never use fabric softener \u2014 it coats fibres and ruins absorbency.']
+        cycle: 'Cottons', maxLoad: '10 kg',
+        tips: [
+            'Shake towels out before loading for better results.',
+            'Whites: 60°C kills bacteria and dust mites. Colours: 40°C is the hygiene minimum.'
+        ],
+        cautions: [
+            'Never use fabric softener — it coats fibres and ruins absorbency.'
+        ]
     },
-    'Delicates': {
+    'delicates': {
+        emoji: '🩱', label: 'Delicates',
+        defaultColour: 'mixed', defaultSoil: 'light', defaultSize: 'small',
+        recommendedCycle: 'delicates',
         recDetergent: 'liquid',
-        cycle: 'Delicate',
-        maxLoad: '4 kg',
-        tips: ['Use mesh bags for bras, lingerie, and anything with hooks.'],
-        cautions: ['Never tumble dry delicates.', 'Air dry flat and reshape while damp.']
+        cycle: 'Delicate', maxLoad: '4 kg',
+        tips: [
+            'Use mesh bags for bras, lingerie, and anything with hooks.'
+        ],
+        cautions: [
+            'Never tumble dry delicates.',
+            'Air dry flat and reshape while damp.',
+            'Use non-bio detergent — bio enzymes damage silk and fine fabrics.'
+        ]
     },
-    'Wool': {
+    'wool': {
+        emoji: '🧶', label: 'Wool',
+        defaultColour: 'mixed', defaultSoil: 'light', defaultSize: 'small',
+        recommendedCycle: 'wool',
         recDetergent: 'liquid',
-        cycle: 'Wool',
-        maxLoad: '2 kg',
-        tips: ['Lay flat to dry \u2014 never hang or tumble dry.'],
-        cautions: ['Use wool-safe or gentle detergent only \u2014 enzymes in regular detergent damage wool fibres.', 'Never wring or twist woollen items.']
+        cycle: 'Wool', maxLoad: '2 kg',
+        tips: [
+            'Lay flat to dry — never hang or tumble dry.'
+        ],
+        cautions: [
+            'Use wool-safe non-bio detergent only — bio enzymes digest keratin and cause holes.',
+            'Never wring or twist woollen items.'
+        ]
     },
-    'Activewear': {
+    'activewear': {
+        emoji: '🏃', label: 'Activewear',
+        defaultColour: 'darks', defaultSoil: 'heavy', defaultSize: 'medium',
+        recommendedCycle: 'everyday',
         recDetergent: 'liquid',
-        cycle: 'Everyday Cold',
-        maxLoad: '10 kg',
-        tips: ['Turn inside out before washing.', 'Use cold water to preserve elasticity and technical fabrics.'],
-        cautions: ['Never use fabric softener \u2014 it destroys moisture-wicking properties.', 'Air dry rather than tumble drying.']
+        cycle: 'Everyday Cold', maxLoad: '10 kg',
+        tips: [
+            'Turn inside out before washing.',
+            'Cold water preserves elasticity and wicking properties.'
+        ],
+        cautions: [
+            'Never use fabric softener — it clogs wicking pores and causes permanent odour.',
+            'Air dry rather than tumble drying.'
+        ]
     },
-    'Jeans': {
+    'jeans': {
+        emoji: '👖', label: 'Jeans',
+        defaultColour: 'darks', defaultSoil: 'normal', defaultSize: 'medium',
+        recommendedCycle: 'delicates',
         recDetergent: 'liquid',
-        cycle: 'Everyday Cold',
-        maxLoad: '10 kg',
-        tips: ['Turn inside out to prevent fading and white streaks.', 'Wash less often if only lightly worn \u2014 spot clean between washes.'],
-        cautions: ['Use cold water only (20\u201330\u00B0C) to preserve colour and stretch.']
+        cycle: 'Delicate', maxLoad: '10 kg',
+        tips: [
+            'Turn inside out to prevent fading and white streaks.',
+            'Wash less often — spot clean between washes.'
+        ],
+        cautions: [
+            'Use cold water to preserve indigo dye and stretch.',
+            'Delicate cycle reduces abrasion that accelerates fading.'
+        ]
     },
-    'Underwear': {
+    'underwear': {
+        emoji: '🩲', label: 'Underwear',
+        defaultColour: 'whites', defaultSoil: 'normal', defaultSize: 'small',
+        recommendedCycle: 'cottons',
         recDetergent: 'liquid',
-        cycle: 'Cottons 60\u00B0C',
-        maxLoad: '10 kg',
-        tips: ['NHS recommends 60\u00B0C for underwear to kill bacteria.', 'Separate whites from colours.'],
-        cautions: ['40\u00B0C is acceptable only with antibacterial or bleach-based detergent.', 'Synthetic underwear (nylon, microfibre) max 40\u00B0C \u2014 high heat damages elastics.']
+        cycle: 'Cottons', maxLoad: '10 kg',
+        tips: [
+            'NHS recommends 60°C for cotton underwear to kill bacteria.',
+            'Synthetic underwear (nylon, microfibre): use Delicate cycle at 40°C max.'
+        ],
+        cautions: [
+            '40°C is acceptable only with bio detergent.',
+            'Synthetic underwear max 40°C — high heat damages elastane.'
+        ]
     }
 };
 
 const storageKeys = {
     concentration: 'laundry.concentrationFactor',
     detergent: 'laundry.detergentType',
+    loadType: 'laundry.loadType',
     installNudge: 'laundry.installNudgeDismissed',
     dismissPrefix: 'laundry.dismissed.v1.'
 };
