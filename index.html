@@ -45,7 +45,6 @@
             </div>
 
             <div class="preset-tip" id="presetTip" hidden>
-                <button class="preset-tip-close" id="presetTipClose" aria-label="Dismiss">&times;</button>
                 <div class="preset-tip-title" id="presetTipTitle"></div>
                 <div class="preset-tip-body" id="presetTipBody"></div>
             </div>
@@ -186,6 +185,17 @@
                     <span class="detergent-bar-chevron">&#9658;</span>
                 </button>
                 <div class="detergent-rec" id="detergentRec" hidden></div>
+                <div class="calc-label">Load Type</div>
+                <select class="load-type-select" id="loadTypeSelect">
+                    <option value="everyday">Everyday</option>
+                    <option value="towels">Towels</option>
+                    <option value="bedding">Bedding</option>
+                    <option value="underwear">Underwear</option>
+                    <option value="delicates">Delicates</option>
+                    <option value="wool">Wool</option>
+                    <option value="activewear">Activewear</option>
+                    <option value="jeans">Jeans</option>
+                </select>
                 <div class="calc-label">Load Size</div>
                 <div class="selector-group" id="sizeGroup">
                     <button class="selector-btn" data-size="small">
@@ -218,30 +228,20 @@
                     <button class="selector-btn colour-mixed active" data-colour="mixed">Mixed</button>
                 </div>
 
-                <div class="calc-label">Load Type</div>
-                <div class="selector-group" id="typeGroup">
-                    <button class="selector-btn active" data-type="everyday">Everyday</button>
-                    <button class="selector-btn" data-type="cottons">Cottons</button>
-                    <button class="selector-btn" data-type="delicates">Delicate</button>
-                    <button class="selector-btn" data-type="wool">Wool</button>
+                <div class="calc-label">Cycle</div>
+                <div class="selector-group selector-group--wrap" id="cycleGroup">
+                    <button class="selector-btn active" data-cycle="everyday">Everyday</button>
+                    <button class="selector-btn" data-cycle="cottons">Cottons</button>
+                    <button class="selector-btn" data-cycle="heavy">Heavy</button>
+                    <button class="selector-btn" data-cycle="delicates">Delicate</button>
+                    <button class="selector-btn" data-cycle="wool">Wool</button>
+                    <button class="selector-btn" data-cycle="quick">Quick</button>
+                    <button class="selector-btn" data-cycle="bulky">Bulky</button>
+                    <button class="selector-btn" data-cycle="easyiron">Easy Iron</button>
                 </div>
+                <div class="cycle-rec" id="cycleRec" hidden></div>
             </div>
 
-        </section>
-
-        <!-- Quick Reference Section -->
-        <section class="section" id="quick">
-            <h2 class="section-header">Presets</h2>
-
-            <div class="load-type-grid" id="quickGrid"></div>
-            <div class="status-banner" id="quickStatus" hidden></div>
-
-            <div class="bottom-note">
-                <div class="bottom-note-text">
-                    Tap any preset to load settings into the calculator.<br>
-                    <strong>Ultra-concentrated detergent?</strong> Reduce by 20–30%.
-                </div>
-            </div>
         </section>
 
         <!-- Rules Section -->
@@ -834,10 +834,6 @@
             <button class="nav-tab active" data-section="calculator">
                 <span class="tab-icon">🧼</span>
                 <span class="tab-label">Wash</span>
-            </button>
-            <button class="nav-tab" data-section="quick">
-                <span class="tab-icon">🔖</span>
-                <span class="tab-label">Presets</span>
             </button>
             <button class="nav-tab" data-section="rules">
                 <span class="tab-icon">📋</span>
