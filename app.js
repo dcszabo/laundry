@@ -371,12 +371,12 @@ function applyDismissedKeyFacts() {
     });
 }
 
-function getWarnings(size, soil, colour, type, detergentType) {
+function getWarnings(size, soil, colour, cycle, detergentType) {
     const warnings = [];
-    if (type === 'delicates' && soil === 'heavy') {
+    if (cycle === 'delicates' && soil === 'heavy') {
         warnings.push(fallbackContent.warnings.delicatesHeavy);
     }
-    if (type === 'cottons' && (colour === 'darks' || colour === 'colours')) {
+    if (cycle === 'cottons' && (colour === 'darks' || colour === 'colours')) {
         warnings.push(fallbackContent.warnings.beddingDarks);
     }
     if (detergentType === 'pods' && size === 'small' && soil === 'light') {
@@ -401,41 +401,49 @@ function roundToFive(value) {
     return Math.round(value / 5) * 5;
 }
 
-function getDoseAndTemp(size, soil, colour, type, detergentType = state.detergent) {
+function snapToNearest(temp, available) {
+    if (!available || available.length === 0) return temp;
+    return available.reduce((prev, cur) =>
+        Math.abs(cur - temp) < Math.abs(prev - temp) ? cur : prev
+    );
+}
+
+function getDoseAndTemp(size, soil, colour, loadType, cycle, detergentType = state.detergent) {
     const baseData = dosageData[size][soil];
-    const modifier = typeModifiers[type];
+    const modifier = cycleModifiers[cycle] || cycleModifiers.everyday;
     const detergentInfo = detergentTypes[detergentType] || detergentTypes.liquid;
 
     let baseDose = Math.max(10, baseData.dose + modifier.doseAdjust);
 
-    if (type === 'cottons' && soil === 'heavy') {
+    if (cycle === 'cottons' && soil === 'heavy') {
         baseDose = Math.min(35, baseDose);
     }
 
-    let tempStr = fallbackContent.temps[colour];
-    if (type === 'delicates') {
-        tempStr = fallbackContent.temps.delicates;
-    } else if (type === 'wool') {
-        tempStr = fallbackContent.temps.wool;
-    }
+    // Derive temperature: Load Type x Colour -> recommended, then clamp to cycle range
+    const loadTypeTemps = tempMatrix[loadType] || tempMatrix.everyday;
+    const recommendedTemp = loadTypeTemps[colour] ?? 30;
+    const available = cycleTemps[cycle] || cycleTemps.everyday;
+    const tempNum = snapToNearest(recommendedTemp, available);
+    const tempStr = tempNum + '\u00B0C';
 
-    // Temperature modifier: cold washes need ~12% more (low enzyme activity),
-    // 60°C+ needs ~10% less (thermal cleaning compensates for enzyme inactivity).
-    const tempNum = parseInt(tempStr);
-    const tempMultiplier = (isNaN(tempNum) || tempNum <= 20) ? 1.12
-                         : tempNum >= 60                     ? 0.90
+    const tempMultiplier = tempNum <= 20 ? 1.12
+                         : tempNum >= 60  ? 0.90
                          : 1.0;
     baseDose = baseDose * tempMultiplier;
 
-    const warnings = getWarnings(size, soil, colour, type, detergentType);
+    const warnings = getWarnings(size, soil, colour, cycle, detergentType);
 
     if (detergentType === 'pods') {
         const podDose = getPodDose(size, soil);
-        const podAmount = podDose.low === podDose.high ? `${podDose.low}` : `${podDose.low}–${podDose.high}`;
+        const podAmount = podDose.low === podDose.high
+            ? String(podDose.low)
+            : podDose.low + '\u2013' + podDose.high;
         return {
             dose: 0,
             doseAmount: podAmount,
-            doseUnit: podDose.low === 1 && podDose.high === 1 ? fallbackContent.units.podSingular : fallbackContent.units.podPlural,
+            doseUnit: podDose.low === 1 && podDose.high === 1
+                ? fallbackContent.units.podSingular
+                : fallbackContent.units.podPlural,
             tempStr,
             tip: fallbackContent.tips[colour],
             warnings,
@@ -447,7 +455,7 @@ function getDoseAndTemp(size, soil, colour, type, detergentType = state.detergen
 
     return {
         dose: scaledDose,
-        doseAmount: `${scaledDose}`,
+        doseAmount: String(scaledDose),
         doseUnit: fallbackContent.units.ml,
         tempStr,
         tip: fallbackContent.tips[colour],
