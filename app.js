@@ -304,10 +304,10 @@ const state = {
     size: 'medium',
     soil: 'normal',
     colour: 'mixed',
-    type: 'everyday',
+    cycle: 'everyday',
     detergent: readStorage(storageKeys.detergent, 'liquid'),
     concentration: parseFloat(readStorage(storageKeys.concentration, '1')) || 1,
-    activePreset: null
+    loadType: readStorage(storageKeys.loadType, 'everyday'),
 };
 
 function setStatus(message) {
@@ -601,7 +601,7 @@ function updateResult() {
         return;
     }
 
-    const result = getDoseAndTemp(state.size, state.soil, state.colour, state.type, state.detergent);
+    const result = getDoseAndTemp(state.size, state.soil, state.colour, state.loadType, state.cycle, state.detergent);
 
     ui.doseAmount.textContent = result.doseAmount;
     ui.doseUnit.textContent = result.doseUnit;
