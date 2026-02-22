@@ -278,6 +278,58 @@ body {
     color: var(--accent-cyan);
 }
 
+.load-type-select {
+    width: 100%;
+    padding: 12px 16px;
+    background: var(--bg-secondary);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    color: var(--text-primary);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    margin-bottom: 16px;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'%3E%3Cpath d='M3 5L7 9L11 5' stroke='rgba(255,255,255,0.5)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 14px center;
+    cursor: pointer;
+}
+
+.load-type-select:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+}
+
+.selector-group--wrap {
+    flex-wrap: wrap;
+}
+
+.selector-group--wrap .selector-btn {
+    flex: 1 1 calc(25% - 6px);
+    min-width: 64px;
+}
+
+.selector-btn[data-recommended="true"]::after {
+    content: '\2713';
+    font-size: 9px;
+    margin-left: 3px;
+    color: var(--accent-cyan);
+    vertical-align: super;
+    line-height: 0;
+}
+
+.cycle-rec {
+    font-size: 13px;
+    color: var(--accent-warm);
+    padding: 8px 12px;
+    background: rgba(255, 159, 67, 0.08);
+    border-radius: 8px;
+    margin-top: 8px;
+    margin-bottom: 4px;
+}
+
 /* Sticky Result Wrapper */
 .result-display-sticky {
     position: sticky;
@@ -1039,46 +1091,6 @@ body {
     padding-left: 2px;
 }
 
-/* Load Type Cards */
-.load-type-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-}
-
-.load-type-card {
-    background: var(--bg-card);
-    border-radius: var(--radius-lg);
-    padding: 12px;
-    border: 1px solid var(--border-subtle);
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-.load-type-card:hover {
-    background: var(--bg-card-hover);
-    transform: translateY(-2px);
-}
-
-.load-type-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 8px;
-}
-
-.load-type-name {
-    font-weight: 600;
-    font-size: 13px;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-
-.load-type-name .emoji {
-    font-size: 15px;
-}
-
 .quick-dose {
     display: flex;
     flex-direction: row;
@@ -1206,16 +1218,9 @@ body {
 /* Active Press States */
 .selector-btn:active { transform: scale(0.96); }
 .nav-tab:active { transform: scale(0.96); }
-.load-type-card:active { transform: scale(0.97); }
 .collapsible-header:active { background: var(--bg-card-hover); }
 .install-dismiss:active { transform: scale(0.95); }
 .key-fact-close:active { opacity: 0.8; }
-
-/* Selected Quick Reference Card */
-.load-type-card.selected {
-    border-color: var(--accent-blue);
-    box-shadow: 0 0 0 1px var(--accent-blue), 0 2px 12px rgba(77, 163, 255, 0.15);
-}
 
 /* Load Type 4-button 2×2 layout */
 #typeGroup .selector-btn {
