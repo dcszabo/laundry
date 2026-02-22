@@ -351,6 +351,27 @@ function updateDetergentGuide() {
     ui.detergentGuide.textContent = fallbackContent.guides[info.guideKey];
 }
 
+function updateCycleIndicators() {
+    const meta = loadTypeMeta[state.loadType];
+    const rec = meta ? meta.recommendedCycle : null;
+    document.querySelectorAll('#cycleGroup .selector-btn').forEach(function(btn) {
+        btn.dataset.recommended = btn.dataset.cycle === rec ? 'true' : 'false';
+    });
+}
+
+function updateCycleRec() {
+    if (!ui.cycleRec) return;
+    const meta = loadTypeMeta[state.loadType];
+    if (!meta || state.cycle === meta.recommendedCycle) {
+        ui.cycleRec.hidden = true;
+        return;
+    }
+    const recLabel = meta.recommendedCycle.charAt(0).toUpperCase() + meta.recommendedCycle.slice(1);
+    const curLabel = state.cycle.charAt(0).toUpperCase() + state.cycle.slice(1);
+    ui.cycleRec.textContent = '\u{1F4A1} ' + recLabel + ' cycle recommended for ' + meta.label + ' \u2014 you\u2019re using ' + curLabel;
+    ui.cycleRec.hidden = false;
+}
+
 function syncDetergentUI() {
     document.querySelectorAll('#detergentGroup .selector-btn').forEach(btn => {
         btn.classList.toggle('active', btn.dataset.detergent === state.detergent);
@@ -651,6 +672,8 @@ function updateResult() {
     updatePresetTip();
     updateDetergentBar();
     updateDetergentRec();
+    updateCycleIndicators();
+    updateCycleRec();
 }
 
 const SECTION_SUBTITLES = {
