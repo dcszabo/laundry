@@ -276,6 +276,8 @@ function applyLoadTypeDefaults(loadType) {
     syncSelectorGroup('soilGroup',   'soil',   state.soil);
     syncSelectorGroup('sizeGroup',   'size',   state.size);
     syncSelectorGroup('cycleGroup',  'cycle',  state.cycle);
+    updateLoadTypePill();
+    updateResult();
 }
 
 const ui = {
@@ -286,7 +288,11 @@ const ui = {
     concentrationRange: document.getElementById('concentrationRange'),
     concentrationValue: document.getElementById('concentrationValue'),
     detergentGuide: document.getElementById('detergentGuide'),
-    loadTypeSelect: document.getElementById('loadTypeSelect'),
+    detergentPill: document.getElementById('detergentPill'),
+    loadTypePill: document.getElementById('loadTypePill'),
+    loadTypeBackdrop: document.getElementById('loadTypeBackdrop'),
+    loadTypeSheet: document.getElementById('loadTypeSheet'),
+    loadTypeSheetDone: document.getElementById('loadTypeSheetDone'),
     cycleRec: document.getElementById('cycleRec'),
     installNudge: document.getElementById('installNudge'),
     installDismiss: document.getElementById('installDismiss'),
@@ -574,12 +580,74 @@ function updateWasher(size, colour, soil) {
 }
 
 function updateDetergentBar() {
-    if (ui.detBarType) ui.detBarType.textContent = state.detergent.charAt(0).toUpperCase() + state.detergent.slice(1);
+    const label = state.detergent.charAt(0).toUpperCase() + state.detergent.slice(1);
+    if (ui.detBarType) ui.detBarType.textContent = label;
     if (ui.detBarConc) ui.detBarConc.textContent = Math.round(state.concentration * 100) + '%';
+    if (ui.detergentPill) ui.detergentPill.textContent = label;
 }
 
 function updateDetergentRec() {
     if (ui.detergentRec) ui.detergentRec.hidden = true;
+}
+
+function updateLoadTypePill() {
+    if (!ui.loadTypePill) return;
+    const meta = loadTypeMeta[state.loadType];
+    if (meta) ui.loadTypePill.textContent = meta.emoji + '\u00A0' + meta.label;
+}
+
+function syncLoadTypeSheetUI() {
+    document.querySelectorAll('#loadTypeGrid .load-type-option').forEach(function(btn) {
+        btn.classList.toggle('active', btn.dataset.loadtype === state.loadType);
+    });
+}
+
+function openLoadTypeSheet() {
+    if (!ui.loadTypeBackdrop || !ui.loadTypeSheet) return;
+    ui.loadTypeBackdrop.hidden = false;
+    ui.loadTypeSheet.hidden = false;
+    void ui.loadTypeSheet.offsetHeight;
+    ui.loadTypeBackdrop.classList.add('visible');
+    ui.loadTypeSheet.classList.add('visible');
+    syncLoadTypeSheetUI();
+}
+
+function closeLoadTypeSheet() {
+    if (!ui.loadTypeBackdrop || !ui.loadTypeSheet) return;
+    ui.loadTypeBackdrop.classList.remove('visible');
+    ui.loadTypeSheet.classList.remove('visible');
+    let cleaned = false;
+    const onEnd = function() {
+        if (cleaned) return;
+        cleaned = true;
+        ui.loadTypeSheet.hidden = true;
+        ui.loadTypeBackdrop.hidden = true;
+        ui.loadTypeSheet.removeEventListener('transitionend', onEnd);
+    };
+    ui.loadTypeSheet.addEventListener('transitionend', onEnd);
+    setTimeout(onEnd, 350);
+}
+
+function setupLoadTypeSheet() {
+    if (ui.loadTypePill) {
+        ui.loadTypePill.addEventListener('click', openLoadTypeSheet);
+    }
+    if (ui.loadTypeSheetDone) {
+        ui.loadTypeSheetDone.addEventListener('click', closeLoadTypeSheet);
+    }
+    if (ui.loadTypeBackdrop) {
+        ui.loadTypeBackdrop.addEventListener('click', closeLoadTypeSheet);
+    }
+    document.querySelectorAll('#loadTypeGrid .load-type-option').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            state.loadType = btn.dataset.loadtype;
+            writeStorage(storageKeys.loadType, state.loadType);
+            triggerHaptic();
+            syncLoadTypeSheetUI();
+            applyLoadTypeDefaults(state.loadType);
+            closeLoadTypeSheet();
+        });
+    });
 }
 
 function updateSheetRec() {
@@ -770,17 +838,6 @@ function setupSelectors() {
         updateSheetRec();
     });
 
-    if (ui.loadTypeSelect) {
-        ui.loadTypeSelect.value = state.loadType;
-        ui.loadTypeSelect.addEventListener('change', function() {
-            state.loadType = ui.loadTypeSelect.value;
-            writeStorage(storageKeys.loadType, state.loadType);
-            triggerHaptic();
-            applyLoadTypeDefaults(state.loadType);
-            updateResult();
-        });
-    }
-
     if (ui.concentrationRange && ui.concentrationValue) {
         ui.concentrationRange.value = String(state.concentration);
         ui.concentrationValue.textContent = `${Math.round(state.concentration * 100)}%`;
@@ -847,13 +904,11 @@ function init() {
     applyDismissedKeyFacts();
     setupInstallNudge();
     setupSelectors();
-    if (ui.loadTypeSelect) {
-        ui.loadTypeSelect.value = state.loadType;
-    }
     applyLoadTypeDefaults(state.loadType);
     syncDetergentUI();
     updateResult();
     setupDetergentSheet();
+    setupLoadTypeSheet();
     if (ui.presetTipToggle) {
         ui.presetTipToggle.addEventListener('click', function() {
             ui.presetTip.classList.toggle('open');

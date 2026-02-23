@@ -50,6 +50,7 @@
                         <div class="cup-container">
                             <div class="cup-wrapper">
 
+
                                 <svg class="cup-svg" viewBox="0 0 80 100" fill="none" xmlns="http://www.w3.org/2000/svg">
                                     <!-- Cup outline -->
                                     <path d="M10 15 L10 85 Q10 95 20 95 L60 95 Q70 95 70 85 L70 15 Z"
@@ -94,6 +95,7 @@
                                     <text x="55" y="23" fill="rgba(255,107,157,0.5)" font-size="7" font-weight="bold">MAX</text>
                                 </svg>
                             </div>
+                            <button class="result-pill" id="detergentPill" type="button">Liquid</button>
                         </div>
                         <div class="result-text">
                             <div class="result-dose-row">
@@ -154,6 +156,7 @@
                                           stroke="rgba(255,255,255,0.25)" stroke-width="1"/>
                                 </svg>
                             </div>
+                            <button class="result-pill" id="loadTypePill" type="button">👕 Everyday</button>
                         </div>
                     </div>
 
@@ -172,31 +175,6 @@
             </div>
 
             <div class="calculator-card">
-                <button class="detergent-bar" id="detergentBar" type="button">
-                    <div class="detergent-bar-left">
-                        <span class="detergent-bar-icon">🧴</span>
-                        <span class="detergent-bar-text">
-                            <span class="detergent-bar-label">Detergent</span>
-                            <span class="detergent-bar-sep">&middot;</span>
-                            <span class="detergent-bar-type" id="detBarType">Liquid</span>
-                            <span class="detergent-bar-sep">&middot;</span>
-                            <span class="detergent-bar-conc" id="detBarConc">100%</span>
-                        </span>
-                    </div>
-                    <span class="detergent-bar-chevron">&#9658;</span>
-                </button>
-                <div class="calc-label">Load Type</div>
-                <select class="load-type-select" id="loadTypeSelect">
-                    <option value="everyday">Everyday</option>
-                    <option value="towels">Towels</option>
-                    <option value="bedding">Bedding</option>
-                    <option value="underwear">Underwear</option>
-                    <option value="delicates">Delicates</option>
-                    <option value="wool">Wool</option>
-                    <option value="activewear">Activewear</option>
-                    <option value="jeans">Jeans</option>
-                </select>
-                <div class="detergent-rec" id="detergentRec" hidden></div>
                 <div class="calc-label">Load Size</div>
                 <div class="selector-group" id="sizeGroup">
                     <button class="selector-btn" data-size="small">
@@ -849,6 +827,27 @@
                 <span class="tab-label">Care</span>
             </button>
         </nav>
+    </div>
+
+    <div class="modal-backdrop" id="loadTypeBackdrop" hidden></div>
+    <div class="bottom-sheet" id="loadTypeSheet" hidden>
+        <div class="sheet-handle"></div>
+        <div class="sheet-header">
+            <span class="sheet-title">Load Type</span>
+            <button class="sheet-done" id="loadTypeSheetDone" type="button">Done</button>
+        </div>
+        <div class="sheet-body">
+            <div class="load-type-grid" id="loadTypeGrid">
+                <button class="load-type-option active" data-loadtype="everyday" type="button">👕 Everyday</button>
+                <button class="load-type-option" data-loadtype="towels" type="button">🧺 Towels</button>
+                <button class="load-type-option" data-loadtype="bedding" type="button">🛏️ Bedding</button>
+                <button class="load-type-option" data-loadtype="underwear" type="button">🩲 Underwear</button>
+                <button class="load-type-option" data-loadtype="delicates" type="button">🩱 Delicates</button>
+                <button class="load-type-option" data-loadtype="wool" type="button">🧶 Wool</button>
+                <button class="load-type-option" data-loadtype="activewear" type="button">🏃 Activewear</button>
+                <button class="load-type-option" data-loadtype="jeans" type="button">👖 Jeans</button>
+            </div>
+        </div>
     </div>
 
     <div class="modal-backdrop" id="detergentBackdrop" hidden></div>

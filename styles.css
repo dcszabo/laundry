@@ -469,6 +469,32 @@ body {
     height: 100%;
 }
 
+/* Result card selector pills */
+.result-pill {
+    margin-top: 6px;
+    padding: 5px 8px;
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    font-size: 11px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    min-height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.result-pill::after {
+    content: ' ▾';
+    opacity: 0.5;
+}
+.result-pill:active {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.22);
+}
+
 .cup-fill {
     transition: all 0.5s ease;
 }
@@ -653,6 +679,36 @@ body {
     border-radius: var(--radius-md);
     font-size: 12px;
     color: var(--accent-cyan);
+}
+
+/* Load type sheet grid */
+.load-type-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+.load-type-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left;
+    transition: border-color 0.15s ease, background 0.15s ease;
+}
+.load-type-option.active {
+    border-color: var(--accent-cyan);
+    background: rgba(0, 212, 170, 0.1);
+    color: var(--accent-cyan);
+}
+.load-type-option:active {
+    opacity: 0.7;
 }
 
 /* Info Cards */
