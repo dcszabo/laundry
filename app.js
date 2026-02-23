@@ -722,6 +722,9 @@ function updateLoadTypeTips() {
     ui.presetTip.hidden = false;
     if (wasHidden) {
         ui.presetTip.classList.add('open');
+        ui.presetTipBody.style.height = 'auto';
+    } else if (ui.presetTip.classList.contains('open')) {
+        ui.presetTipBody.style.height = 'auto';
     }
 }
 
@@ -911,7 +914,27 @@ function init() {
     setupLoadTypeSheet();
     if (ui.presetTipToggle) {
         ui.presetTipToggle.addEventListener('click', function() {
-            ui.presetTip.classList.toggle('open');
+            const body = ui.presetTipBody;
+            if (ui.presetTip.classList.contains('open')) {
+                body.style.height = body.scrollHeight + 'px';
+                void body.offsetHeight;
+                requestAnimationFrame(function() {
+                    body.style.height = '0';
+                });
+                ui.presetTip.classList.remove('open');
+            } else {
+                ui.presetTip.classList.add('open');
+                body.style.height = body.scrollHeight + 'px';
+                let done = false;
+                const finish = function() {
+                    if (done) return;
+                    done = true;
+                    body.style.height = 'auto';
+                    body.removeEventListener('transitionend', finish);
+                };
+                body.addEventListener('transitionend', finish);
+                setTimeout(finish, 350);
+            }
         });
     }
 }
