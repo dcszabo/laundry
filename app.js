@@ -291,6 +291,7 @@ const ui = {
     installNudge: document.getElementById('installNudge'),
     installDismiss: document.getElementById('installDismiss'),
     presetTip: document.getElementById('presetTip'),
+    presetTipToggle: document.getElementById('presetTipToggle'),
     presetTipTitle: document.getElementById('presetTipTitle'),
     presetTipBody: document.getElementById('presetTipBody'),
     detergentBar: document.getElementById('detergentBar'),
@@ -601,6 +602,8 @@ function updateLoadTypeTips() {
         return;
     }
 
+    const wasHidden = ui.presetTip.hidden;
+
     if (ui.presetTipTitle) {
         ui.presetTipTitle.textContent = meta.emoji + ' ' + meta.label + ' Tips';
     }
@@ -663,6 +666,9 @@ function updateLoadTypeTips() {
     }
 
     ui.presetTip.hidden = false;
+    if (wasHidden) {
+        ui.presetTip.classList.add('open');
+    }
 }
 
 function updateResult() {
@@ -848,6 +854,11 @@ function init() {
     syncDetergentUI();
     updateResult();
     setupDetergentSheet();
+    if (ui.presetTipToggle) {
+        ui.presetTipToggle.addEventListener('click', function() {
+            ui.presetTip.classList.toggle('open');
+        });
+    }
 }
 
 init();
