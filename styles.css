@@ -172,7 +172,7 @@ body {
 .calculator-card {
     background: var(--bg-card);
     border-radius: var(--radius-xl);
-    padding: 20px;
+    padding: 20px 20px 10px;
     margin-top: 8px;
     margin-bottom: 16px;
     border: 1px solid var(--border-subtle);
@@ -225,6 +225,11 @@ body {
     font-size: 10px;
     color: var(--text-muted);
     margin-top: 2px;
+}
+
+#sizeGroup .selector-btn {
+    padding-top: 8px;
+    padding-bottom: 8px;
 }
 
 /* Colour selector — 5 buttons, single row */
@@ -1160,7 +1165,6 @@ body {
 /* Calculator Section Breaks */
 .calc-section-break {
     padding-top: 16px;
-    border-top: 1px solid var(--border-subtle);
     margin-top: -4px;
 }
 

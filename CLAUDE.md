@@ -35,15 +35,16 @@ Single-page laundry guidance application optimised for soft water households (~1
 ## Architecture
 
 ```
-index.html      — HTML structure, 5 tab sections, all SVG visuals inline
+index.html      — HTML structure, 4 tab sections, all SVG visuals inline
 styles.css      — CSS custom properties, dark theme, mobile-first (breakpoint 380px)
 app.js          — Calculator logic, UI event handlers, SVG animation
 sw.js           — Service worker (cache-first, bump cache name on each deploy)
+research.md     — Laundry science: temperature matrix, detergent rules, dosage model
 ```
 
 ### Navigation
 
-The nav is a **fixed bottom tab bar** — it is NOT inside `.app-container`. It lives just before the modal elements at the end of `<body>`:
+Fixed bottom tab bar — NOT inside `.app-container`. Lives just before the modal elements at the end of `<body>`:
 
 ```html
 <div class="nav-tabs-wrapper">   ← position: fixed; bottom: 0
@@ -52,42 +53,73 @@ The nav is a **fixed bottom tab bar** — it is NOT inside `.app-container`. It 
       <span class="tab-icon">emoji</span>
       <span class="tab-label">Label</span>
     </button>
-    ...
   </nav>
 </div>
 ```
 
-- `viewport-fit=cover` is set on the `<meta viewport>` tag — required for `env(safe-area-inset-bottom)` to return a non-zero value on iPhone
-- `.nav-tabs-wrapper` has `padding-bottom: env(safe-area-inset-bottom)` for home indicator clearance
-- `.nav-tabs` has `padding: 0 env(safe-area-inset-right) 0 env(safe-area-inset-left)` for landscape/corner safety
+- `viewport-fit=cover` on meta viewport — required for `env(safe-area-inset-bottom)` on iPhone
+- `.nav-tabs-wrapper` has `padding-bottom: env(safe-area-inset-bottom)`
 - `.app-container` has `padding-bottom: calc(72px + env(safe-area-inset-bottom))` so content clears the bar
-- JS tab switching uses `.nav-tab[data-section]` — moving the wrapper does not affect JS
+- 4 tabs: Calculator, Rules, Machine, Care (Presets tab was removed — merged into calculator)
 
 ### Calculator Tab — Result Display Layout
 
 The result display (`.result-display`) is a **3-column flex row**:
 
 ```
-[cup SVG]   [dose + temp + cap text]   [washer SVG]
- left                centre               right
+[cup SVG + detergent pill]   [dose · temp · cap text]   [washer SVG + load type pill]
+       left (80px)                    centre (flex:1)            right (80px)
 ```
 
+- `.cup-container` and `.washer-container` both have `width: 80px` — fixed and equal, so centre metrics are always truly centred
+- Each SVG column has a `.result-pill` button below the SVG (same fixed width as container)
+- Detergent pill (`#detergentPill`): tapping opens the detergent bottom sheet
+- Load type pill (`#loadTypePill`): tapping opens the load type bottom sheet
 - `.result-row` — `display: flex; justify-content: space-between; align-items: center`
 - `.result-text` — `flex: 1; text-align: center`
-- `.result-dose-row` and `.result-meta-row` both have `justify-content: center` (required because they are flex containers — `text-align` alone does not centre flex children)
+- `.result-dose-row` and `.result-meta-row` both have `justify-content: center`
 
 ### Calculator Tab — Sticky Layout
 
 - `.header` — `position: sticky; top: 0; z-index: 100`
 - `.result-display-sticky` — `position: sticky; top: 80px; z-index: 40; background: var(--bg-primary)`
-- `.calculator-card` — scrolls normally beneath the sticky result
 - `::after` gradient on `.result-display-sticky` fades content scrolling underneath
+- `.preset-tip` (collapsible tips panel) — sits between result card and calculator card
+- `.calculator-card` — scrolls normally beneath the sticky result
 
 **Do NOT:**
 - Change `#calculator` to `display: flex` with fixed height — breaks page flow
 - Add `overflow-y: auto` to `.calculator-card` — creates two competing scroll regions on mobile
 - Use negative `margin-bottom` on `.result-display-sticky` — z-index 40 background covers card at rest
 - Make `.calculator-card` `position: sticky` — competing scroll on mobile
+
+### Bottom Sheet Pattern
+
+Both the detergent and load type selectors use a bottom sheet modal pattern:
+
+```html
+<div class="modal-backdrop" id="...Backdrop" hidden></div>
+<div class="bottom-sheet" id="...Sheet" hidden>
+  <div class="sheet-handle"></div>
+  <div class="sheet-header">...</div>
+  <div class="sheet-body">...</div>
+</div>
+```
+
+- `openXxxSheet()` — unhides, forces reflow, adds `.visible` class for CSS transition
+- `closeXxxSheet()` — removes `.visible`, listens for `transitionend` + `setTimeout(350)` fallback before setting `hidden`
+- Backdrop click closes the sheet
+- **Always add `setTimeout` fallback** when using `transitionend` — it can fail silently (rapid toggle, backgrounded tab)
+
+### Collapsible Tips Panel (`#presetTip`)
+
+- Sits between `.result-display-sticky` and `.calculator-card`
+- `hidden` attribute controls visibility (show/hide the entire block)
+- `.open` class controls collapsed/expanded state within the visible block
+- `#presetTipToggle` — clickable header row with title + chevron SVG
+- `#presetTipBody` — `max-height: 0` when collapsed, `max-height: 2000px` when `.open`
+- Chevron rotates 180° on `.open`
+- `updateLoadTypeTips()` sets `hidden = false` and adds `.open` only on first show (`wasHidden === true`); subsequent calls preserve the open/closed state
 
 ### SVG Visuals
 
@@ -101,56 +133,84 @@ The result display (`.result-display`) is a **3-column flex row**:
 - `<path id="drumFill">` — dome-shaped clothing fill, clipped to drum circle
 - `<g id="drumSoil">` — 6 pre-positioned dots (show 2/4/6 based on soil level)
 - Fill level: small = 25%, medium = 55%, large = 80% of drum height (cy=58, r=23, bottom=81, height=46)
-- Default path (medium load): `M 17 56 Q 40 49 63 56 L 63 90 L 17 90 Z`
 - **CSS `transition: d` on `<path>` is NOT reliable on iOS Safari — use JS instead**
 - Animation handled by `animateWasherFill(targetFillY, domeH)` using `requestAnimationFrame`
-- Module-level `washerFillY` (current animated position) and `washerAnimId` (rAF handle) track state
+- Module-level `washerFillY` (current position) and `washerAnimId` (rAF handle) track animation state
 - Fill colour mapped to colour category (see `colourFills` object in `updateWasher`)
 - CSS `transition: fill 0.4s ease` handles colour transitions reliably
 
-### Key Data Structures (app.js)
+---
 
-- `dosageData[size][soil]` — base dose in mL
-- `detergentTypes[type]` — dose multipliers and guide text
-- `typeModifiers[type]` — load type dose adjustments
-- `presetMeta[preset]` — per-preset tips, cautions, recommended detergent, cycle, maxLoad
-- `fallbackContent` — all UI strings, temp mappings, tips, reference data
+## Key Data Structures (app.js)
+
+- `dosageData[size][soil]` — base dose in mL (small/medium/large × light/normal/heavy)
+- `detergentTypes[type]` — `{ doseMultiplier, guideKey }` for liquid/powder/pods
+- `tempMatrix[loadType][colour]` — recommended temperature for each load type × colour combination
+- `cycleTemps[cycle]` — array of available temperatures for each cycle (used by `snapToNearest`)
+- `cycleMaxLoad[cycle]` — max kg capacity per cycle (used by `updateSizeConstraints`)
+- `sizeKg[size]` — kg value for each size button (small=3, medium=6, large=10)
+- `loadTypeMeta[loadType]` — `{ emoji, label, defaultColour, defaultSoil, defaultSize, recommendedCycle, recDetergent, tips[], cautions[] }`
+- `fallbackContent` — UI strings, tips, warnings, units
+- `storageKeys` — localStorage key constants
+
+### State Object
+
+```js
+const state = {
+    size: 'medium',        // 'small' | 'medium' | 'large'
+    soil: 'normal',        // 'light' | 'normal' | 'heavy'
+    colour: 'mixed',       // 'whites' | 'lights' | 'colours' | 'darks' | 'mixed'
+    cycle: 'everyday',     // 'everyday' | 'cottons' | 'heavy' | 'delicates' | 'wool' | 'quick' | 'bulky' | 'easyiron'
+    detergent: 'liquid',   // 'liquid' | 'powder' | 'pods'
+    concentration: 1,      // 0.7–1.3 (user slider)
+    loadType: 'everyday'   // key into loadTypeMeta
+};
+```
+
+---
+
+## Key Functions (app.js)
+
+- `updateResult()` — main recalculation, called on every state change and at init. Calls `updateSizeConstraints()`, `getDoseAndTemp()`, `updateCup()`, `updateWasher()`, `updateLoadTypeTips()`, `updateDetergentBar()`, `updateCycleIndicators()`, `updateCycleRec()`
+- `getDoseAndTemp(size, soil, colour, loadType, cycle, detergentType)` — 6-arg core calculation, returns `{ dose, doseAmount, doseUnit, tempStr, isPods }`
+- `snapToNearest(temp, available)` — snaps a temperature to the nearest available cycle temperature; ties prefer lower value (arrays sorted ascending)
+- `updateSizeConstraints()` — disables size buttons exceeding `cycleMaxLoad[state.cycle]`, auto-corrects `state.size` if over limit
+- `applyLoadTypeDefaults(loadType)` — sets `state.colour/soil/size/cycle` from `loadTypeMeta`, syncs all 4 button groups, calls `updateLoadTypePill()` and `updateResult()`
+- `syncSelectorGroup(groupId, dataKey, value)` — toggles `.active` on selector buttons by dataset value
+- `updateLoadTypePill()` — updates `#loadTypePill` text from `loadTypeMeta[state.loadType].label`
+- `updateDetergentBar()` — updates `#detergentPill` text + hidden `#detBarType`/`#detBarConc` elements
+- `updateLoadTypeTips()` — single source of all contextual text in the tips panel; builds: dynamic temp tip (colour-varying load types), cycle off-rec, detergent off-rec, active warnings, meta.tips, meta.cautions
+- `updateCup(amount)` — animates cup fill level via CSS rect geometry transition
+- `updateWasher(size, colour, soil)` — updates washer fill colour, dome level, soil dots
+- `animateWasherFill(targetFillY, domeH)` — rAF tween for dome path animation
+- `openDetergentSheet()` / `closeDetergentSheet()` — detergent bottom sheet
+- `openLoadTypeSheet()` / `closeLoadTypeSheet()` — load type bottom sheet
+- `syncLoadTypeSheetUI()` — syncs `.active` on load type sheet options to current state
+- `setupSelectors()` — binds size/soil/colour/cycle/detergent button groups + concentration range
+- `roundToFive(n)` — rounds dose to nearest 5mL throughout
 
 ### Dosage Calculation (`getDoseAndTemp`)
 
 Calculation order:
-1. `baseDose` from `dosageData[size][soil]` + `typeModifiers[type].doseAdjust`
-2. Temperature modifier applied to `baseDose`:
-   - Cold / ≤20°C → ×1.12 (low enzyme activity)
-   - 30–40°C → ×1.00 (baseline, enzyme optimum)
+1. `baseDose` from `dosageData[size][soil]`
+2. Temperature derived from `tempMatrix[loadType][colour]` → snapped to `cycleTemps[cycle]` via `snapToNearest`
+3. Temperature modifier applied to `baseDose`:
+   - ≤20°C → ×1.12 (low enzyme activity, more detergent needed)
+   - 30–40°C → ×1.00 (enzyme optimum, baseline)
    - ≥60°C → ×0.90 (thermal cleaning compensates)
-3. `scaledDose = roundToFive(baseDose × concentration × detergentInfo.doseMultiplier)`
-4. Pods bypass steps 1–3 entirely
-
-### Key Functions (app.js)
-
-- `updateResult()` — main recalculation, called on every state change and at init
-- `updateCup(amount)` — animates cup fill level
-- `updateWasher(size, colour, soil)` — updates washer fill colour, dome level, soil dots
-- `animateWasherFill(targetFillY, domeH)` — rAF tween for dome path animation
-- `renderQuickReference()` — builds preset cards; must be re-called when detergent type or concentration changes
-- `getDoseAndTemp(size, soil, colour, type, detergentType)` — core calculation, returns dose + temp + tips
-
-### Preset Cards (Quick Reference Tab)
-
-Each card shows: emoji + label, chips (soil, colour, cycle, maxLoad), then `dose · temp` on one row. Labels removed from dose/temp — units (`mL`, `°C`) are self-labelling.
+4. `scaledDose = roundToFive(baseDose × concentration × detergentInfo.doseMultiplier)`
+5. Pods bypass steps 1–4 entirely (fixed pod count based on size)
 
 ---
 
 ## Conventions and Patterns
 
 - `ui` object — all DOM refs via `getElementById` at load time
-- `state` object — `{ size, soil, colour, type, detergent, concentration, activePreset }`
-- `setupSelector(groupId, stateKey)` — generic button-group selector binding
+- `setupSelector(groupId, dataKey, callback)` — generic button-group selector binding
 - All selector buttons use `data-*` attributes; JS reads `dataset.*`
 - Storage via `readStorage` / `writeStorage` wrappers around `localStorage`
 - CSS custom properties in `:root` for all colours — never hardcode hex in components
-- `roundToFive(n)` — rounds dose to nearest 5mL throughout
+- `triggerHaptic()` — lightweight haptic on state changes (mobile)
 
 ---
 
@@ -158,7 +218,7 @@ Each card shows: emoji + label, chips (soil, colour, cycle, maxLoad), then `dose
 
 - No package manager, no node_modules, no build step
 - Fonts loaded from Google Fonts CDN (preconnect in `<head>`)
-- Service worker cache name: `laundry-guide-v2` — **bump manually on each deploy**
+- Service worker cache name: `laundry-guide-v5` — **bump manually on each deploy**
 - Dev: open `index.html` directly in browser; refresh to see changes
 - Platform: Windows 11, bash shell — use Unix syntax, `git -C <path>` instead of `cd`
 
@@ -167,31 +227,44 @@ Each card shows: emoji + label, chips (soil, colour, cycle, maxLoad), then `dose
 ## Known Issues and Pitfalls
 
 ### SVG Animation
-- **CSS `transition: d`** for SVG `<path>` d attribute does not work reliably on iOS Safari — always use `requestAnimationFrame` tween instead
-- SVG geometry attributes (`x`, `y`, `width`, `height`, `cx`, `cy`, `rx`, `ry`) on `<rect>` and `<ellipse>` ARE CSS-transitionable — use these where possible
+- **CSS `transition: d`** for SVG `<path>` d attribute does not work on iOS Safari — always use `requestAnimationFrame` tween
+- SVG geometry attributes (`x`, `y`, `width`, `height`, `cx`, `cy`, `rx`, `ry`) on `<rect>` / `<ellipse>` ARE CSS-transitionable
 - CSS `transition: all` on `.cup-fill` works because rect attributes are geometry properties
 
 ### iOS Safe Area
 - `env(safe-area-inset-bottom)` returns 0 unless `viewport-fit=cover` is in the meta viewport tag
-- Fixed bottom bars must have `padding-bottom: env(safe-area-inset-bottom)` AND the page needs `padding-bottom: calc(barHeight + env(safe-area-inset-bottom))`
+- Fixed bottom bars need `padding-bottom: env(safe-area-inset-bottom)` AND page needs matching `padding-bottom`
 
 ### Fixed Element Centering
-- `position: fixed; left: 0; right: 0; max-width: 480px; margin: 0 auto` correctly centres a fixed element — verified working
+- `position: fixed; left: 0; right: 0; max-width: 480px; margin: 0 auto` correctly centres a fixed element
 
 ### Flex Centering
-- `text-align: center` on a flex container parent does NOT centre flex children
-- Must use `justify-content: center` on the flex row itself
+- `text-align: center` on a flex container does NOT centre flex children — use `justify-content: center` on the row
 
-### Sticky Layout (do not revisit — solved)
-- See constraints in Calculator Tab section above — these have been broken and fixed before
+### Sticky Layout (solved — do not revisit)
+- See Calculator Tab section constraints above
 
-### JS
-- `renderQuickReference()` is called once at init — any state change affecting dose display (detergent type, concentration) must re-call it or preset cards show stale values
-- CSS `transitionend` can fail silently (rapid toggle, backgrounded tab) — always add `setTimeout` fallback when using it to gate `hidden`/`display` state changes
+### Bottom Sheet `transitionend`
+- `transitionend` can fail silently (rapid toggle, backgrounded tab) — always add `setTimeout(fn, 350)` fallback alongside `addEventListener('transitionend', fn)`
+
+### `applyLoadTypeDefaults` calls `updateResult()`
+- `applyLoadTypeDefaults` now calls `updateResult()` internally. Callers must not also call `updateResult()` immediately after — causes double calculation (harmless but wasteful). `init()` currently does this redundantly.
+
+### `setupDetergentSheet` trigger element
+- The detergent sheet is now triggered by `#detergentPill`, NOT `#detergentBar` (bar was removed). `setupDetergentSheet` binds to `ui.detergentPill`. This has been corrected once — do not revert to `detergentBar`.
+
+### Pill width and centring
+- Both `.cup-container` and `.washer-container` are fixed at `width: 80px`. Pills use `width: 100%; box-sizing: border-box` to fill the column. This ensures the centre `.result-text` (flex:1) always occupies the same space regardless of label length.
+
+### Information Architecture
+- Result card = numbers only (dose + temp). No warnings or tips inline.
+- Tips panel (`#presetTip`) = all contextual text: dynamic temp tip, off-rec warnings, load-type tips, cautions — in that priority order.
+- `updateCycleRec()` and `updateDetergentRec()` are always-hidden (stubs kept for call-site compatibility).
 
 ### Service Worker
 - Uses `skipWaiting()` + `clients.claim()` for immediate activation
 - Fetch handler scoped to same-origin only — cross-origin requests pass through
+- Cache name is currently `laundry-guide-v5`
 
 ---
 
@@ -221,6 +294,8 @@ Each card shows: emoji + label, chips (soil, colour, cycle, maxLoad), then `dose
 
 ## Session Log
 
-**2026-02-20** — Replaced scrollable top nav with fixed bottom tab bar (iOS safe area, `viewport-fit=cover`). Added front-loader washing machine SVG to result display with animated dome-shaped clothing fill (rAF tween), colour-mapped fill, and soil dots. Centred result row to 3-column layout. Condensed preset cards to single dose·temp row. Added temperature-based dose modifier (±10–12%) derived from existing colour→temp mapping.
+**2026-02-23** — Major calculator redesign: merged Presets tab into Calculator. Load type becomes the primary selector (bottom sheet accessed via result card pill). Detergent settings moved to result card pill (was a bar in the calculator card). Temperature now derived from `tempMatrix[loadType][colour]` snapped to `cycleTemps[cycle]`. `cycleMaxLoad` + `updateSizeConstraints` greys out invalid load sizes. `updateLoadTypeTips` consolidates all contextual text (tips, warnings, off-rec notices) into a single collapsible panel between result card and calculator card. Information architecture: result card = numbers only, tips panel = all explanatory text.
+
+**2026-02-20** — Replaced scrollable top nav with fixed bottom tab bar (iOS safe area, `viewport-fit=cover`). Added front-loader washing machine SVG to result display with animated dome-shaped clothing fill (rAF tween), colour-mapped fill, and soil dots. Centred result row to 3-column layout. Added temperature-based dose modifier (±10–12%).
 
 **2026-01-?? (prior session)** — Redesigned load types, fixed content accuracy, simplified temperatures. Moved temp badge inline with dose value.

@@ -4,6 +4,112 @@ Context: Soft-water UK household (~19 mg/L), front-loader washing machine, prima
 
 ---
 
+## Washing Machine Model — WH1060P4 Front-Loader
+
+The app is calibrated for a **front-loading washing machine** (horizontal drum axis). All cycle temperatures, capacities, and dose guidance assume front-loader mechanics. The specific household machine referenced in research is the **WH1060P4** (or equivalent 10 kg front-loader with Euro/UK cycle set).
+
+### Front-Loader vs Top-Loader: Detergent Implications
+
+| Factor | Front-Loader | Top-Loader |
+|--------|-------------|------------|
+| Water usage | Low (15–40 L per cycle) | High (100–150 L) |
+| Drum action | Tumble (gravity-assisted) | Agitator or impeller |
+| Detergent contact time | High — low water concentrates surfactant | Low — surfactant diluted in large bath |
+| HE detergent required? | Yes (low-suds formulation) | No |
+| Soft-water dose reduction | ~25–30% vs. label | ~20–25% vs. label |
+
+Front-loaders require High-Efficiency (HE / low-suds) detergent. Standard top-loader detergents produce excess foam in front-loaders, which insulates the drum, reduces mechanical cleaning action, and can trigger automatic rinse extensions that waste water and energy. All UK liquid and powder detergents sold since ~2010 are HE-compatible by default.
+
+### Drum Capacity by Cycle (WH1060P4 reference)
+
+| Cycle | Rated Capacity | Notes |
+|-------|----------------|-------|
+| Cottons | 10 kg | Full drum; high agitation |
+| Everyday / Synthetics | 10 kg | Medium agitation; suitable for mixed fabrics |
+| Heavy | 10 kg | Extended soak + agitation |
+| Delicates | 4 kg | Minimal agitation; low spin (400–800 RPM) |
+| Wool | 3 kg | Near-zero agitation; horizontal oscillation only |
+| Quick | 4 kg | Short cycle; light soiling only |
+| Bulky | 10 kg | Low agitation; measured in items (1–2 duvets), not kg |
+| Easy Iron | 10 kg | Reduced spin to minimise creasing |
+
+### Spin Speed Reference
+
+| Cycle | Spin Speed |
+|-------|-----------|
+| Cottons | 1000–1400 RPM |
+| Everyday | 800–1200 RPM |
+| Delicates | 400–800 RPM |
+| Wool | 400–600 RPM |
+| Bulky | 600–800 RPM (too-high spin tangles/damages duvets) |
+
+### Front-Loader Mechanical Cleaning
+
+Front-loaders clean via **repeated lifting and dropping** of laundry (tumble action). Water enters the drum to a relatively shallow level; the rotating drum lifts clothes to the top and lets them fall back through the water. This mechanical action is:
+- More aggressive than soaking (good for cottons, poor for delicates)
+- Reduced to near-zero in Wool cycle (horizontal oscillation only — prevents felting)
+- The reason agitation damages silk, fine wool, and elastane — these require low-agitation cycles
+
+---
+
+## Dosage Calculation Model
+
+The app uses a deterministic dosage model: base dose × temperature modifier × concentration factor × detergent multiplier, rounded to the nearest 5 mL.
+
+### Base Dose Table (`dosageData`)
+
+Base doses (mL) for soft water, front-loader, liquid detergent at 100% concentration:
+
+| Load Size | Light Soil | Normal Soil | Heavy Soil |
+|-----------|-----------|-------------|------------|
+| Small (≤3 kg) | 10 mL | 15 mL | 20 mL |
+| Medium (≤6 kg) | 15 mL | 20 mL | 25 mL |
+| Large (≤10 kg) | 20 mL | 25 mL | 35 mL |
+
+These values represent approximately 25–30% of the manufacturer label dose, adjusted for soft water (~19 mg/L). The scientific basis: in soft water, surfactant molecules are not consumed by forming calcium/magnesium soaps (hard-water scum), so effective surfactant concentration is maintained at a lower total dose.
+
+### Temperature Modifier
+
+Temperature affects detergent efficacy through enzyme kinetics:
+
+| Temperature | Modifier | Scientific Basis |
+|-------------|----------|-----------------|
+| ≤20°C (cold) | ×1.12 | Enzyme activity near zero; surfactants less effective; more chemical agent needed to compensate |
+| 30–40°C | ×1.00 | Enzyme optimum range (protease, amylase, lipase active); baseline dose |
+| ≥60°C | ×0.90 | Thermal denaturation of proteins substitutes for enzyme action; mechanical and thermal cleaning reduce required chemical load |
+
+The modifier is applied to the base dose before rounding. The ×1.12 at cold temperatures reflects the real-world guidance that users should add extra detergent when washing at low temperatures — this is especially relevant for body-contact textiles (underwear, towels) where bio enzyme activity is the primary hygiene mechanism.
+
+### Detergent Type Multiplier
+
+| Type | Multiplier | Notes |
+|------|-----------|-------|
+| Liquid | ×1.00 | Reference; fully dissolves at all temperatures including 30°C |
+| Powder | ×0.90 | Marginally higher active surfactant concentration per gram in most UK formulations; also contains bleach precursors (TAED + sodium percarbonate) which add cleaning power without increasing dose |
+| Pods | N/A | Bypass the dose model entirely; fixed count: 1 pod for small/medium, 2 pods for large/heavy |
+
+### Concentration Factor
+
+User-adjustable slider (0.7–1.3×). Intended to compensate for detergent concentration variations:
+- **Below 1.0 (e.g. 0.7×)**: Ultra-concentrated detergents (e.g. 3× concentrate) where label dose is already very small — user reduces further for soft water
+- **1.0**: Standard concentration (default)
+- **Above 1.0 (e.g. 1.3×)**: Diluted or budget detergents with lower active ingredient content
+
+### Rounding
+
+All final doses are rounded to the nearest 5 mL via `roundToFive(n)`. This is a UX decision — it produces values that are meaningful on a measuring cap (most caps have 5 mL graduations). Rounding introduces at most ±2.5 mL error (≤10% on a typical 25 mL dose).
+
+### Soft Water Context
+
+Soft water (~19 mg/L total dissolved solids, predominantly sodium and potassium ions with minimal calcium/magnesium) interacts with detergent differently from hard water (~200–400 mg/L in SE England):
+
+- **No calcium soap formation**: In hard water, Ca²⁺ and Mg²⁺ ions react with soap/surfactant molecules to form insoluble calcium stearate (scum), consuming surfactant before it can act on soil. This does not occur in soft water.
+- **Lower critical micelle concentration (CMC)**: In soft water, surfactant molecules form cleaning micelles at lower concentrations, so less surfactant is needed to achieve the same soil-removal efficiency.
+- **Residue risk**: Over-dosing in soft water leaves surfactant and builder residue on fabric (stiff towels, musty odour from trapped moisture). This is a greater risk than under-dosing.
+- **Net effect**: The dosage table uses approximately 25–30% of the manufacturer label dose, consistent with guidance from Which?, In the Wash, and Persil UK for soft-water regions.
+
+---
+
 ## Methodology
 
 Each load type was researched using web search against UK sources (Which?, NHS, Persil UK, Woolmark, CDA Appliances, In the Wash, Ariel UK, and others). Guidance reflects the scientific consensus and mainstream UK recommendation, not manufacturer marketing.
