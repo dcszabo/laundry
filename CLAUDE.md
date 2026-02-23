@@ -218,7 +218,7 @@ Calculation order:
 
 - No package manager, no node_modules, no build step
 - Fonts loaded from Google Fonts CDN (preconnect in `<head>`)
-- Service worker cache name: `laundry-guide-v8` — **bump manually on each deploy**
+- Service worker cache name: `laundry-guide-v9` — **bump manually on each deploy**
 - Dev: open `index.html` directly in browser; refresh to see changes
 - Platform: Windows 11, bash shell — use Unix syntax, `git -C <path>` instead of `cd`
 
