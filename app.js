@@ -882,8 +882,8 @@ function closeDetergentSheet() {
 }
 
 function setupDetergentSheet() {
-    if (ui.detergentBar) {
-        ui.detergentBar.addEventListener('click', openDetergentSheet);
+    if (ui.detergentPill) {
+        ui.detergentPill.addEventListener('click', openDetergentSheet);
     }
     if (ui.sheetDone) {
         ui.sheetDone.addEventListener('click', closeDetergentSheet);
