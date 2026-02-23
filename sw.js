@@ -1,4 +1,4 @@
-const CACHE_NAME = 'laundry-guide-v7';
+const CACHE_NAME = 'laundry-guide-v8';
 const ASSETS = [
     './',
     './index.html',
