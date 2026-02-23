@@ -265,7 +265,7 @@ Calculation order:
 - `.selector-btn:hover` MUST stay inside `@media (hover: hover)` — bare `:hover` sticks on touch after tap, causing adjacent buttons to appear highlighted
 
 ### Cycle Indicator Checkmark
-- `.selector-btn[data-recommended="true"]::after` MUST use `position: absolute; top: 50%; right: 4px; transform: translateY(-50%)` — inline `margin-left` causes button width change on toggle, triggering layout reflow and page shift
+- `.selector-btn[data-recommended="true"]::after` uses `position: absolute; top: 3px; right: 3px` with `content: ''`, `width/height: 13px`, and an SVG circle-tick as `background-image` — inline `margin-left` causes button width change on toggle, triggering layout reflow and page shift
 - `.selector-btn` has `position: relative` to support this — do not remove
 
 ### Tips Panel Scroll Anchoring
