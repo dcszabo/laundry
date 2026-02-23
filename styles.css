@@ -1162,11 +1162,6 @@ body {
 .install-dismiss:active { transform: scale(0.95); }
 .key-fact-close:active { opacity: 0.8; }
 
-/* Calculator Section Breaks */
-.calc-section-break {
-    padding-top: 16px;
-    margin-top: -4px;
-}
 
 /* Custom Range Slider */
 input[type="range"] {
