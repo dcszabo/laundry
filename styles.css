@@ -227,6 +227,13 @@ body {
     margin-top: 2px;
 }
 
+/* Colour selector — 5 buttons, single row */
+#colourGroup .selector-btn {
+    min-width: 0;
+    padding: 12px 4px;
+    font-size: 12px;
+}
+
 /* Colour selector specific styles */
 .selector-btn.colour-white {
     border-left: 3px solid #f8fafc;
