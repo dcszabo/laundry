@@ -471,3 +471,20 @@ All sources cited inline per section above. Consolidated list of primary referen
 - [Levi's Denim Care Guide](https://www.levi.com/US/en_US/blog/article/the-definitive-guide-to-denim)
 
 *All temperatures in degrees Celsius. Guidance is for front-loader machines. Soft-water context: ~19 mg/L total dissolved solids — reduce all detergent doses by approximately 25–30% vs. manufacturer label.*
+
+---
+
+## Not Researched / Uncertain
+
+Items below are estimates or app-designed values, not sourced from the WH1060P4 manual or a specific cited reference. They are reasonable but unverified.
+
+| Item | Value in app | Status |
+|------|-------------|--------|
+| `cycleTemps` — available temperatures per cycle | e.g. `cottons: [20,30,40,60,90]`, `everyday: [20,30,40,60]` | Estimates based on typical Euro-spec front-loader. WH1060P4 manual not consulted. |
+| Drum cycle capacities | Delicates: 4 kg, Quick: 4 kg, Bulky: 10 kg | Plausible for machine class; not verified from WH1060P4 spec sheet. |
+| Spin speeds | Cottons: 1000–1400 RPM, Everyday: 800–1200 RPM, etc. | General front-loader estimates; not WH1060P4 specific. |
+| Base dose values | 10/15/20 mL (small), 15/20/25 mL (medium), 20/25/35 mL (large) | App-designed using the 25–30% soft-water rule; not from a manufacturer dosing table. |
+| Temperature dose modifiers | ×1.12 at ≤20°C, ×1.00 at 30–40°C, ×0.90 at ≥60°C | Grounded in enzyme kinetics science but specific percentages are app-designed, not from a cited source. |
+| Powder detergent multiplier | ×0.90 | Reasonable based on typical UK formulation; not from a specific tested reference. |
+
+**Residual inconsistency in this document:** The Per-Load Everyday detail table (line ~235) still says `"Whites | 40°C (60°C if heavily soiled)"` — this contradicts the temperature matrix which was updated to 60°C as the default for everyday whites.
