@@ -1274,7 +1274,9 @@ input[type="range"]::-moz-range-thumb {
 }
 .preset-tip.open .preset-tip-body {
     max-height: 2000px;
-    padding: 0 14px 14px;
+}
+.preset-tip-inner {
+    padding: 0 8px 12px;
 }
 
 /* Machine Card Bottom Margin */

@@ -303,6 +303,7 @@ const ui = {
     presetTipToggle: document.getElementById('presetTipToggle'),
     presetTipTitle: document.getElementById('presetTipTitle'),
     presetTipBody: document.getElementById('presetTipBody'),
+    presetTipInner: document.getElementById('presetTipInner'),
     detergentBar: document.getElementById('detergentBar'),
     detBarType: document.getElementById('detBarType'),
     detBarConc: document.getElementById('detBarConc'),
@@ -658,8 +659,8 @@ function updateLoadTypeTips() {
         ui.presetTipTitle.textContent = meta.emoji + ' ' + meta.label + ' Tips';
     }
 
-    if (ui.presetTipBody) {
-        ui.presetTipBody.textContent = '';
+    if (ui.presetTipInner) {
+        ui.presetTipInner.textContent = '';
         const loadTemps = tempMatrix[state.loadType];
         const tempValues = loadTemps ? Object.values(loadTemps) : [];
         const hasColourVariation = tempValues.length > 0 && new Set(tempValues).size > 1;
@@ -714,7 +715,7 @@ function updateLoadTypeTips() {
 
             row.appendChild(icon);
             row.appendChild(text);
-            ui.presetTipBody.appendChild(row);
+            ui.presetTipInner.appendChild(row);
         });
     }
 
