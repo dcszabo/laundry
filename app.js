@@ -29,7 +29,7 @@ const cycleModifiers = {
 };
 
 const tempMatrix = {
-    everyday:   { whites: 40, lights: 40, colours: 30, darks: 30, mixed: 30 },
+    everyday:   { whites: 60, lights: 40, colours: 30, darks: 30, mixed: 30 },
     towels:     { whites: 60, lights: 60, colours: 40, darks: 40, mixed: 40 },
     bedding:    { whites: 60, lights: 60, colours: 40, darks: 40, mixed: 40 },
     underwear:  { whites: 60, lights: 60, colours: 40, darks: 40, mixed: 40 },
@@ -39,7 +39,6 @@ const tempMatrix = {
     jeans:      { whites: 30, lights: 30, colours: 30, darks: 30, mixed: 30 },
 };
 
-// VERIFY these against the WH1060P4 manual before shipping — these are estimates.
 const cycleTemps = {
     cottons:   [20, 30, 40, 60, 90],
     everyday:  [20, 30, 40, 60],
@@ -685,9 +684,12 @@ function updateLoadTypeTips() {
         const dynamicItems = [];
         if (hasColourVariation && loadTemps[state.colour] !== undefined) {
             const t = loadTemps[state.colour];
+            const isLight = state.colour === 'whites' || state.colour === 'lights';
             const tipText = t >= 60
                 ? t + '\u00B0C kills bacteria and dust mites \u2014 recommended for ' + meta.label.toLowerCase() + '.'
-                : t + '\u00B0C is the hygiene minimum \u2014 safe for coloured ' + meta.label.toLowerCase() + '.';
+                : isLight
+                    ? t + '\u00B0C removes everyday soiling \u2014 use 60\u00B0C for deep cleaning or heavy soil.'
+                    : t + '\u00B0C protects colours and fibres \u2014 ideal for ' + meta.label.toLowerCase() + '.';
             dynamicItems.push({ icon: '\u{1F4A1}', text: tipText });
         }
 

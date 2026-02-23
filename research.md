@@ -28,7 +28,7 @@ Front-loaders require High-Efficiency (HE / low-suds) detergent. Standard top-lo
 | Everyday / Synthetics | 10 kg | Medium agitation; suitable for mixed fabrics |
 | Heavy | 10 kg | Extended soak + agitation |
 | Delicates | 4 kg | Minimal agitation; low spin (400–800 RPM) |
-| Wool | 3 kg | Near-zero agitation; horizontal oscillation only |
+| Wool | 3 kg rated / 2 kg recommended | Near-zero agitation; horizontal oscillation only. 2 kg recommended max for safe wool washing. App uses 3 kg as the cycle capacity limit (so the Small/3 kg size button remains available) and displays 2 kg as the recommended max in the Wool preset card. |
 | Quick | 4 kg | Short cycle; light soiling only |
 | Bulky | 10 kg | Low agitation; measured in items (1–2 duvets), not kg |
 | Easy Iron | 10 kg | Reduced spin to minimise creasing |
@@ -122,7 +122,7 @@ Each load type was researched using web search against UK sources (Which?, NHS, 
 
 | Load Type  | Whites | Lights | Colours | Darks | Mixed |
 |------------|--------|--------|---------|-------|-------|
-| Everyday   | 40°C   | 40°C   | 30°C    | 30°C  | 30°C  |
+| Everyday   | 60°C   | 40°C   | 30°C    | 30°C  | 30°C  |
 | Towels     | 60°C   | 60°C   | 40°C    | 40°C  | 40°C  |
 | Bedding    | 60°C   | 60°C   | 40°C    | 40°C  | 40°C  |
 | Underwear  | 60°C   | 60°C   | 40°C    | 40°C  | 40°C  |
@@ -131,7 +131,7 @@ Each load type was researched using web search against UK sources (Which?, NHS, 
 | Activewear | 30°C   | 30°C   | 30°C    | 30°C  | 30°C  |
 | Jeans      | 30°C   | 30°C   | 30°C    | 30°C  | 30°C  |
 
-Notes: Everyday whites can go to 60°C if heavily soiled. Underwear whites: 60°C for pure cotton only; 40°C for synthetic-mix to protect elastic.
+Notes: Everyday whites set to 60°C (default) — whites benefit from 60°C for brightness maintenance and thorough cleaning even without heavy soiling. Underwear whites: 60°C for pure cotton only; 40°C for synthetic-mix to protect elastic.
 
 > Confirmed by science research agent. Sources: NHS, Which?, Woolmark, Persil UK, In the Wash, Heritage Park Laundry, CDA Appliances.
 
