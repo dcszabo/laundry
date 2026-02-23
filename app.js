@@ -593,7 +593,7 @@ function updateDetergentRec() {
 function updateLoadTypePill() {
     if (!ui.loadTypePill) return;
     const meta = loadTypeMeta[state.loadType];
-    if (meta) ui.loadTypePill.textContent = meta.emoji + '\u00A0' + meta.label;
+    if (meta) ui.loadTypePill.textContent = meta.label;
 }
 
 function syncLoadTypeSheetUI() {
