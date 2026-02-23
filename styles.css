@@ -1167,6 +1167,7 @@ input[type="range"]::-moz-range-thumb {
     border: 1px solid rgba(0, 212, 170, 0.25);
     border-radius: var(--radius-lg);
     margin-top: 16px;
+    margin-bottom: 16px;
     overflow: hidden;
 }
 .preset-tip[hidden] { display: none; }
