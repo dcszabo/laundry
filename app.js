@@ -89,7 +89,6 @@ const fallbackContent = {
     },
     warnings: {
         delicatesHeavy: 'Delicates + heavy soil: pre-treat stains or switch to Everyday.',
-        beddingDarks: 'High temp cotton cycles can fade darks/brights. Consider 40°C or split loads.',
         podsSmallLight: 'Pods may be too strong for very small/light loads.'
     },
     guides: {
@@ -283,9 +282,7 @@ const ui = {
     doseAmount: document.getElementById('doseAmount'),
     doseUnit: document.getElementById('doseUnit'),
     tempBadge: document.getElementById('tempBadge'),
-    colourTipText: document.getElementById('colourTipText'),
     cupComparison: document.getElementById('cupComparison'),
-    warningBanner: document.getElementById('warningBanner'),
     concentrationRange: document.getElementById('concentrationRange'),
     concentrationValue: document.getElementById('concentrationValue'),
     detergentGuide: document.getElementById('detergentGuide'),
@@ -362,16 +359,7 @@ function updateCycleIndicators() {
 }
 
 function updateCycleRec() {
-    if (!ui.cycleRec) return;
-    const meta = loadTypeMeta[state.loadType];
-    if (!meta || state.cycle === meta.recommendedCycle) {
-        ui.cycleRec.hidden = true;
-        return;
-    }
-    const recLabel = meta.recommendedCycle.charAt(0).toUpperCase() + meta.recommendedCycle.slice(1);
-    const curLabel = state.cycle.charAt(0).toUpperCase() + state.cycle.slice(1);
-    ui.cycleRec.textContent = '\u{1F4A1} ' + recLabel + ' cycle recommended for ' + meta.label + ' \u2014 you\u2019re using ' + curLabel;
-    ui.cycleRec.hidden = false;
+    if (ui.cycleRec) ui.cycleRec.hidden = true;
 }
 
 function syncDetergentUI() {
@@ -418,9 +406,6 @@ function getWarnings(size, soil, colour, cycle, detergentType) {
     const warnings = [];
     if (cycle === 'delicates' && soil === 'heavy') {
         warnings.push(fallbackContent.warnings.delicatesHeavy);
-    }
-    if (cycle === 'cottons' && (colour === 'darks' || colour === 'colours')) {
-        warnings.push(fallbackContent.warnings.beddingDarks);
     }
     if (detergentType === 'pods' && size === 'small' && soil === 'light') {
         warnings.push(fallbackContent.warnings.podsSmallLight);
@@ -593,20 +578,7 @@ function updateDetergentBar() {
 }
 
 function updateDetergentRec() {
-    if (!ui.detergentRec) return;
-    const meta = loadTypeMeta[state.loadType];
-    if (!meta) {
-        ui.detergentRec.hidden = true;
-        return;
-    }
-    if (meta.recDetergent === state.detergent) {
-        ui.detergentRec.hidden = true;
-        return;
-    }
-    const rec = meta.recDetergent.charAt(0).toUpperCase() + meta.recDetergent.slice(1);
-    const cur = state.detergent.charAt(0).toUpperCase() + state.detergent.slice(1);
-    ui.detergentRec.textContent = '\u{1F4A1} ' + rec + ' recommended for ' + meta.label + ' \u2014 you\u2019re using ' + cur;
-    ui.detergentRec.hidden = false;
+    if (ui.detergentRec) ui.detergentRec.hidden = true;
 }
 
 function updateSheetRec() {
@@ -648,6 +620,26 @@ function updateLoadTypeTips() {
             dynamicItems.push({ icon: '\u{1F4A1}', text: tipText });
         }
 
+        // Cycle off-recommendation
+        if (meta && state.cycle !== meta.recommendedCycle) {
+            const recLabel = meta.recommendedCycle.charAt(0).toUpperCase() + meta.recommendedCycle.slice(1);
+            const curLabel = state.cycle.charAt(0).toUpperCase() + state.cycle.slice(1);
+            dynamicItems.push({ icon: '\u26A0\uFE0F', text: recLabel + ' cycle recommended for ' + meta.label + ' \u2014 you\u2019re using ' + curLabel + '.' });
+        }
+
+        // Detergent off-recommendation
+        if (meta && meta.recDetergent !== state.detergent) {
+            const rec = meta.recDetergent.charAt(0).toUpperCase() + meta.recDetergent.slice(1);
+            const cur = state.detergent.charAt(0).toUpperCase() + state.detergent.slice(1);
+            dynamicItems.push({ icon: '\u26A0\uFE0F', text: rec + ' detergent recommended for ' + meta.label + ' \u2014 you\u2019re using ' + cur + '.' });
+        }
+
+        // Other warnings (delicates+heavy, pods+small+light)
+        const activeWarnings = getWarnings(state.size, state.soil, state.colour, state.cycle, state.detergent);
+        activeWarnings.forEach(function(w) {
+            dynamicItems.push({ icon: '\u26A0\uFE0F', text: w });
+        });
+
         const allItems = dynamicItems
             .concat(meta.tips.map(function(t) { return { icon: '\u{1F4A1}', text: t }; }))
             .concat(meta.cautions.map(function(c) { return { icon: '\u26A0\uFE0F', text: c }; }));
@@ -674,7 +666,7 @@ function updateLoadTypeTips() {
 }
 
 function updateResult() {
-    if (!ui.doseAmount || !ui.doseUnit || !ui.tempBadge || !ui.colourTipText || !ui.cupComparison) {
+    if (!ui.doseAmount || !ui.doseUnit || !ui.tempBadge || !ui.cupComparison) {
         return;
     }
 
@@ -685,7 +677,6 @@ function updateResult() {
     ui.doseAmount.textContent = result.doseAmount;
     ui.doseUnit.textContent = result.doseUnit;
     ui.tempBadge.textContent = `${fallbackContent.ui.tempIcon} ${result.tempStr}`;
-    ui.colourTipText.textContent = result.tip;
 
     if (result.isPods) {
         updateCup(0);
@@ -694,16 +685,6 @@ function updateResult() {
         updateCup(result.dose);
         const percentOfMax = Math.round((result.dose / 75) * 100);
         ui.cupComparison.textContent = fallbackContent.ui.capComparison.replace('{percent}', String(percentOfMax));
-    }
-
-    if (ui.warningBanner) {
-        if (result.warnings.length) {
-            ui.warningBanner.textContent = result.warnings.join(' ');
-            ui.warningBanner.hidden = false;
-        } else {
-            ui.warningBanner.textContent = '';
-            ui.warningBanner.hidden = true;
-        }
     }
 
     updateWasher(state.size, state.colour, state.soil);
