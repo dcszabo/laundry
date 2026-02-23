@@ -32,6 +32,7 @@ body {
     min-height: 100vh;
     line-height: 1.6;
     -webkit-font-smoothing: antialiased;
+    overflow-anchor: none;
 }
 
 .app-container {
@@ -207,11 +208,14 @@ body {
     cursor: pointer;
     transition: all 0.2s ease;
     text-align: center;
+    position: relative;
 }
 
-.selector-btn:hover {
-    border-color: var(--accent-blue);
-    color: var(--text-primary);
+@media (hover: hover) {
+    .selector-btn:hover {
+        border-color: var(--accent-blue);
+        color: var(--text-primary);
+    }
 }
 
 .selector-btn.active {
@@ -326,10 +330,11 @@ body {
 .selector-btn[data-recommended="true"]::after {
     content: '\2713';
     font-size: 9px;
-    margin-left: 3px;
+    position: absolute;
+    top: 50%;
+    right: 4px;
+    transform: translateY(-50%);
     color: var(--accent-cyan);
-    vertical-align: super;
-    line-height: 0;
 }
 
 .cycle-rec {
@@ -902,8 +907,8 @@ body {
 
 .tip-item {
     display: flex;
-    gap: 10px;
-    padding: 10px 0;
+    gap: 8px;
+    padding: 4px 0;
     border-bottom: 1px solid var(--border-subtle);
 }
 

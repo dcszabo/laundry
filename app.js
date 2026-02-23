@@ -44,9 +44,9 @@ const cycleTemps = {
     everyday:  [20, 30, 40, 60],
     heavy:     [20, 30, 40, 60, 90],
     delicates: [20, 30, 40],
-    wool:      [30],
-    quick:     [20, 30],
-    bulky:     [30, 40, 60],
+    wool:      [20, 30, 40],
+    quick:     [20, 30, 40],
+    bulky:     [20, 30, 40, 60],
     easyiron:  [20, 30, 40, 60],
 };
 
@@ -65,7 +65,7 @@ const sizeKg = { small: 3, medium: 6, large: 10 };
 
 const detergentTypes = {
     liquid: { doseMultiplier: 1, guideKey: 'liquid' },
-    powder: { doseMultiplier: 0.9, guideKey: 'powder' },
+    powder: { doseMultiplier: 1.0, guideKey: 'powder' },
     pods: { doseMultiplier: 1, guideKey: 'pods' }
 };
 
@@ -80,20 +80,20 @@ const fallbackContent = {
         delicates: '30°C'
     },
     tips: {
-        whites: 'Use 60°C for towels, bedding and underwear to kill germs. 40°C is fine for everyday cotton shirts.',
-        lights: 'Light colours have low bleed risk. 40°C is safe for most items.',
-        colours: 'Wash bright colours at 30°C to prevent fading. Turn inside out.',
-        darks: 'Cold water prevents fading and dye bleed. Always turn inside out!',
-        mixed: 'Mixed loads work best at 30°C — safe for all colours.'
+        whites: '60°C for pure white cotton. Blends, jersey or printed items: 40°C max.',
+        lights: '40°C is safe for most light colours.',
+        colours: 'Wash at 30°C to protect colour. Turn inside out.',
+        darks: 'Cold water protects colour. Turn inside out.',
+        mixed: '30°C works for all colours in a mixed load.'
     },
     warnings: {
-        delicatesHeavy: 'Delicates + heavy soil: pre-treat stains or switch to Everyday.',
-        podsSmallLight: 'Pods may be too strong for very small/light loads.'
+        delicatesHeavy: 'Heavy soil with delicates: pre-treat stains or switch to Everyday cycle.',
+        podsSmallLight: 'Pods may be too strong for very small or lightly soiled loads.'
     },
     guides: {
         liquid: 'Liquid is the default for front loaders.',
-        powder: 'Powder is slightly more concentrated. Use a bit less.',
-        pods: 'Pods: 1 for small/medium, 2 for large or heavy loads.'
+        powder: 'Same dose as liquid. Australian powders often contain whitening agents good for whites.',
+        pods: 'Pods: 1 for small or medium loads, 2 for large or heavy loads.'
     },
     ui: {
         tempIcon: '🌡️',
@@ -118,6 +118,7 @@ const loadTypeMeta = {
         cycle: 'Everyday', maxLoad: '10 kg',
         tips: [
             'Empty pockets and close zips before washing.',
+            'Turn clothes inside out to protect fabric and colour.',
             'Sort by colour when possible to extend garment life.'
         ],
         cautions: []
@@ -129,25 +130,25 @@ const loadTypeMeta = {
         recDetergent: 'powder',
         cycle: 'Cottons 60°C', maxLoad: '10 kg',
         tips: [
-            'Wash sheets every 1–2 weeks.',
-            'Ensure bedding has room to tumble freely — don\'t overfill.',
-            'Use the Bulky cycle for duvets and large single items.'
+            'Wash sheets every 1 to 2 weeks.',
+            'Leave room to tumble. Don\'t overfill.',
+            'Use Bulky cycle for duvets and large single items.'
         ],
         cautions: [
-            'Skip fabric softener — it reduces breathability.'
+            'Skip fabric softener. It reduces breathability.'
         ]
     },
     'towels': {
         emoji: '🧺', label: 'Towels',
         defaultColour: 'whites', defaultSoil: 'normal', defaultSize: 'large',
-        recommendedCycle: 'cottons',
+        recommendedCycle: 'everyday',
         recDetergent: 'powder',
-        cycle: 'Cottons', maxLoad: '10 kg',
+        cycle: 'Everyday', maxLoad: '10 kg',
         tips: [
             'Shake towels out before loading for better results.'
         ],
         cautions: [
-            'Never use fabric softener — it coats fibres and ruins absorbency.'
+            'No fabric softener. It coats fibres and ruins absorbency.'
         ]
     },
     'delicates': {
@@ -157,12 +158,13 @@ const loadTypeMeta = {
         recDetergent: 'liquid',
         cycle: 'Delicate', maxLoad: '4 kg',
         tips: [
+            'Turn inside out to protect the outer surface.',
             'Use mesh bags for bras, lingerie, and anything with hooks.'
         ],
         cautions: [
             'Never tumble dry delicates.',
             'Air dry flat and reshape while damp.',
-            'Use non-bio detergent — bio enzymes damage silk and fine fabrics.'
+            'Use non-bio detergent. Bio enzymes damage silk and fine fabrics.'
         ]
     },
     'wool': {
@@ -172,10 +174,11 @@ const loadTypeMeta = {
         recDetergent: 'liquid',
         cycle: 'Wool', maxLoad: '2 kg',
         tips: [
-            'Lay flat to dry — never hang or tumble dry.'
+            'Turn inside out to protect the outer texture.',
+            'Lay flat to dry. Never hang or tumble dry.'
         ],
         cautions: [
-            'Use wool-safe non-bio detergent only — bio enzymes digest keratin and cause holes.',
+            'Use wool-safe non-bio only. Bio enzymes digest keratin and cause holes.',
             'Never wring or twist woollen items.'
         ]
     },
@@ -184,29 +187,29 @@ const loadTypeMeta = {
         defaultColour: 'darks', defaultSoil: 'heavy', defaultSize: 'medium',
         recommendedCycle: 'everyday',
         recDetergent: 'liquid',
-        cycle: 'Everyday Cold', maxLoad: '10 kg',
+        cycle: 'Everyday', maxLoad: '10 kg',
         tips: [
             'Turn inside out before washing.',
             'Cold water preserves elasticity and wicking properties.'
         ],
         cautions: [
-            'Never use fabric softener — it clogs wicking pores and causes permanent odour.',
+            'No fabric softener. It clogs wicking pores and causes permanent odour.',
             'Air dry rather than tumble drying.'
         ]
     },
     'jeans': {
         emoji: '👖', label: 'Jeans',
         defaultColour: 'darks', defaultSoil: 'normal', defaultSize: 'medium',
-        recommendedCycle: 'delicates',
+        recommendedCycle: 'everyday',
         recDetergent: 'liquid',
-        cycle: 'Delicate', maxLoad: '10 kg',
+        cycle: 'Everyday', maxLoad: '10 kg',
         tips: [
             'Turn inside out to prevent fading and white streaks.',
-            'Wash less often — spot clean between washes.'
+            'Wash less often. Spot clean between washes.'
         ],
         cautions: [
             'Use cold water to preserve indigo dye and stretch.',
-            'Delicate cycle reduces abrasion that accelerates fading.'
+            'Use colour-protect detergent for dark or black denim.'
         ]
     },
     'underwear': {
@@ -216,11 +219,12 @@ const loadTypeMeta = {
         recDetergent: 'liquid',
         cycle: 'Cottons', maxLoad: '10 kg',
         tips: [
-            'Synthetic underwear (nylon, microfibre): use Delicate cycle at 40°C max.'
+            'Turn inside out.',
+            'Synthetic underwear: Delicate cycle at 40°C max.'
         ],
         cautions: [
             '40°C is acceptable only with bio detergent.',
-            'Synthetic underwear max 40°C — high heat damages elastane.'
+            'Synthetic underwear max 40°C. High heat damages elastane.'
         ]
     }
 };
@@ -395,19 +399,6 @@ function setupInstallNudge() {
     }
 }
 
-function applyDismissedKeyFacts() {
-    document.querySelectorAll('.key-fact').forEach((fact) => {
-        const key = fact.dataset.key;
-        if (!key) {
-            return;
-        }
-        const dismissed = readStorage(`${storageKeys.dismissPrefix}${key}`, 'no') === 'yes';
-        if (dismissed) {
-            fact.remove();
-        }
-    });
-}
-
 function getWarnings(size, soil, colour, cycle, detergentType) {
     const warnings = [];
     if (cycle === 'delicates' && soil === 'heavy') {
@@ -549,7 +540,6 @@ function animateWasherFill(targetFillY, domeH) {
 
 function updateWasher(size, colour, soil) {
     const fill = document.getElementById('drumFill');
-    const soilGroup = document.getElementById('drumSoil');
     if (!fill) return;
 
     const drumBottom = 81;
@@ -561,21 +551,14 @@ function updateWasher(size, colour, soil) {
     animateWasherFill(targetFillY, domeH);
 
     const colourFills = {
-        whites:  'rgba(210, 230, 255, 0.70)',
-        lights:  'rgba(255, 215, 80,  0.55)',
-        colours: 'rgba(240, 100, 170, 0.50)',
-        darks:   'rgba(60,  50,  130, 0.78)',
-        mixed:   'rgba(0,   212, 170, 0.45)'
+        whites:  { light: 'rgba(228, 240, 255, 0.90)', normal: 'rgba(212, 228, 252, 0.65)', heavy: 'rgba(198, 215, 242, 0.38)' },
+        lights:  { light: 'rgba(255, 225, 65,  0.82)', normal: 'rgba(248, 210, 55,  0.56)', heavy: 'rgba(210, 168, 35,  0.30)' },
+        colours: { light: 'rgba(248, 115, 180, 0.80)', normal: 'rgba(238, 98,  163, 0.52)', heavy: 'rgba(185, 52,  125, 0.27)' },
+        darks:   { light: 'rgba(110, 90,  225, 0.86)', normal: 'rgba(80,  62,  178, 0.75)', heavy: 'rgba(52,  38,  128, 0.90)' },
+        mixed:   { light: 'rgba(0,   225, 182, 0.70)', normal: 'rgba(0,   210, 168, 0.45)', heavy: 'rgba(0,   158, 125, 0.28)' }
     };
-    fill.setAttribute('fill', colourFills[colour] || colourFills.mixed);
-
-    if (soilGroup) {
-        const counts = { light: 2, normal: 4, heavy: 6 };
-        const count  = counts[soil] || 4;
-        soilGroup.querySelectorAll('circle').forEach((dot, i) => {
-            dot.style.display = i < count ? '' : 'none';
-        });
-    }
+    const palette = colourFills[colour] || colourFills.mixed;
+    fill.setAttribute('fill', palette[soil] || palette.normal);
 }
 
 function updateDetergentBar() {
@@ -686,10 +669,10 @@ function updateLoadTypeTips() {
             const t = loadTemps[state.colour];
             const isLight = state.colour === 'whites' || state.colour === 'lights';
             const tipText = t >= 60
-                ? t + '\u00B0C kills bacteria and dust mites \u2014 recommended for ' + meta.label.toLowerCase() + '.'
+                ? t + '\u00B0C kills bacteria and dust mites. Recommended for ' + meta.label.toLowerCase() + '.'
                 : isLight
-                    ? t + '\u00B0C removes everyday soiling \u2014 use 60\u00B0C for deep cleaning or heavy soil.'
-                    : t + '\u00B0C protects colours and fibres \u2014 ideal for ' + meta.label.toLowerCase() + '.';
+                    ? t + '\u00B0C for everyday soiling. Use 60\u00B0C for deep cleaning or heavy soil.'
+                    : t + '\u00B0C protects colours and fibres for ' + meta.label.toLowerCase() + '.';
             dynamicItems.push({ icon: '\u{1F4A1}', text: tipText });
         }
 
@@ -697,14 +680,14 @@ function updateLoadTypeTips() {
         if (meta && state.cycle !== meta.recommendedCycle) {
             const recLabel = meta.recommendedCycle.charAt(0).toUpperCase() + meta.recommendedCycle.slice(1);
             const curLabel = state.cycle.charAt(0).toUpperCase() + state.cycle.slice(1);
-            dynamicItems.push({ icon: '\u26A0\uFE0F', text: recLabel + ' cycle recommended for ' + meta.label + ' \u2014 you\u2019re using ' + curLabel + '.' });
+            dynamicItems.push({ icon: '\u26A0\uFE0F', text: recLabel + ' cycle recommended for ' + meta.label + '. Currently using ' + curLabel + '.' });
         }
 
         // Detergent off-recommendation
         if (meta && meta.recDetergent !== state.detergent) {
             const rec = meta.recDetergent.charAt(0).toUpperCase() + meta.recDetergent.slice(1);
             const cur = state.detergent.charAt(0).toUpperCase() + state.detergent.slice(1);
-            dynamicItems.push({ icon: '\u26A0\uFE0F', text: rec + ' detergent recommended for ' + meta.label + ' \u2014 you\u2019re using ' + cur + '.' });
+            dynamicItems.push({ icon: '\u26A0\uFE0F', text: rec + ' detergent recommended for ' + meta.label + '. Currently using ' + cur + '.' });
         }
 
         // Other warnings (delicates+heavy, pods+small+light)
@@ -815,6 +798,19 @@ function bindKeyFactClose() {
     });
 }
 
+function applyDismissedKeyFacts() {
+    document.querySelectorAll('.key-fact').forEach((fact) => {
+        const key = fact.dataset.key;
+        if (!key) {
+            return;
+        }
+        const dismissed = readStorage(`${storageKeys.dismissPrefix}${key}`, 'no') === 'yes';
+        if (dismissed) {
+            fact.remove();
+        }
+    });
+}
+
 function setupSelectors() {
     function setupSelector(groupId, variable, callback) {
         document.querySelectorAll(`#${groupId} .selector-btn`).forEach(btn => {
@@ -824,6 +820,7 @@ function setupSelectors() {
                 btn.classList.add('active');
                 callback(btn.dataset[variable]);
                 updateResult();
+                btn.blur();
             });
         });
     }

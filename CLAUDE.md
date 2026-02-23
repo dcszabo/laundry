@@ -15,7 +15,7 @@ CONTRACT.md v2.0 — located in the project root (`CONTRACT.md`). Read in full a
 
 ## Project Overview
 
-Single-page laundry guidance application optimised for soft water households (~19 mg/L). Primary user is the owner on iPhone (Safari). Mobile-first SPA — vanilla HTML/CSS/JavaScript, no build tools, no external dependencies.
+Single-page laundry guidance application optimised for soft water households (~18 mg/L total hardness as CaCO₃, Wantirna South VIC, Australia). Primary user is the owner on iPhone (Safari). Mobile-first SPA — vanilla HTML/CSS/JavaScript, no build tools, no external dependencies.
 
 - **Repository:** https://github.com/dcszabo/laundry
 - **Live site:** https://dcszabo.github.io/laundry/
@@ -39,7 +39,7 @@ index.html      — HTML structure, 4 tab sections, all SVG visuals inline
 styles.css      — CSS custom properties, dark theme, mobile-first (breakpoint 380px)
 app.js          — Calculator logic, UI event handlers, SVG animation
 sw.js           — Service worker (cache-first, bump cache name on each deploy)
-research.md     — Laundry science: temperature matrix, detergent rules, dosage model
+docs/research/research.md  — Laundry science: temperature matrix, detergent rules, dosage model (verified 2026-02-23, citations inline)
 ```
 
 ### Navigation
@@ -261,6 +261,17 @@ Calculation order:
 - Tips panel (`#presetTip`) = all contextual text: dynamic temp tip, off-rec warnings, load-type tips, cautions — in that priority order.
 - `updateCycleRec()` and `updateDetergentRec()` are always-hidden (stubs kept for call-site compatibility).
 
+### Selector Button Hover (touch devices)
+- `.selector-btn:hover` MUST stay inside `@media (hover: hover)` — bare `:hover` sticks on touch after tap, causing adjacent buttons to appear highlighted
+
+### Cycle Indicator Checkmark
+- `.selector-btn[data-recommended="true"]::after` MUST use `position: absolute; top: 50%; right: 4px; transform: translateY(-50%)` — inline `margin-left` causes button width change on toggle, triggering layout reflow and page shift
+- `.selector-btn` has `position: relative` to support this — do not remove
+
+### Tips Panel Scroll Anchoring
+- `body` has `overflow-anchor: none` — intentional. `#presetTip` height changes when cycle changes; without this Chrome auto-adjusts `scrollTop` and the page appears to scroll
+- `setupSelector` click handler calls `btn.blur()` after `updateResult()` — prevents focus-induced scroll on iOS Safari after tap
+
 ### Service Worker
 - Uses `skipWaiting()` + `clients.claim()` for immediate activation
 - Fetch handler scoped to same-origin only — cross-origin requests pass through
@@ -294,7 +305,9 @@ Calculation order:
 
 ## Session Log
 
-**2026-02-23** — Major calculator redesign: merged Presets tab into Calculator. Load type becomes the primary selector (bottom sheet accessed via result card pill). Detergent settings moved to result card pill (was a bar in the calculator card). Temperature now derived from `tempMatrix[loadType][colour]` snapped to `cycleTemps[cycle]`. `cycleMaxLoad` + `updateSizeConstraints` greys out invalid load sizes. `updateLoadTypeTips` consolidates all contextual text (tips, warnings, off-rec notices) into a single collapsible panel between result card and calculator card. Information architecture: result card = numbers only, tips panel = all explanatory text.
+**2026-02-23 (session 2)** — Research verification: updated `docs/research/research.md` (UK→AU context, ~19 mg/L TDS → ~18 mg/L total hardness, powder multiplier ×0.9→×1.0, F&P WH1060P4 specs confirmed from manual, cycle guide added). Updated app.js to match. Bug fixes: (1) hover sticking on touch — wrapped in `@media (hover: hover)`; (2) recommended-cycle checkmark causing layout shift — `::after` now `position: absolute`; (3) tips panel height changes causing Chrome scroll anchoring scroll — `overflow-anchor: none` on body + `btn.blur()` in selector click handler.
+
+**2026-02-23 (session 1)** — Major calculator redesign: merged Presets tab into Calculator. Load type becomes the primary selector (bottom sheet accessed via result card pill). Detergent settings moved to result card pill (was a bar in the calculator card). Temperature now derived from `tempMatrix[loadType][colour]` snapped to `cycleTemps[cycle]`. `cycleMaxLoad` + `updateSizeConstraints` greys out invalid load sizes. `updateLoadTypeTips` consolidates all contextual text (tips, warnings, off-rec notices) into a single collapsible panel between result card and calculator card. Information architecture: result card = numbers only, tips panel = all explanatory text.
 
 **2026-02-20** — Replaced scrollable top nav with fixed bottom tab bar (iOS safe area, `viewport-fit=cover`). Added front-loader washing machine SVG to result display with animated dome-shaped clothing fill (rAF tween), colour-mapped fill, and soil dots. Centred result row to 3-column layout. Added temperature-based dose modifier (±10–12%).
 
