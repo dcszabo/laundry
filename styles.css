@@ -379,7 +379,7 @@ body {
 
 .result-value {
     font-family: 'Fraunces', serif;
-    font-size: 28px;
+    font-size: 48px;
     font-weight: 700;
     background: linear-gradient(135deg, var(--accent-blue), var(--accent-cyan));
     -webkit-background-clip: text;
@@ -390,7 +390,7 @@ body {
 }
 
 .result-unit {
-    font-size: 16px;
+    font-size: 26px;
     font-weight: 400;
 }
 
@@ -401,11 +401,10 @@ body {
     gap: 10px;
 }
 
-.result-meta-row {
+.result-temp-row {
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
     margin-top: 4px;
 }
 
@@ -413,11 +412,11 @@ body {
     display: inline-flex;
     align-items: center;
     gap: 4px;
-    padding: 6px 10px;
+    padding: 6px 14px;
     background: rgba(255, 159, 67, 0.15);
     border-radius: var(--radius-sm);
     color: var(--accent-warm);
-    font-size: 13px;
+    font-size: 18px;
     font-weight: 600;
 }
 
@@ -860,11 +859,6 @@ body {
     display: flex;
     gap: 8px;
     padding: 4px 0;
-    border-bottom: 1px solid var(--border-subtle);
-}
-
-.tip-item:last-child {
-    border-bottom: none;
 }
 
 .tip-icon {

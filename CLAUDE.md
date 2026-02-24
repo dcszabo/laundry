@@ -67,8 +67,8 @@ Fixed bottom tab bar — NOT inside `.app-container`. Lives just before the moda
 The result display (`.result-display`) is a **3-column flex row**:
 
 ```
-[cup SVG + detergent pill]   [dose · temp · cap text]   [washer SVG + load type pill]
-       left (80px)                    centre (flex:1)            right (80px)
+[cup SVG + detergent pill]   [dose / temp]   [washer SVG + load type pill]
+       left (80px)              centre (flex:1)       right (80px)
 ```
 
 - `.cup-container` and `.washer-container` both have `width: 80px` — fixed and equal, so centre metrics are always truly centred
@@ -77,7 +77,9 @@ The result display (`.result-display`) is a **3-column flex row**:
 - Load type pill (`#loadTypePill`): tapping opens the load type bottom sheet
 - `.result-row` — `display: flex; justify-content: space-between; align-items: center`
 - `.result-text` — `flex: 1; text-align: center`
-- `.result-dose-row` and `.result-meta-row` both have `justify-content: center`
+- `.result-dose-row` — dose value only, `justify-content: center` (`.result-value` is 48px Fraunces, unit 26px)
+- `.result-temp-row` — temp badge only, `justify-content: center`, `margin-top: 4px`
+- There is no cap comparison element — `#cupComparison` was removed
 
 ### Calculator Tab — Sticky Layout
 

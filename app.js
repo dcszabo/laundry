@@ -290,7 +290,6 @@ const ui = {
     doseAmount: document.getElementById('doseAmount'),
     doseUnit: document.getElementById('doseUnit'),
     tempBadge: document.getElementById('tempBadge'),
-    cupComparison: document.getElementById('cupComparison'),
     concentrationRange: document.getElementById('concentrationRange'),
     concentrationValue: document.getElementById('concentrationValue'),
     detergentGuide: document.getElementById('detergentGuide'),
@@ -729,7 +728,7 @@ function updateLoadTypeTips() {
 }
 
 function updateResult() {
-    if (!ui.doseAmount || !ui.doseUnit || !ui.tempBadge || !ui.cupComparison) {
+    if (!ui.doseAmount || !ui.doseUnit || !ui.tempBadge) {
         return;
     }
 
@@ -739,15 +738,12 @@ function updateResult() {
 
     ui.doseAmount.textContent = result.doseAmount;
     ui.doseUnit.textContent = result.doseUnit;
-    ui.tempBadge.textContent = `${fallbackContent.ui.tempIcon} ${result.tempStr}`;
+    ui.tempBadge.textContent = result.tempStr;
 
     if (result.isPods) {
         updateCup(0);
-        ui.cupComparison.textContent = fallbackContent.ui.podsComparison;
     } else {
         updateCup(result.dose);
-        const percentOfMax = Math.round((result.dose / 75) * 100);
-        ui.cupComparison.textContent = fallbackContent.ui.capComparison.replace('{percent}', String(percentOfMax));
     }
 
     updateWasher(state.size, state.colour, state.soil);
