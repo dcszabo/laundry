@@ -48,7 +48,6 @@ body {
     z-index: 100;
     background: var(--bg-primary);
     padding: 12px 16px 8px;
-    box-shadow: 0 3px 0 var(--bg-primary);
 }
 
 .header-content {
@@ -339,14 +338,24 @@ body {
     margin-bottom: 4px;
 }
 
-/* Sticky Result Wrapper */
+/* Fixed Result Wrapper — position: fixed so rubber-band overscroll never moves it */
 .result-display-sticky {
-    position: sticky;
-    top: 68px;
+    position: fixed;
+    top: 65px;
+    left: 0;
+    right: 0;
+    max-width: 480px;
+    margin: 0 auto;
     z-index: 40;
-    padding-top: 2px;
-    padding-bottom: 0;
+    padding: 2px 16px 0;
+    box-sizing: border-box;
     background: var(--bg-primary);
+}
+
+/* Spacer holds the space .result-display-sticky no longer occupies in flow */
+.result-display-spacer {
+    height: 131px;
+    flex-shrink: 0;
 }
 .result-display-sticky::after {
     content: '';
