@@ -36,11 +36,14 @@ Single-page laundry guidance application optimised for soft water households (~1
 ## Architecture
 
 ```
-index.html      — HTML structure, 4 tab sections, all SVG visuals inline
-styles.css      — CSS custom properties, dark theme, mobile-first (breakpoint 380px)
-app.js          — Calculator logic, UI event handlers, SVG animation
-sw.js           — Service worker (cache-first, bump cache name on each deploy)
-docs/research/research.md  — Laundry science: temperature matrix, detergent rules, dosage model (verified 2026-02-23, citations inline)
+public/             — Cloudflare Pages deploy root (only this dir is deployed)
+  index.html        — HTML structure, 4 tab sections, all SVG visuals inline
+  styles.css        — CSS custom properties, dark theme, mobile-first (breakpoint 380px)
+  app.js            — Calculator logic, UI event handlers, SVG animation
+  sw.js             — Service worker (cache-first, bump cache name on each deploy)
+  site.webmanifest  — PWA manifest
+  *.png / *.ico     — Favicon and PWA icon assets
+docs/research/research.md  — Laundry science: temperature matrix, detergent rules, dosage model (verified 2026-02-23, citations inline) — git only, not deployed
 ```
 
 ### Navigation
@@ -224,7 +227,7 @@ Calculation order:
 - Service worker cache name: `laundry-guide-v11` — **bump manually on each deploy**
 - Dev: open `index.html` directly in browser; refresh to see changes
 - Platform: Windows 11, bash shell — use Unix syntax, `git -C <path>` instead of `cd`
-- **Deploy workflow:** `git add` → `git commit` → `git push` → `npx wrangler pages deploy` (all from project root; `wrangler.toml` sets project name and output dir; GitHub Pages mirrors automatically on push)
+- **Deploy workflow:** `git add` → `git commit` → `git push` → `npx wrangler pages deploy` (all from project root; `wrangler.toml` sets project name and `pages_build_output_dir = "public"`; only the `public/` dir is uploaded to Cloudflare; GitHub Pages mirrors automatically on push)
 
 ---
 
@@ -291,6 +294,7 @@ Calculation order:
 
 ## PWA Assets
 
+All in `public/`:
 - `favicon.ico`, `favicon-16x16.png`, `favicon-32x32.png` — browser favicons
 - `apple-touch-icon.png` — iOS home screen (180×180)
 - `android-chrome-192x192.png`, `android-chrome-512x512.png` — Android PWA icons
@@ -314,6 +318,8 @@ Calculation order:
 ---
 
 ## Session Log
+
+**2026-02-24 (session 3)** — Repo hygiene: added `.gitignore` (excludes `.wrangler/`, `.claude/settings.local.json`, OS junk). Untracked `.claude/settings.local.json` from git index. Moved all deployable app files into `public/` subdirectory; set `pages_build_output_dir = "public"` in `wrangler.toml` so only app files are uploaded to Cloudflare Pages. `docs/`, `CLAUDE.md`, `CONTRACT.md` remain tracked in git but stay at project root and are never deployed.
 
 **2026-02-24 (session 2)** — Migrated deployment to Cloudflare Pages (primary) via Wrangler direct upload; GitHub Pages remains as mirror. Added `wrangler.toml`. Moved project root from `/laundry/laundry` → `/laundry` (one level up); updated CONTRACT.md path in CLAUDE.md. Bumped SW cache v10 → v11.
 
