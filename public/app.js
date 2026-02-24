@@ -287,7 +287,7 @@ function applyLoadTypeDefaults(loadType) {
 }
 
 const ui = {
-    resultDisplaySticky: document.querySelector('.result-display-sticky'),
+    resultDisplaySticky: document.querySelector('.header'),
     doseAmount: document.getElementById('doseAmount'),
     doseUnit: document.getElementById('doseUnit'),
     tempBadge: document.getElementById('tempBadge'),

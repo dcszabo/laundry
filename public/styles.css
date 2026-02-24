@@ -38,7 +38,7 @@ body {
 .app-container {
     max-width: 480px;
     margin: 0 auto;
-    padding-top: 65px;
+    padding-top: 196px;
     padding-bottom: calc(72px + env(safe-area-inset-bottom));
 }
 
@@ -343,26 +343,13 @@ body {
     margin-bottom: 4px;
 }
 
-/* Fixed Result Wrapper — position: fixed so rubber-band overscroll never moves it */
+/* Result card sits inside .header — no positioning needed */
 .result-display-sticky {
-    position: fixed;
-    top: 65px;
-    left: 0;
-    right: 0;
-    max-width: 480px;
-    margin: 0 auto;
-    z-index: 40;
-    padding: 2px 16px 0;
-    box-sizing: border-box;
-    background: var(--bg-primary);
+    padding-top: 2px;
 }
 
-/* Spacer holds the space .result-display-sticky no longer occupies in flow */
-.result-display-spacer {
-    height: 131px;
-    flex-shrink: 0;
-}
-.result-display-sticky::after {
+/* Scroll-fade gradient below the combined header */
+.header::after {
     content: '';
     position: absolute;
     left: 0;
@@ -374,7 +361,7 @@ body {
     opacity: 0;
     transition: opacity 0.2s ease;
 }
-.result-display-sticky.scrolled::after {
+.header.scrolled::after {
     opacity: 1;
 }
 
