@@ -237,7 +237,6 @@ const storageKeys = {
     detergent: 'laundry.detergentType',
     loadType: 'laundry.loadType',
     installNudge: 'laundry.installNudgeDismissed',
-    dismissPrefix: 'laundry.dismissed.v1.'
 };
 
 function readStorage(key, fallback) {
@@ -762,18 +761,79 @@ const SECTION_SUBTITLES = {
     maintenance: 'Keep your machine clean',
 };
 
+function setActiveSection(sectionId) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.getElementById(sectionId).classList.add('active');
+    document.body.className = document.body.className.replace(/\btab-\S+/g, '').trim();
+    document.body.classList.add('tab-' + sectionId);
+    const subtitle = SECTION_SUBTITLES[sectionId];
+    if (subtitle) document.querySelector('.water-badge').textContent = subtitle;
+}
+
+function openNavDropdown() {
+    const btn = document.getElementById('navMenuBtn');
+    const dropdown = document.getElementById('navDropdown');
+    if (!dropdown) return;
+    dropdown.hidden = false;
+    void dropdown.offsetHeight;
+    dropdown.classList.add('visible');
+    if (btn) btn.setAttribute('aria-expanded', 'true');
+}
+
+function closeNavDropdown() {
+    const btn = document.getElementById('navMenuBtn');
+    const dropdown = document.getElementById('navDropdown');
+    if (!dropdown) return;
+    dropdown.classList.remove('visible');
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+    let cleaned = false;
+    const onEnd = () => {
+        if (cleaned) return;
+        cleaned = true;
+        dropdown.hidden = true;
+        dropdown.removeEventListener('transitionend', onEnd);
+    };
+    dropdown.addEventListener('transitionend', onEnd);
+    setTimeout(onEnd, 200);
+}
+
 function bindNavTabs() {
-    document.querySelectorAll('.nav-tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-            triggerHaptic();
-            document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-            tab.classList.add('active');
-            document.getElementById(tab.dataset.section).classList.add('active');
-            tab.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
-            const subtitle = SECTION_SUBTITLES[tab.dataset.section];
-            if (subtitle) document.querySelector('.water-badge').textContent = subtitle;
+    const btn = document.getElementById('navMenuBtn');
+    const dropdown = document.getElementById('navDropdown');
+
+    if (btn) {
+        btn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (dropdown && !dropdown.hidden) {
+                closeNavDropdown();
+            } else {
+                openNavDropdown();
+            }
         });
+    }
+
+    if (dropdown) {
+        dropdown.querySelectorAll('.nav-dropdown-item').forEach(item => {
+            item.addEventListener('click', () => {
+                triggerHaptic();
+                setActiveSection(item.dataset.section);
+                closeNavDropdown();
+            });
+        });
+    }
+
+    document.addEventListener('click', (e) => {
+        if (!dropdown || dropdown.hidden) return;
+        if (!dropdown.contains(e.target) && e.target !== btn) {
+            closeNavDropdown();
+        }
+    });
+
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && dropdown && !dropdown.hidden) {
+            closeNavDropdown();
+            if (btn) btn.focus();
+        }
     });
 }
 
@@ -798,32 +858,6 @@ function bindCollapsibles() {
     });
 }
 
-function bindKeyFactClose() {
-    document.querySelectorAll('.key-fact-close').forEach(btn => {
-        btn.addEventListener('click', () => {
-            const key = btn.dataset.dismiss;
-            if (key) {
-                writeStorage(`${storageKeys.dismissPrefix}${key}`, 'yes');
-            }
-            const fact = btn.parentElement;
-            fact.classList.add('key-fact-dismissing');
-            fact.addEventListener('animationend', () => fact.remove(), { once: true });
-        });
-    });
-}
-
-function applyDismissedKeyFacts() {
-    document.querySelectorAll('.key-fact').forEach((fact) => {
-        const key = fact.dataset.key;
-        if (!key) {
-            return;
-        }
-        const dismissed = readStorage(`${storageKeys.dismissPrefix}${key}`, 'no') === 'yes';
-        if (dismissed) {
-            fact.remove();
-        }
-    });
-}
 
 function setupSelectors() {
     function setupSelector(groupId, variable, callback) {
@@ -911,10 +945,9 @@ function init() {
         navigator.serviceWorker.register('./sw.js').catch(() => {});
     }
 
+    document.body.classList.add('tab-calculator');
     bindNavTabs();
     bindCollapsibles();
-    bindKeyFactClose();
-    applyDismissedKeyFacts();
     setupInstallNudge();
     setupSelectors();
     applyLoadTypeDefaults(state.loadType);

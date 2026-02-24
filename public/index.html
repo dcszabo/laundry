@@ -23,6 +23,35 @@
                     <h1>Laundry Guide</h1>
                     <div class="water-badge">Calculate your dose</div>
                 </div>
+                <button class="hamburger-btn" id="navMenuBtn" aria-label="Navigation menu" aria-expanded="false" aria-haspopup="menu">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                        <line x1="3" y1="5" x2="17" y2="5"/>
+                        <line x1="3" y1="10" x2="17" y2="10"/>
+                        <line x1="3" y1="15" x2="17" y2="15"/>
+                    </svg>
+                </button>
+            </div>
+            <div class="nav-dropdown" id="navDropdown" role="menu" hidden>
+                <button class="nav-dropdown-item" data-section="calculator" role="menuitem">
+                    <span class="nav-dropdown-icon">🧼</span>
+                    <span class="nav-dropdown-label">Wash</span>
+                    <svg class="nav-dropdown-check" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7L6 10L11 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <button class="nav-dropdown-item" data-section="rules" role="menuitem">
+                    <span class="nav-dropdown-icon">📋</span>
+                    <span class="nav-dropdown-label">Rules</span>
+                    <svg class="nav-dropdown-check" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7L6 10L11 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <button class="nav-dropdown-item" data-section="machine" role="menuitem">
+                    <span class="nav-dropdown-icon">🌀</span>
+                    <span class="nav-dropdown-label">Machine</span>
+                    <svg class="nav-dropdown-check" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7L6 10L11 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
+                <button class="nav-dropdown-item" data-section="maintenance" role="menuitem">
+                    <span class="nav-dropdown-icon">🔧</span>
+                    <span class="nav-dropdown-label">Care</span>
+                    <svg class="nav-dropdown-check" width="14" height="14" viewBox="0 0 14 14" fill="none" aria-hidden="true"><path d="M3 7L6 10L11 4" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                </button>
             </div>
             <div class="result-display-sticky">
                 <div class="result-display">
@@ -207,7 +236,7 @@
         <section class="section" id="rules">
             <h2 class="section-header">Essential Rules</h2>
 
-            <div class="collapsible open">
+            <div class="collapsible">
                 <div class="collapsible-header">
                     <div class="collapsible-header-left">
                         <div class="collapsible-icon blue">💧</div>
@@ -444,7 +473,7 @@
                 </div>
             </div>
 
-            <div class="collapsible open">
+            <div class="collapsible">
                 <div class="collapsible-header">
                     <div class="collapsible-header-left">
                         <div class="collapsible-icon purple">📋</div>
@@ -643,16 +672,7 @@
         <section class="section" id="maintenance">
             <h2 class="section-header">Machine Care</h2>
 
-            <div class="key-fact" data-key="drum-clean-fact">
-                <button class="key-fact-close" aria-label="Dismiss" data-dismiss="drum-clean-fact">×</button>
-                <div class="key-fact-title">
-                    🔄 Drum Clean Reminder
-                    <span class="why-tip" title="Regular drum cleans prevent buildup and odors in front loaders.">Why?</span>
-                </div>
-                <div class="key-fact-text">Your machine shows a reminder after every 100 cycles. Don't ignore it — prevents smells and buildup!</div>
-            </div>
-
-            <div class="collapsible open">
+            <div class="collapsible">
                 <div class="collapsible-header">
                     <div class="collapsible-header-left">
                         <div class="collapsible-icon cyan">📅</div>
@@ -663,6 +683,14 @@
                 <div class="collapsible-content">
                     <div class="collapsible-inner">
                         <div class="checklist">
+                            <div class="info-note">
+                                <svg class="info-note-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+                                    <circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.5"/>
+                                    <rect x="7.25" y="6.5" width="1.5" height="5" rx="0.75" fill="currentColor"/>
+                                    <circle cx="8" cy="4.75" r="0.875" fill="currentColor"/>
+                                </svg>
+                                <span>Your machine shows a reminder after every 100 cycles. Don't ignore it.</span>
+                            </div>
                             <div class="check-item">
                                 <div class="check-circle">1</div>
                                 <div class="check-content">
@@ -786,27 +814,6 @@
             </div>
         </section>
 
-    </div>
-
-    <div class="nav-tabs-wrapper">
-        <nav class="nav-tabs">
-            <button class="nav-tab active" data-section="calculator">
-                <span class="tab-icon">🧼</span>
-                <span class="tab-label">Wash</span>
-            </button>
-            <button class="nav-tab" data-section="rules">
-                <span class="tab-icon">📋</span>
-                <span class="tab-label">Rules</span>
-            </button>
-            <button class="nav-tab" data-section="machine">
-                <span class="tab-icon">🌀</span>
-                <span class="tab-label">Machine</span>
-            </button>
-            <button class="nav-tab" data-section="maintenance">
-                <span class="tab-icon">🔧</span>
-                <span class="tab-label">Care</span>
-            </button>
-        </nav>
     </div>
 
     <div class="modal-backdrop" id="loadTypeBackdrop" hidden></div>

@@ -38,8 +38,12 @@ body {
 .app-container {
     max-width: 480px;
     margin: 0 auto;
+    padding-top: 68px;
+    padding-bottom: calc(24px + env(safe-area-inset-bottom));
+}
+
+body.tab-calculator .app-container {
     padding-top: 202px;
-    padding-bottom: calc(72px + env(safe-area-inset-bottom));
 }
 
 /* Header */
@@ -117,50 +121,103 @@ body {
     }
 }
 
-/* Navigation Tabs */
-.nav-tabs {
-    display: flex;
-    justify-content: space-around;
-    padding: 0 env(safe-area-inset-right) 0 env(safe-area-inset-left);
-    margin-bottom: 0;
-}
-
-.nav-tab {
-    flex: 1;
-    padding: 10px 4px 8px;
-    border-radius: 0;
+/* Hamburger button */
+.hamburger-btn {
     background: none;
     border: none;
-    color: var(--text-secondary);
-    font-size: 10px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: color 0.2s ease;
+    color: var(--text-primary);
+    padding: 8px;
+    margin-left: auto;
+    min-width: 44px;
+    min-height: 44px;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 3px;
+    cursor: pointer;
+    border-radius: var(--radius-sm);
+    flex-shrink: 0;
 }
 
 @media (hover: hover) {
-    .nav-tab:hover {
-        color: var(--text-primary);
+    .hamburger-btn:hover {
+        background: rgba(255, 255, 255, 0.07);
     }
 }
 
-.nav-tab.active {
+/* Navigation dropdown */
+.nav-dropdown {
+    position: absolute;
+    top: 68px;
+    right: 16px;
+    width: 180px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-md);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.5);
+    z-index: 200;
+    overflow: hidden;
+    opacity: 0;
+    transform: scaleY(0.9);
+    transform-origin: top right;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.nav-dropdown[hidden] {
+    display: none;
+}
+
+.nav-dropdown.visible {
+    opacity: 1;
+    transform: scaleY(1);
+}
+
+.nav-dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    padding: 13px 14px;
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    text-align: left;
+}
+
+.nav-dropdown-item:last-child {
+    border-bottom: none;
+}
+
+@media (hover: hover) {
+    .nav-dropdown-item:hover {
+        background: var(--bg-card-hover);
+    }
+}
+
+.nav-dropdown-icon {
+    font-size: 16px;
+    line-height: 1;
+}
+
+.nav-dropdown-label {
+    flex: 1;
+}
+
+.nav-dropdown-check {
+    opacity: 0;
     color: var(--accent-blue);
+    flex-shrink: 0;
 }
 
-.nav-tab .tab-icon {
-    font-size: 20px;
-    line-height: 1;
-}
-
-.tab-label {
-    font-size: 9px;
-    line-height: 1;
+/* Show checkmark on active section */
+body.tab-calculator .nav-dropdown-item[data-section="calculator"] .nav-dropdown-check,
+body.tab-rules .nav-dropdown-item[data-section="rules"] .nav-dropdown-check,
+body.tab-machine .nav-dropdown-item[data-section="machine"] .nav-dropdown-check,
+body.tab-maintenance .nav-dropdown-item[data-section="maintenance"] .nav-dropdown-check {
+    opacity: 1;
 }
 
 /* Content Sections */
@@ -346,6 +403,11 @@ body {
 /* Result card sits inside .header — no positioning needed */
 .result-display-sticky {
     padding-top: 16px;
+    display: none;
+}
+
+body.tab-calculator .result-display-sticky {
+    display: block;
 }
 
 /* Scroll-fade gradient below the combined header */
@@ -891,59 +953,26 @@ body {
     color: var(--accent-pink);
 }
 
-/* Key Fact Banner */
-.key-fact {
-    position: relative;
-    background: linear-gradient(135deg, var(--accent-cyan), var(--accent-blue));
-    border-radius: var(--radius-lg);
-    padding: 16px;
-    padding-right: 32px;
-    margin-bottom: 16px;
-    color: var(--bg-primary);
-}
 
-.key-fact-close {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    background: none;
-    border: none;
-    color: var(--bg-primary);
-    opacity: 0.4;
-    cursor: pointer;
-    font-size: 18px;
-    line-height: 1;
-    padding: 4px;
-    transition: opacity 0.2s;
-}
-
-@media (hover: hover) {
-    .key-fact-close:hover {
-        opacity: 0.7;
-    }
-}
-
-.key-fact-title {
-    font-weight: 700;
-    font-size: 14px;
-    margin-bottom: 4px;
+/* Info note (used inside Monthly Drum Clean) */
+.info-note {
     display: flex;
-    align-items: center;
-    gap: 6px;
+    gap: 10px;
+    align-items: flex-start;
+    background: rgba(77, 163, 255, 0.08);
+    border: 1px solid rgba(77, 163, 255, 0.18);
+    border-radius: var(--radius-sm);
+    padding: 10px 12px;
+    margin-top: 12px;
+    margin-bottom: 4px;
+    color: var(--accent-blue);
+    font-size: 14px;
+    line-height: 1.4;
 }
 
-.why-tip {
-    font-size: 11px;
-    font-weight: 600;
-    color: var(--bg-primary);
-    background: rgba(255, 255, 255, 0.4);
-    padding: 2px 6px;
-    border-radius: 999px;
-}
-
-.key-fact-text {
-    font-size: 13px;
-    opacity: 0.9;
+.info-note-icon {
+    flex-shrink: 0;
+    margin-top: 1px;
 }
 
 /* Maintenance Checklist */
@@ -1104,11 +1133,9 @@ body {
     cursor: not-allowed;
     pointer-events: none;
 }
-.nav-tab:active { transform: scale(0.96); }
 .collapsible-header:active { background: var(--bg-card-hover); }
 .preset-tip-toggle:active { background: var(--bg-card-hover); }
 .install-dismiss:active { transform: scale(0.95); }
-.key-fact-close:active { opacity: 0.8; }
 
 
 /* Custom Range Slider */
@@ -1142,31 +1169,7 @@ input[type="range"]::-moz-range-thumb {
     cursor: pointer;
 }
 
-/* Bottom Tab Bar */
-.nav-tabs-wrapper {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    max-width: 480px;
-    margin: 0 auto;
-    background: var(--bg-card);
-    border-top: 1px solid var(--border-subtle);
-    z-index: 50;
-    padding-bottom: env(safe-area-inset-bottom);
-}
 
-/* Animate Key-Fact Dismiss */
-.key-fact-dismissing {
-    animation: dismissFact 0.3s ease forwards;
-    overflow: hidden;
-}
-
-@keyframes dismissFact {
-    0% { opacity: 1; max-height: 200px; margin-bottom: 16px; }
-    50% { opacity: 0; }
-    100% { opacity: 0; max-height: 0; margin-bottom: 0; padding-top: 0; padding-bottom: 0; }
-}
 
 /* Preset Tip Card */
 .preset-tip {
@@ -1232,10 +1235,6 @@ input[type="range"]::-moz-range-thumb {
     .cup-wrapper {
         width: 75px;
         height: 95px;
-    }
-
-    .nav-tab {
-        padding: 8px 2px 6px;
     }
 }
 
