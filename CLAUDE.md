@@ -18,8 +18,9 @@ CONTRACT.md v2.0 — located in the project root (`CONTRACT.md`). Read in full a
 Single-page laundry guidance application optimised for soft water households (~18 mg/L total hardness as CaCO₃, Wantirna South VIC, Australia). Primary user is the owner on iPhone (Safari). Mobile-first SPA — vanilla HTML/CSS/JavaScript, no build tools, no external dependencies.
 
 - **Repository:** https://github.com/dcszabo/laundry
-- **Live site:** https://dcszabo.github.io/laundry/
-- **Deployment:** Cloudflare Pages (primary) + GitHub Pages (mirror) — both deploy from `master`
+- **Live site:** https://laundry-9zl.pages.dev/
+- **GitHub mirror:** https://dcszabo.github.io/laundry/
+- **Deployment workflow:** commit → push to GitHub → `npx wrangler pages deploy`
 
 ---
 
@@ -223,7 +224,7 @@ Calculation order:
 - Service worker cache name: `laundry-guide-v11` — **bump manually on each deploy**
 - Dev: open `index.html` directly in browser; refresh to see changes
 - Platform: Windows 11, bash shell — use Unix syntax, `git -C <path>` instead of `cd`
-- **Cloudflare deploy:** `npx wrangler pages deploy` from project root (`wrangler.toml` sets project name and output dir)
+- **Deploy workflow:** `git add` → `git commit` → `git push` → `npx wrangler pages deploy` (all from project root; `wrangler.toml` sets project name and output dir; GitHub Pages mirrors automatically on push)
 
 ---
 
