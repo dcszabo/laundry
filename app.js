@@ -1,4 +1,3 @@
-// @ts-check
 const dosageData = {
     small: {
         light: { dose: 10 },
@@ -55,6 +54,9 @@ const cycleMaxLoad = {
     everyday:  10,
     heavy:     10,
     delicates:  4,
+    // Approximation: machine manual specifies 2 kg max for Wool, but the smallest
+    // size bucket (small = 3 kg) has no smaller equivalent. The UI warns the user
+    // via a caution in the tips panel. Accepted — do not change to 2.
     wool:       3,
     quick:      4,
     bulky:     10,
@@ -178,6 +180,7 @@ const loadTypeMeta = {
             'Lay flat to dry. Never hang or tumble dry.'
         ],
         cautions: [
+            'Machine limit is 2 kg — keep loads very small.',
             'Use wool-safe non-bio only. Bio enzymes digest keratin and cause holes.',
             'Never wring or twist woollen items.'
         ]
@@ -304,10 +307,6 @@ const ui = {
     presetTipTitle: document.getElementById('presetTipTitle'),
     presetTipBody: document.getElementById('presetTipBody'),
     presetTipInner: document.getElementById('presetTipInner'),
-    detergentBar: document.getElementById('detergentBar'),
-    detBarType: document.getElementById('detBarType'),
-    detBarConc: document.getElementById('detBarConc'),
-    detergentRec: document.getElementById('detergentRec'),
     detergentBackdrop: document.getElementById('detergentBackdrop'),
     detergentSheet: document.getElementById('detergentSheet'),
     sheetDone: document.getElementById('sheetDone'),
@@ -443,6 +442,9 @@ function getDoseAndTemp(size, soil, colour, loadType, cycle, detergentType = sta
     let baseDose = Math.max(10, baseData.dose + modifier.doseAdjust);
 
     if (cycle === 'cottons' && soil === 'heavy') {
+        // Cap pre-multiplier: tempMultiplier is applied after, so the final dose
+        // may exceed 35 mL at cold temps (35 × 1.12 = ~40 mL). Intentional —
+        // the cap limits the base, not the temperature-adjusted output.
         baseDose = Math.min(35, baseDose);
     }
 
@@ -564,13 +566,11 @@ function updateWasher(size, colour, soil) {
 
 function updateDetergentBar() {
     const label = state.detergent.charAt(0).toUpperCase() + state.detergent.slice(1);
-    if (ui.detBarType) ui.detBarType.textContent = label;
-    if (ui.detBarConc) ui.detBarConc.textContent = Math.round(state.concentration * 100) + '%';
     if (ui.detergentPill) ui.detergentPill.textContent = label;
 }
 
 function updateDetergentRec() {
-    if (ui.detergentRec) ui.detergentRec.hidden = true;
+    // stub — element removed; kept for call-site compatibility
 }
 
 function updateLoadTypePill() {
@@ -674,32 +674,32 @@ function updateLoadTypeTips() {
                 : isLight
                     ? t + '\u00B0C for everyday soiling. Use 60\u00B0C for deep cleaning or heavy soil.'
                     : t + '\u00B0C protects colours and fibres for ' + meta.label.toLowerCase() + '.';
-            dynamicItems.push({ icon: '\u{1F4A1}', text: tipText });
+            dynamicItems.push({ icon: '\u{1F4A1}', text: tipText, warn: false });
         }
 
         // Cycle off-recommendation
         if (meta && state.cycle !== meta.recommendedCycle) {
             const recLabel = meta.recommendedCycle.charAt(0).toUpperCase() + meta.recommendedCycle.slice(1);
             const curLabel = state.cycle.charAt(0).toUpperCase() + state.cycle.slice(1);
-            dynamicItems.push({ icon: '\u26A0\uFE0F', text: recLabel + ' cycle recommended for ' + meta.label + '. Currently using ' + curLabel + '.' });
+            dynamicItems.push({ icon: '\u26A0\uFE0F', text: recLabel + ' cycle recommended for ' + meta.label + '. Currently using ' + curLabel + '.', warn: true });
         }
 
         // Detergent off-recommendation
         if (meta && meta.recDetergent !== state.detergent) {
             const rec = meta.recDetergent.charAt(0).toUpperCase() + meta.recDetergent.slice(1);
             const cur = state.detergent.charAt(0).toUpperCase() + state.detergent.slice(1);
-            dynamicItems.push({ icon: '\u26A0\uFE0F', text: rec + ' detergent recommended for ' + meta.label + '. Currently using ' + cur + '.' });
+            dynamicItems.push({ icon: '\u26A0\uFE0F', text: rec + ' detergent recommended for ' + meta.label + '. Currently using ' + cur + '.', warn: true });
         }
 
         // Other warnings (delicates+heavy, pods+small+light)
         const activeWarnings = getWarnings(state.size, state.soil, state.colour, state.cycle, state.detergent);
         activeWarnings.forEach(function(w) {
-            dynamicItems.push({ icon: '\u26A0\uFE0F', text: w });
+            dynamicItems.push({ icon: '\u26A0\uFE0F', text: w, warn: true });
         });
 
         const allItems = dynamicItems
-            .concat(meta.tips.map(function(t) { return { icon: '\u{1F4A1}', text: t }; }))
-            .concat(meta.cautions.map(function(c) { return { icon: '\u26A0\uFE0F', text: c }; }));
+            .concat(meta.tips.map(function(t) { return { icon: '\u{1F4A1}', text: t, warn: false }; }))
+            .concat(meta.cautions.map(function(c) { return { icon: '\u26A0\uFE0F', text: c, warn: true }; }));
 
         allItems.forEach(function(item) {
             const row = document.createElement('div');
@@ -710,7 +710,7 @@ function updateLoadTypeTips() {
             icon.textContent = item.icon;
 
             const text = document.createElement('span');
-            text.className = 'tip-text';
+            text.className = item.warn ? 'tip-text tip-text--warn' : 'tip-text';
             text.textContent = item.text;
 
             row.appendChild(icon);
@@ -782,8 +782,21 @@ function bindNavTabs() {
 
 function bindCollapsibles() {
     document.querySelectorAll('.collapsible-header').forEach(header => {
-        header.addEventListener('click', () => {
-            header.parentElement.classList.toggle('open');
+        header.setAttribute('role', 'button');
+        header.setAttribute('tabindex', '0');
+        header.setAttribute('aria-expanded', header.parentElement.classList.contains('open') ? 'true' : 'false');
+
+        const toggle = () => {
+            const isOpen = header.parentElement.classList.toggle('open');
+            header.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        };
+
+        header.addEventListener('click', toggle);
+        header.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                toggle();
+            }
         });
     });
 }
@@ -909,7 +922,6 @@ function init() {
     setupSelectors();
     applyLoadTypeDefaults(state.loadType);
     syncDetergentUI();
-    updateResult();
     setupDetergentSheet();
     setupLoadTypeSheet();
     if (ui.presetTipToggle) {

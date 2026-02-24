@@ -178,7 +178,7 @@ const state = {
 - `applyLoadTypeDefaults(loadType)` — sets `state.colour/soil/size/cycle` from `loadTypeMeta`, syncs all 4 button groups, calls `updateLoadTypePill()` and `updateResult()`
 - `syncSelectorGroup(groupId, dataKey, value)` — toggles `.active` on selector buttons by dataset value
 - `updateLoadTypePill()` — updates `#loadTypePill` text from `loadTypeMeta[state.loadType].label`
-- `updateDetergentBar()` — updates `#detergentPill` text + hidden `#detBarType`/`#detBarConc` elements
+- `updateDetergentBar()` — updates `#detergentPill` text
 - `updateLoadTypeTips()` — single source of all contextual text in the tips panel; builds: dynamic temp tip (colour-varying load types), cycle off-rec, detergent off-rec, active warnings, meta.tips, meta.cautions
 - `updateCup(amount)` — animates cup fill level via CSS rect geometry transition
 - `updateWasher(size, colour, soil)` — updates washer fill colour, dome level, soil dots
@@ -218,13 +218,17 @@ Calculation order:
 
 - No package manager, no node_modules, no build step
 - Fonts loaded from Google Fonts CDN (preconnect in `<head>`)
-- Service worker cache name: `laundry-guide-v9` — **bump manually on each deploy**
+- Service worker cache name: `laundry-guide-v10` — **bump manually on each deploy**
 - Dev: open `index.html` directly in browser; refresh to see changes
 - Platform: Windows 11, bash shell — use Unix syntax, `git -C <path>` instead of `cd`
 
 ---
 
 ## Known Issues and Pitfalls
+
+### `cycleMaxLoad.wool` vs machine manual (accepted approximation)
+- Machine manual specifies 2 kg max for the Wool cycle. The smallest size bucket is `small = 3 kg`, so there is no bucket that enforces the 2 kg limit via `updateSizeConstraints`.
+- **Accepted:** the size buckets are coarser than the machine limit. A user-visible caution ("Machine limit is 2 kg — keep loads very small.") is rendered in red in the tips panel whenever Wool is the load type. Do not change `cycleMaxLoad.wool` to 2 — that would disable all size buttons and break the UI.
 
 ### SVG Animation
 - **CSS `transition: d`** for SVG `<path>` d attribute does not work on iOS Safari — always use `requestAnimationFrame` tween
@@ -275,7 +279,7 @@ Calculation order:
 ### Service Worker
 - Uses `skipWaiting()` + `clients.claim()` for immediate activation
 - Fetch handler scoped to same-origin only — cross-origin requests pass through
-- Cache name is currently `laundry-guide-v5`
+- Cache name is currently `laundry-guide-v10`
 
 ---
 

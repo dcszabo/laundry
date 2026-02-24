@@ -128,8 +128,10 @@ body {
     gap: 3px;
 }
 
-.nav-tab:hover {
-    color: var(--text-primary);
+@media (hover: hover) {
+    .nav-tab:hover {
+        color: var(--text-primary);
+    }
 }
 
 .nav-tab.active {
@@ -294,29 +296,6 @@ body {
     color: var(--accent-cyan);
 }
 
-.load-type-select {
-    width: 100%;
-    padding: 12px 16px;
-    background: var(--bg-secondary);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    color: var(--text-primary);
-    font-family: 'DM Sans', sans-serif;
-    font-size: 15px;
-    font-weight: 500;
-    margin-bottom: 16px;
-    appearance: none;
-    -webkit-appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 14 14'%3E%3Cpath d='M3 5L7 9L11 5' stroke='rgba(255,255,255,0.5)' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round' fill='none'/%3E%3C/svg%3E");
-    background-repeat: no-repeat;
-    background-position: right 14px center;
-    cursor: pointer;
-}
-
-.load-type-select:focus {
-    outline: none;
-    border-color: var(--accent-blue);
-}
 
 .selector-group--wrap {
     flex-wrap: wrap;
@@ -596,39 +575,6 @@ body {
     padding-left: 2px;
 }
 
-/* Detergent Bar */
-.detergent-bar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 100%;
-    padding: 12px;
-    margin-top: 0;
-    margin-bottom: 16px;
-    background: var(--bg-secondary);
-    border: 1px solid var(--border-subtle);
-    border-radius: var(--radius-md);
-    color: var(--text-primary);
-    font-size: 13px;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-.detergent-bar:active { transform: scale(0.98); }
-.detergent-bar-left { display: flex; align-items: center; gap: 8px; }
-.detergent-bar-icon { font-size: 16px; }
-.detergent-bar-label { color: var(--text-muted); }
-.detergent-bar-type { font-weight: 600; }
-.detergent-bar-sep { color: var(--text-muted); }
-.detergent-bar-conc { color: var(--text-secondary); }
-.detergent-bar-chevron { color: var(--text-muted); font-size: 14px; }
-
-.detergent-rec {
-    font-size: 12px;
-    color: var(--accent-cyan);
-    margin-top: -10px;
-    margin-bottom: 16px;
-    padding-left: 2px;
-}
 
 /* Bottom Sheet + Backdrop */
 .modal-backdrop {
@@ -807,8 +753,10 @@ body {
     transition: background 0.2s ease;
 }
 
-.collapsible-header:hover {
-    background: var(--bg-card-hover);
+@media (hover: hover) {
+    .collapsible-header:hover {
+        background: var(--bg-card-hover);
+    }
 }
 
 .collapsible-header-left {
@@ -929,6 +877,10 @@ body {
     color: var(--text-secondary);
 }
 
+.tip-text--warn {
+    color: var(--accent-pink);
+}
+
 /* Key Fact Banner */
 .key-fact {
     position: relative;
@@ -955,8 +907,10 @@ body {
     transition: opacity 0.2s;
 }
 
-.key-fact-close:hover {
-    opacity: 0.7;
+@media (hover: hover) {
+    .key-fact-close:hover {
+        opacity: 0.7;
+    }
 }
 
 .key-fact-title {
@@ -1100,31 +1054,6 @@ body {
     color: var(--text-muted);
 }
 
-/* Cycle Grid */
-.cycle-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
-    margin-top: 12px;
-}
-
-.cycle-item {
-    background: var(--bg-secondary);
-    border-radius: var(--radius-sm);
-    padding: 10px;
-    text-align: center;
-}
-
-.cycle-name {
-    font-size: 12px;
-    font-weight: 600;
-    margin-bottom: 2px;
-}
-
-.cycle-desc {
-    font-size: 10px;
-    color: var(--text-muted);
-}
 
 /* Reference Table */
 .ref-table {
@@ -1276,10 +1205,6 @@ input[type="range"]::-moz-range-thumb {
     padding: 0 8px 12px;
 }
 
-/* Machine Card Bottom Margin */
-.machine-header:last-child {
-    margin-bottom: 0;
-}
 
 /* Mobile optimizations */
 @media (max-width: 380px) {
