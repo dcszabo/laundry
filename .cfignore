@@ -8,6 +8,10 @@ docs/
 # Wrangler config (not needed at runtime)
 wrangler.toml
 
+# Ignore files (not needed at runtime)
+.gitignore
+.cfignore
+
 # Claude Code local settings
 .claude/
 
