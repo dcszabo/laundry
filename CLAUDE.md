@@ -84,7 +84,7 @@ The result display (`.result-display`) is a **3-column flex row**:
 ### Calculator Tab — Sticky Layout
 
 - `.header` — `position: sticky; top: 0; z-index: 100`
-- `.result-display-sticky` — `position: sticky; top: 80px; z-index: 40; background: var(--bg-primary)`
+- `.result-display-sticky` — `position: sticky; top: 68px; z-index: 40; background: var(--bg-primary)`
 - `::after` gradient on `.result-display-sticky` fades content scrolling underneath — `opacity: 0` at rest, transitions to `1` when `.scrolled` class is present; JS scroll listener in `init()` toggles `.scrolled` on `window.scrollY > 8`
 - `.preset-tip` (collapsible tips panel) — sits between result card and calculator card
 - `.calculator-card` — scrolls normally beneath the sticky result
@@ -249,6 +249,8 @@ Calculation order:
 
 ### Sticky Layout (solved — do not revisit)
 - See Calculator Tab section constraints above
+- **Header height is 65px**, not 64px: `.water-badge` inherits `line-height: 1.6` from `body`, making its line box ~19px. Header-text height = h1 (24px) + gap (2px) + badge (19px) = 45px — taller than the icon (44px), so header-text drives the row. Total header = 12px (padding-top) + 45px + 8px (padding-bottom) = **65px**.
+- **`top: 68px`** on `.result-display-sticky` gives 3px tolerance above the 65px header — element is pinned at load, never scrolls. If you reduce `top` to ≤ 64px the element scrolls 1–2px before sticking. Do not set `top` lower than 66px.
 
 ### Bottom Sheet `transitionend`
 - `transitionend` can fail silently (rapid toggle, backgrounded tab) — always add `setTimeout(fn, 350)` fallback alongside `addEventListener('transitionend', fn)`
@@ -311,7 +313,7 @@ Calculation order:
 
 ## Session Log
 
-**2026-02-24** — Result card redesign: temp badge moved to its own row below dose; cap comparison removed; dose scaled to 48px/26px hero treatment; temp emoji removed, font 18px. Tip dividers removed. Tips toggle hover/active states unified with `.collapsible-header` pattern (guarded `@media (hover: hover)`, active state, `transition: background`). Result card `::after` gradient made scroll-triggered (opacity 0→1 on `scrollY > 8`).
+**2026-02-24** — Result card redesign: temp badge moved to its own row below dose; cap comparison removed; dose scaled to 48px/26px hero treatment; temp emoji removed, temp font 18px. Tip dividers removed. Tips toggle hover/active unified with `.collapsible-header` pattern. Result card `::after` gradient made scroll-triggered (opacity 0→1 on `scrollY > 8`). Header text tightened: h1 `margin: 0; line-height: 1.1`, `.header-text` flex column with `align-self: flex-start; gap: 2px`. Calculator section spacing standardised to 16px between all cards. `result-display-sticky` `top` corrected from 80px → 68px after header height changed from ~87px to 65px.
 
 **2026-02-23 (session 2)** — Research verification: updated `docs/research/research.md` (UK→AU context, ~19 mg/L TDS → ~18 mg/L total hardness, powder multiplier ×0.9→×1.0, F&P WH1060P4 specs confirmed from manual, cycle guide added). Updated app.js to match. Bug fixes: (1) hover sticking on touch — wrapped in `@media (hover: hover)`; (2) recommended-cycle checkmark causing layout shift — `::after` now `position: absolute`; (3) tips panel height changes causing Chrome scroll anchoring scroll — `overflow-anchor: none` on body + `btn.blur()` in selector click handler.
 
