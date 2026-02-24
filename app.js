@@ -287,6 +287,7 @@ function applyLoadTypeDefaults(loadType) {
 }
 
 const ui = {
+    resultDisplaySticky: document.querySelector('.result-display-sticky'),
     doseAmount: document.getElementById('doseAmount'),
     doseUnit: document.getElementById('doseUnit'),
     tempBadge: document.getElementById('tempBadge'),
@@ -920,6 +921,14 @@ function init() {
     syncDetergentUI();
     setupDetergentSheet();
     setupLoadTypeSheet();
+    if (ui.resultDisplaySticky) {
+        const onScroll = function() {
+            ui.resultDisplaySticky.classList.toggle('scrolled', window.scrollY > 8);
+        };
+        window.addEventListener('scroll', onScroll, { passive: true });
+        onScroll();
+    }
+
     if (ui.presetTipToggle) {
         ui.presetTipToggle.addEventListener('click', function() {
             const body = ui.presetTipBody;

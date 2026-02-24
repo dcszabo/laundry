@@ -85,7 +85,7 @@ The result display (`.result-display`) is a **3-column flex row**:
 
 - `.header` — `position: sticky; top: 0; z-index: 100`
 - `.result-display-sticky` — `position: sticky; top: 80px; z-index: 40; background: var(--bg-primary)`
-- `::after` gradient on `.result-display-sticky` fades content scrolling underneath
+- `::after` gradient on `.result-display-sticky` fades content scrolling underneath — `opacity: 0` at rest, transitions to `1` when `.scrolled` class is present; JS scroll listener in `init()` toggles `.scrolled` on `window.scrollY > 8`
 - `.preset-tip` (collapsible tips panel) — sits between result card and calculator card
 - `.calculator-card` — scrolls normally beneath the sticky result
 
@@ -310,6 +310,8 @@ Calculation order:
 ---
 
 ## Session Log
+
+**2026-02-24** — Result card redesign: temp badge moved to its own row below dose; cap comparison removed; dose scaled to 48px/26px hero treatment; temp emoji removed, font 18px. Tip dividers removed. Tips toggle hover/active states unified with `.collapsible-header` pattern (guarded `@media (hover: hover)`, active state, `transition: background`). Result card `::after` gradient made scroll-triggered (opacity 0→1 on `scrollY > 8`).
 
 **2026-02-23 (session 2)** — Research verification: updated `docs/research/research.md` (UK→AU context, ~19 mg/L TDS → ~18 mg/L total hardness, powder multiplier ×0.9→×1.0, F&P WH1060P4 specs confirmed from manual, cycle guide added). Updated app.js to match. Bug fixes: (1) hover sticking on touch — wrapped in `@media (hover: hover)`; (2) recommended-cycle checkmark causing layout shift — `::after` now `position: absolute`; (3) tips panel height changes causing Chrome scroll anchoring scroll — `overflow-anchor: none` on body + `btn.blur()` in selector click handler.
 

@@ -347,6 +347,11 @@ body {
     height: 28px;
     background: linear-gradient(to bottom, var(--bg-primary), transparent);
     pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+.result-display-sticky.scrolled::after {
+    opacity: 1;
 }
 
 /* Result Display with Cup */
@@ -1090,6 +1095,7 @@ body {
 }
 .nav-tab:active { transform: scale(0.96); }
 .collapsible-header:active { background: var(--bg-card-hover); }
+.preset-tip-toggle:active { background: var(--bg-card-hover); }
 .install-dismiss:active { transform: scale(0.95); }
 .key-fact-close:active { opacity: 0.8; }
 
@@ -1165,12 +1171,13 @@ input[type="range"]::-moz-range-thumb {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 14px;
+    padding: 16px;
     cursor: pointer;
     user-select: none;
+    transition: background 0.2s ease;
 }
-.preset-tip-toggle:hover {
-    background: rgba(255, 255, 255, 0.03);
+@media (hover: hover) {
+    .preset-tip-toggle:hover { background: var(--bg-card-hover); }
 }
 .preset-tip-title {
     font-weight: 600;
