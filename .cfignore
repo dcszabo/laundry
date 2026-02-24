@@ -1,0 +1,17 @@
+# Files tracked in git but not needed in the deployed site
+
+# Project meta-docs
+CLAUDE.md
+CONTRACT.md
+docs/
+
+# Wrangler config (not needed at runtime)
+wrangler.toml
+
+# Claude Code local settings
+.claude/
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini

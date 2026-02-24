@@ -1,0 +1,10 @@
+# Wrangler / Cloudflare Pages
+.wrangler/
+
+# Claude Code local settings
+.claude/settings.local.json
+
+# OS junk
+.DS_Store
+Thumbs.db
+desktop.ini
