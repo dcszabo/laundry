@@ -3,7 +3,7 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 > Read CONTRACT.md at session start and follow all rules defined there. Once read, reply "I've read the contract".
-> CONTRACT.md is located at: `C:\Users\dcsza\OneDrive\Projects\laundry\laundry\CONTRACT.md`
+> CONTRACT.md is located at: `C:\Users\dcsza\OneDrive\Projects\laundry\CONTRACT.md`
 
 ---
 
