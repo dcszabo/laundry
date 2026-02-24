@@ -48,6 +48,7 @@ body {
     z-index: 100;
     background: var(--bg-primary);
     padding: 12px 16px 8px;
+    box-shadow: 0 3px 0 var(--bg-primary);
 }
 
 .header-content {
