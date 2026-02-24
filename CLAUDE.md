@@ -19,7 +19,7 @@ Single-page laundry guidance application optimised for soft water households (~1
 
 - **Repository:** https://github.com/dcszabo/laundry
 - **Live site:** https://dcszabo.github.io/laundry/
-- **Deployment:** GitHub Pages from `master` branch (no build step — push to deploy)
+- **Deployment:** Cloudflare Pages (primary) + GitHub Pages (mirror) — both deploy from `master`
 
 ---
 
@@ -220,9 +220,10 @@ Calculation order:
 
 - No package manager, no node_modules, no build step
 - Fonts loaded from Google Fonts CDN (preconnect in `<head>`)
-- Service worker cache name: `laundry-guide-v10` — **bump manually on each deploy**
+- Service worker cache name: `laundry-guide-v11` — **bump manually on each deploy**
 - Dev: open `index.html` directly in browser; refresh to see changes
 - Platform: Windows 11, bash shell — use Unix syntax, `git -C <path>` instead of `cd`
+- **Cloudflare deploy:** `npx wrangler pages deploy` from project root (`wrangler.toml` sets project name and output dir)
 
 ---
 
@@ -283,7 +284,7 @@ Calculation order:
 ### Service Worker
 - Uses `skipWaiting()` + `clients.claim()` for immediate activation
 - Fetch handler scoped to same-origin only — cross-origin requests pass through
-- Cache name is currently `laundry-guide-v10`
+- Cache name is currently `laundry-guide-v11`
 
 ---
 
@@ -313,7 +314,9 @@ Calculation order:
 
 ## Session Log
 
-**2026-02-24** — Result card redesign: temp badge moved to its own row below dose; cap comparison removed; dose scaled to 48px/26px hero treatment; temp emoji removed, temp font 18px. Tip dividers removed. Tips toggle hover/active unified with `.collapsible-header` pattern. Result card `::after` gradient made scroll-triggered (opacity 0→1 on `scrollY > 8`). Header text tightened: h1 `margin: 0; line-height: 1.1`, `.header-text` flex column with `align-self: flex-start; gap: 2px`. Calculator section spacing standardised to 16px between all cards. `result-display-sticky` `top` corrected from 80px → 68px after header height changed from ~87px to 65px.
+**2026-02-24 (session 2)** — Migrated deployment to Cloudflare Pages (primary) via Wrangler direct upload; GitHub Pages remains as mirror. Added `wrangler.toml`. Moved project root from `/laundry/laundry` → `/laundry` (one level up); updated CONTRACT.md path in CLAUDE.md. Bumped SW cache v10 → v11.
+
+**2026-02-24 (session 1)** — Result card redesign: temp badge moved to its own row below dose; cap comparison removed; dose scaled to 48px/26px hero treatment; temp emoji removed, temp font 18px. Tip dividers removed. Tips toggle hover/active unified with `.collapsible-header` pattern. Result card `::after` gradient made scroll-triggered (opacity 0→1 on `scrollY > 8`). Header text tightened: h1 `margin: 0; line-height: 1.1`, `.header-text` flex column with `align-self: flex-start; gap: 2px`. Calculator section spacing standardised to 16px between all cards. `result-display-sticky` `top` corrected from 80px → 68px after header height changed from ~87px to 65px.
 
 **2026-02-23 (session 2)** — Research verification: updated `docs/research/research.md` (UK→AU context, ~19 mg/L TDS → ~18 mg/L total hardness, powder multiplier ×0.9→×1.0, F&P WH1060P4 specs confirmed from manual, cycle guide added). Updated app.js to match. Bug fixes: (1) hover sticking on touch — wrapped in `@media (hover: hover)`; (2) recommended-cycle checkmark causing layout shift — `::after` now `position: absolute`; (3) tips panel height changes causing Chrome scroll anchoring scroll — `overflow-anchor: none` on body + `btn.blur()` in selector click handler.
 
