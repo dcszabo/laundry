@@ -21,6 +21,7 @@ Single-page laundry guidance application optimised for soft water households (~1
 - **Live site:** https://laundry-9zl.pages.dev/
 - **GitHub mirror:** https://dcszabo.github.io/laundry/
 - **Deployment workflow:** commit → push to GitHub → `npx wrangler pages deploy`
+- **IMPORTANT:** Only run `npx wrangler pages deploy` when the user explicitly says "deploy". Never assume it follows from commit/push.
 
 ---
 
@@ -28,8 +29,8 @@ Single-page laundry guidance application optimised for soft water households (~1
 
 - HTML5 / CSS3 / ES6+ JavaScript — no framework, no bundler
 - Google Fonts: DM Sans (body), Fraunces (headings/numbers)
-- PWA: `site.webmanifest` + service worker (`sw.js`)
-- Hosting: GitHub Pages
+- PWA: `site.webmanifest` + service worker (`sw.js`) — `orientation: portrait` set
+- Hosting: Cloudflare Pages (primary), GitHub Pages (mirror)
 
 ---
 
@@ -41,7 +42,7 @@ public/             — Cloudflare Pages deploy root (only this dir is deployed)
   styles.css        — CSS custom properties, dark theme, mobile-first (breakpoint 380px)
   app.js            — Calculator logic, UI event handlers, SVG animation
   sw.js             — Service worker (cache-first, bump cache name on each deploy)
-  site.webmanifest  — PWA manifest
+  site.webmanifest  — PWA manifest (orientation: portrait)
   *.png / *.ico     — Favicon and PWA icon assets
 docs/research/research.md  — Laundry science: temperature matrix, detergent rules, dosage model (verified 2026-02-23, citations inline) — git only, not deployed
 ```
@@ -66,6 +67,30 @@ Fixed bottom tab bar — NOT inside `.app-container`. Lives just before the moda
 - `.app-container` has `padding-bottom: calc(72px + env(safe-area-inset-bottom))` so content clears the bar
 - 4 tabs: Calculator, Rules, Machine, Care (Presets tab was removed — merged into calculator)
 
+### Fixed Header — Combined Title Bar + Result Card
+
+`.header` is `position: fixed; top: 0; left: 0; right: 0; max-width: 480px; margin: 0 auto; z-index: 100`. It contains **both** the title bar and the result card:
+
+```
+.header (position: fixed, ~202px tall)
+  ├── .header-content        ← icon + title + water badge (~65px)
+  └── .result-display-sticky ← plain block, padding-top: 16px
+        └── .result-display  ← the result card (~129px)
+```
+
+- **Combined header height: ~202px** — `.app-container` has `padding-top: 202px` to push all section content below it
+- `.result-display-sticky` has NO positioning — just `padding-top: 16px` (creates 16px gap below title bar)
+- **Scroll-fade gradient:** `.header::after` — `position: absolute; top: 100%; height: 28px` gradient. `opacity: 0` at rest, `1` when `.scrolled` class is present
+- **`scrolled` class** is toggled on `.header` by the JS scroll listener (`window.scrollY > 8`). In `app.js`, `ui.resultDisplaySticky` points to `document.querySelector('.header')`
+- All inter-card gaps are **16px** consistently (header→result card via padding-top, result card→tips via tips `margin-top: 16px`, tips→calculator via calculator-card `margin-top: 16px`)
+
+**Do NOT:**
+- Put the result card back inside `#calculator` section — tab-switch `fadeIn` animation would cause it to bounce (see pitfall below)
+- Add `position: fixed` or `position: sticky` back to `.result-display-sticky` — it's intentionally a plain block inside the already-fixed header
+- Change `#calculator` to `display: flex` with fixed height — breaks page flow
+- Add `overflow-y: auto` to `.calculator-card` — creates two competing scroll regions on mobile
+- Make `.calculator-card` `position: sticky` — competing scroll on mobile
+
 ### Calculator Tab — Result Display Layout
 
 The result display (`.result-display`) is a **3-column flex row**:
@@ -83,21 +108,6 @@ The result display (`.result-display`) is a **3-column flex row**:
 - `.result-text` — `flex: 1; text-align: center`
 - `.result-dose-row` — dose value only, `justify-content: center` (`.result-value` is 48px Fraunces, unit 26px)
 - `.result-temp-row` — temp badge only, `justify-content: center`, `margin-top: 4px`
-- There is no cap comparison element — `#cupComparison` was removed
-
-### Calculator Tab — Sticky Layout
-
-- `.header` — `position: sticky; top: 0; z-index: 100`
-- `.result-display-sticky` — `position: sticky; top: 68px; z-index: 40; background: var(--bg-primary)`
-- `::after` gradient on `.result-display-sticky` fades content scrolling underneath — `opacity: 0` at rest, transitions to `1` when `.scrolled` class is present; JS scroll listener in `init()` toggles `.scrolled` on `window.scrollY > 8`
-- `.preset-tip` (collapsible tips panel) — sits between result card and calculator card
-- `.calculator-card` — scrolls normally beneath the sticky result
-
-**Do NOT:**
-- Change `#calculator` to `display: flex` with fixed height — breaks page flow
-- Add `overflow-y: auto` to `.calculator-card` — creates two competing scroll regions on mobile
-- Use negative `margin-bottom` on `.result-display-sticky` — z-index 40 background covers card at rest
-- Make `.calculator-card` `position: sticky` — competing scroll on mobile
 
 ### Bottom Sheet Pattern
 
@@ -119,7 +129,7 @@ Both the detergent and load type selectors use a bottom sheet modal pattern:
 
 ### Collapsible Tips Panel (`#presetTip`)
 
-- Sits between `.result-display-sticky` and `.calculator-card`
+- Sits between the fixed header and `.calculator-card` in the scroll flow
 - `hidden` attribute controls visibility (show/hide the entire block)
 - `.open` class controls collapsed/expanded state within the visible block
 - `#presetTipToggle` — clickable header row with title + chevron SVG
@@ -211,12 +221,13 @@ Calculation order:
 
 ## Conventions and Patterns
 
-- `ui` object — all DOM refs via `getElementById` at load time
+- `ui` object — all DOM refs via `getElementById` / `querySelector` at load time
 - `setupSelector(groupId, dataKey, callback)` — generic button-group selector binding
 - All selector buttons use `data-*` attributes; JS reads `dataset.*`
 - Storage via `readStorage` / `writeStorage` wrappers around `localStorage`
 - CSS custom properties in `:root` for all colours — never hardcode hex in components
 - `triggerHaptic()` — lightweight haptic on state changes (mobile)
+- Inter-card spacing: **16px** throughout (margin-top on cards, padding-top on wrappers)
 
 ---
 
@@ -224,8 +235,8 @@ Calculation order:
 
 - No package manager, no node_modules, no build step
 - Fonts loaded from Google Fonts CDN (preconnect in `<head>`)
-- Service worker cache name: `laundry-guide-v11` — **bump manually on each deploy**
-- Dev: open `index.html` directly in browser; refresh to see changes
+- Service worker cache name: `laundry-guide-v16` — **bump manually on each deploy**
+- Dev: open `public/index.html` directly in browser; refresh to see changes
 - Platform: Windows 11, bash shell — use Unix syntax, `git -C <path>` instead of `cd`
 - **Deploy workflow:** `git add` → `git commit` → `git push` → `npx wrangler pages deploy` (all from project root; `wrangler.toml` sets project name and `pages_build_output_dir = "public"`; only the `public/` dir is uploaded to Cloudflare; GitHub Pages mirrors automatically on push)
 
@@ -233,9 +244,19 @@ Calculation order:
 
 ## Known Issues and Pitfalls
 
+### `transform` on animated ancestor breaks `position: fixed` descendants
+- Per CSS spec, any element with a `transform` (including during a CSS animation) becomes the containing block for all `position: fixed` descendants. The fixed child positions relative to the transformed ancestor, not the viewport.
+- **This was the root cause of the result card tab-switch bounce.** The `.section` `fadeIn` animation used `transform: translateY(8px)`, which caused the fixed result card inside it to offset on every tab switch.
+- `fadeIn` is now opacity-only. **Never add `transform` back to `fadeIn` or any animation on `.section`.**
+- The fix: result card now lives inside `.header` (always rendered, never animated), not inside `.section`.
+
+### iOS overscroll / rubber-band
+- `position: sticky` elements can shift slightly during iOS rubber-band overscroll (negative scrollY). Use `position: fixed` for elements that must never move.
+- Both `.header` and its contents are `position: fixed` — immune to rubber-band.
+
 ### `cycleMaxLoad.wool` vs machine manual (accepted approximation)
 - Machine manual specifies 2 kg max for the Wool cycle. The smallest size bucket is `small = 3 kg`, so there is no bucket that enforces the 2 kg limit via `updateSizeConstraints`.
-- **Accepted:** the size buckets are coarser than the machine limit. A user-visible caution ("Machine limit is 2 kg — keep loads very small.") is rendered in red in the tips panel whenever Wool is the load type. Do not change `cycleMaxLoad.wool` to 2 — that would disable all size buttons and break the UI.
+- **Accepted:** a user-visible caution is rendered in red in the tips panel for Wool. Do not change `cycleMaxLoad.wool` to 2 — that would disable all size buttons and break the UI.
 
 ### SVG Animation
 - **CSS `transition: d`** for SVG `<path>` d attribute does not work on iOS Safari — always use `requestAnimationFrame` tween
@@ -252,11 +273,6 @@ Calculation order:
 ### Flex Centering
 - `text-align: center` on a flex container does NOT centre flex children — use `justify-content: center` on the row
 
-### Sticky Layout (solved — do not revisit)
-- See Calculator Tab section constraints above
-- **Header height is 65px**, not 64px: `.water-badge` inherits `line-height: 1.6` from `body`, making its line box ~19px. Header-text height = h1 (24px) + gap (2px) + badge (19px) = 45px — taller than the icon (44px), so header-text drives the row. Total header = 12px (padding-top) + 45px + 8px (padding-bottom) = **65px**.
-- **`top: 68px`** on `.result-display-sticky` gives 3px tolerance above the 65px header — element is pinned at load, never scrolls. If you reduce `top` to ≤ 64px the element scrolls 1–2px before sticking. Do not set `top` lower than 66px.
-
 ### Bottom Sheet `transitionend`
 - `transitionend` can fail silently (rapid toggle, backgrounded tab) — always add `setTimeout(fn, 350)` fallback alongside `addEventListener('transitionend', fn)`
 
@@ -264,7 +280,7 @@ Calculation order:
 - `applyLoadTypeDefaults` now calls `updateResult()` internally. Callers must not also call `updateResult()` immediately after — causes double calculation (harmless but wasteful). `init()` currently does this redundantly.
 
 ### `setupDetergentSheet` trigger element
-- The detergent sheet is now triggered by `#detergentPill`, NOT `#detergentBar` (bar was removed). `setupDetergentSheet` binds to `ui.detergentPill`. This has been corrected once — do not revert to `detergentBar`.
+- The detergent sheet is triggered by `#detergentPill`, NOT `#detergentBar` (bar was removed). `setupDetergentSheet` binds to `ui.detergentPill`. Do not revert to `detergentBar`.
 
 ### Pill width and centring
 - Both `.cup-container` and `.washer-container` are fixed at `width: 80px`. Pills use `width: 100%; box-sizing: border-box` to fill the column. This ensures the centre `.result-text` (flex:1) always occupies the same space regardless of label length.
@@ -288,7 +304,11 @@ Calculation order:
 ### Service Worker
 - Uses `skipWaiting()` + `clients.claim()` for immediate activation
 - Fetch handler scoped to same-origin only — cross-origin requests pass through
-- Cache name is currently `laundry-guide-v11`
+- Cache name is currently `laundry-guide-v16`
+
+### Landscape / Portrait
+- `site.webmanifest` has `"orientation": "portrait"` — locks orientation for PWA installs
+- CSS at bottom of `styles.css`: `@media (orientation: landscape) and (max-height: 600px)` shows a rotate-device overlay via `body::before`
 
 ---
 
@@ -319,16 +339,14 @@ All in `public/`:
 
 ## Session Log
 
-**2026-02-24 (session 3)** — Repo hygiene: added `.gitignore` (excludes `.wrangler/`, `.claude/settings.local.json`, OS junk). Untracked `.claude/settings.local.json` from git index. Moved all deployable app files into `public/` subdirectory; set `pages_build_output_dir = "public"` in `wrangler.toml` so only app files are uploaded to Cloudflare Pages. `docs/`, `CLAUDE.md`, `CONTRACT.md` remain tracked in git but stay at project root and are never deployed.
+**2026-02-24 (session 4)** — Fixed overscroll and tab-switch layout bugs. Both `.header` and result card are now `position: fixed`; result card merged inside `.header` so it is structurally immune to tab-switch animation recompositing. Root cause of bounce: `fadeIn` used `transform: translateY(8px)` which made `.section` a containing block for fixed descendants — removed transform, animation is now opacity-only. Added portrait lock (`site.webmanifest` + CSS landscape guard). Spacing standardised to 16px between all header/card gaps. SW cache v15 → v16. Deployment rule established: only deploy on explicit user instruction.
 
-**2026-02-24 (session 2)** — Migrated deployment to Cloudflare Pages (primary) via Wrangler direct upload; GitHub Pages remains as mirror. Added `wrangler.toml`. Moved project root from `/laundry/laundry` → `/laundry` (one level up); updated CONTRACT.md path in CLAUDE.md. Bumped SW cache v10 → v11.
+**2026-02-24 (session 3)** — Repo hygiene: added `.gitignore`, moved app files into `public/`, set `pages_build_output_dir = "public"` in `wrangler.toml`.
 
-**2026-02-24 (session 1)** — Result card redesign: temp badge moved to its own row below dose; cap comparison removed; dose scaled to 48px/26px hero treatment; temp emoji removed, temp font 18px. Tip dividers removed. Tips toggle hover/active unified with `.collapsible-header` pattern. Result card `::after` gradient made scroll-triggered (opacity 0→1 on `scrollY > 8`). Header text tightened: h1 `margin: 0; line-height: 1.1`, `.header-text` flex column with `align-self: flex-start; gap: 2px`. Calculator section spacing standardised to 16px between all cards. `result-display-sticky` `top` corrected from 80px → 68px after header height changed from ~87px to 65px.
+**2026-02-24 (sessions 1–2)** — Result card redesign (hero dose, temp badge row, scroll-triggered gradient). Migrated to Cloudflare Pages. Sticky layout tuned (header 65px, result card top: 68px).
 
-**2026-02-23 (session 2)** — Research verification: updated `docs/research/research.md` (UK→AU context, ~19 mg/L TDS → ~18 mg/L total hardness, powder multiplier ×0.9→×1.0, F&P WH1060P4 specs confirmed from manual, cycle guide added). Updated app.js to match. Bug fixes: (1) hover sticking on touch — wrapped in `@media (hover: hover)`; (2) recommended-cycle checkmark causing layout shift — `::after` now `position: absolute`; (3) tips panel height changes causing Chrome scroll anchoring scroll — `overflow-anchor: none` on body + `btn.blur()` in selector click handler.
+**2026-02-23 (session 2)** — Research verification, AU context, powder multiplier, F&P manual. Bug fixes: hover sticking, checkmark layout shift, scroll anchoring.
 
-**2026-02-23 (session 1)** — Major calculator redesign: merged Presets tab into Calculator. Load type becomes the primary selector (bottom sheet accessed via result card pill). Detergent settings moved to result card pill (was a bar in the calculator card). Temperature now derived from `tempMatrix[loadType][colour]` snapped to `cycleTemps[cycle]`. `cycleMaxLoad` + `updateSizeConstraints` greys out invalid load sizes. `updateLoadTypeTips` consolidates all contextual text (tips, warnings, off-rec notices) into a single collapsible panel between result card and calculator card. Information architecture: result card = numbers only, tips panel = all explanatory text.
+**2026-02-23 (session 1)** — Major calculator redesign: Presets merged into Calculator, load type as primary selector, detergent pill, tempMatrix + cycleTemps architecture, tips panel.
 
-**2026-02-20** — Replaced scrollable top nav with fixed bottom tab bar (iOS safe area, `viewport-fit=cover`). Added front-loader washing machine SVG to result display with animated dome-shaped clothing fill (rAF tween), colour-mapped fill, and soil dots. Centred result row to 3-column layout. Added temperature-based dose modifier (±10–12%).
-
-**2026-01-?? (prior session)** — Redesigned load types, fixed content accuracy, simplified temperatures. Moved temp badge inline with dose value.
+**2026-02-20** — Fixed bottom tab bar, washing machine SVG, rAF dome animation, temperature dose modifier.
