@@ -17,9 +17,9 @@ CONTRACT.md v2.0 — located in the project root (`CONTRACT.md`). Read in full a
 
 Single-page laundry guidance application optimised for soft water households (~18 mg/L total hardness as CaCO₃, Wantirna South VIC, Australia). Primary user is the owner on iPhone (Safari). Mobile-first SPA — vanilla HTML/CSS/JavaScript, no build tools, no external dependencies.
 
-- **Repository:** https://github.com/dcszabo/laundry
-- **Live site:** https://laundry-9zl.pages.dev/
-- **GitHub mirror:** https://dcszabo.github.io/laundry/
+- **Repository:** <https://github.com/dcszabo/laundry>
+- **Live site:** <https://laundry-9zl.pages.dev/>
+- **GitHub mirror:** <https://dcszabo.github.io/laundry/>
 - **Deployment workflow:** commit → push to GitHub → `npx wrangler pages deploy`
 - **IMPORTANT:** Only run `npx wrangler pages deploy` when the user explicitly says "deploy". Never assume it follows from commit/push.
 
@@ -29,14 +29,14 @@ Single-page laundry guidance application optimised for soft water households (~1
 
 - HTML5 / CSS3 / ES6+ JavaScript — no framework, no bundler
 - Google Fonts: DM Sans (body), Fraunces (headings/numbers)
-- PWA: `site.webmanifest` + service worker (`sw.js`) — `orientation: portrait` set
+- PWA: `site.webmanifest` + service worker (`sw.js`) — `orientation: portrait` set (ignored by iOS — see Known Issues)
 - Hosting: Cloudflare Pages (primary), GitHub Pages (mirror)
 
 ---
 
 ## Architecture
 
-```
+```text
 public/             — Cloudflare Pages deploy root (only this dir is deployed)
   index.html        — HTML structure, 4 tab sections, all SVG visuals inline
   styles.css        — CSS custom properties, dark theme, mobile-first (breakpoint 380px)
@@ -49,42 +49,49 @@ docs/research/research.md  — Laundry science: temperature matrix, detergent ru
 
 ### Navigation
 
-Fixed bottom tab bar — NOT inside `.app-container`. Lives just before the modal elements at the end of `<body>`:
+Hamburger button (top-right of header) opens a dropdown panel. No bottom tab bar.
 
 ```html
-<div class="nav-tabs-wrapper">   ← position: fixed; bottom: 0
-  <nav class="nav-tabs">
-    <button class="nav-tab" data-section="...">
-      <span class="tab-icon">emoji</span>
-      <span class="tab-label">Label</span>
-    </button>
-  </nav>
+<!-- inside .header-content, rightmost child -->
+<button class="hamburger-btn" id="navMenuBtn" aria-expanded="false" aria-haspopup="menu">
+
+<!-- inside .header, after .result-display-sticky -->
+<div class="nav-dropdown" id="navDropdown" role="menu" hidden>
+  <button class="nav-dropdown-item" data-section="calculator" role="menuitem">...</button>
+  <!-- rules / machine / maintenance -->
 </div>
 ```
 
+- `.nav-dropdown` is `position: absolute` inside `.header` (which is `position: fixed`), appearing below `.header-content`
+- Open/close follows the same `transitionend` + `setTimeout(200)` fallback pattern as bottom sheets
+- Active section indicated by `.nav-dropdown-check` SVG, shown via `body.tab-{section}` CSS selector
+- Escape key and outside-click both close the dropdown
 - `viewport-fit=cover` on meta viewport — required for `env(safe-area-inset-bottom)` on iPhone
-- `.nav-tabs-wrapper` has `padding-bottom: env(safe-area-inset-bottom)`
-- `.app-container` has `padding-bottom: calc(72px + env(safe-area-inset-bottom))` so content clears the bar
-- 4 tabs: Calculator, Rules, Machine, Care (Presets tab was removed — merged into calculator)
+- `.app-container` has `padding-bottom: calc(24px + env(safe-area-inset-bottom))` (no bar to clear)
+- 4 sections: calculator, rules, machine, maintenance
 
 ### Fixed Header — Combined Title Bar + Result Card
 
-`.header` is `position: fixed; top: 0; left: 0; right: 0; max-width: 480px; margin: 0 auto; z-index: 100`. It contains **both** the title bar and the result card:
+`.header` is `position: fixed; top: 0; left: 0; right: 0; max-width: 480px; margin: 0 auto; z-index: 100`. It contains the title bar, the result card, and the nav dropdown:
 
-```
-.header (position: fixed, ~202px tall)
-  ├── .header-content        ← icon + title + water badge (~65px)
-  └── .result-display-sticky ← plain block, padding-top: 16px
-        └── .result-display  ← the result card (~129px)
+```text
+.header (position: fixed)
+  ├── .header-content        ← icon + title + water badge + hamburger-btn (~68px)
+  ├── .result-display-sticky ← plain block, padding-top: 16px (hidden on non-calculator tabs)
+  │     └── .result-display  ← the result card (~129px)
+  └── .nav-dropdown          ← position: absolute; top: 68px; right: 16px (hidden by default)
 ```
 
-- **Combined header height: ~202px** — `.app-container` has `padding-top: 202px` to push all section content below it
+- **Calculator tab header height: ~202px** — `body.tab-calculator .app-container { padding-top: 202px }`
+- **Compact header height: ~68px** (all other tabs, result card hidden) — `.app-container { padding-top: 68px }` (base)
 - `.result-display-sticky` has NO positioning — just `padding-top: 16px` (creates 16px gap below title bar)
+- **Result card visibility:** `body.tab-calculator .result-display-sticky { display: block }` — hidden by default via `display: none`
 - **Scroll-fade gradient:** `.header::after` — `position: absolute; top: 100%; height: 28px` gradient. `opacity: 0` at rest, `1` when `.scrolled` class is present
 - **`scrolled` class** is toggled on `.header` by the JS scroll listener (`window.scrollY > 8`). In `app.js`, `ui.resultDisplaySticky` points to `document.querySelector('.header')`
 - All inter-card gaps are **16px** consistently (header→result card via padding-top, result card→tips via tips `margin-top: 16px`, tips→calculator via calculator-card `margin-top: 16px`)
 
 **Do NOT:**
+
 - Put the result card back inside `#calculator` section — tab-switch `fadeIn` animation would cause it to bounce (see pitfall below)
 - Add `position: fixed` or `position: sticky` back to `.result-display-sticky` — it's intentionally a plain block inside the already-fixed header
 - Change `#calculator` to `display: flex` with fixed height — breaks page flow
@@ -95,7 +102,7 @@ Fixed bottom tab bar — NOT inside `.app-container`. Lives just before the moda
 
 The result display (`.result-display`) is a **3-column flex row**:
 
-```
+```html
 [cup SVG + detergent pill]   [dose / temp]   [washer SVG + load type pill]
        left (80px)              centre (flex:1)       right (80px)
 ```
@@ -137,14 +144,20 @@ Both the detergent and load type selectors use a bottom sheet modal pattern:
 - Chevron rotates 180° on `.open`
 - `updateLoadTypeTips()` sets `hidden = false` and adds `.open` only on first show (`wasHidden === true`); subsequent calls preserve the open/closed state
 
+### Collapsible Sections (Rules, Machine, Care tabs)
+
+All collapsibles start **closed by default** (no `open` class in HTML). The `bindCollapsibles()` function handles toggle via `.collapsible-header` click.
+
 ### SVG Visuals
 
 #### Detergent Cup (left)
+
 - `<rect id="liquidFill" class="cup-fill">` — fill rect animated via `updateCup(amount)`
 - CSS `transition: all 0.5s ease` on `.cup-fill` — works because `y` and `height` are CSS geometry properties on `<rect>`
 - Max fill = 75mL, maps linearly to SVG height
 
 #### Washing Machine (right)
+
 - Inline SVG with `<clipPath id="drumClip"><circle cx="40" cy="58" r="23"/></clipPath>`
 - `<path id="drumFill">` — dome-shaped clothing fill, clipped to drum circle
 - `<g id="drumSoil">` — 6 pre-positioned dots (show 2/4/6 based on soil level)
@@ -187,6 +200,7 @@ const state = {
 
 ## Key Functions (app.js)
 
+- `setActiveSection(sectionId)` — switches active `.section`, swaps `body.tab-*` class, updates `.water-badge` subtitle. Single source of truth for tab switching.
 - `updateResult()` — main recalculation, called on every state change and at init. Calls `updateSizeConstraints()`, `getDoseAndTemp()`, `updateCup()`, `updateWasher()`, `updateLoadTypeTips()`, `updateDetergentBar()`, `updateCycleIndicators()`, `updateCycleRec()`
 - `getDoseAndTemp(size, soil, colour, loadType, cycle, detergentType)` — 6-arg core calculation, returns `{ dose, doseAmount, doseUnit, tempStr, isPods }`
 - `snapToNearest(temp, available)` — snaps a temperature to the nearest available cycle temperature; ties prefer lower value (arrays sorted ascending)
@@ -201,6 +215,7 @@ const state = {
 - `animateWasherFill(targetFillY, domeH)` — rAF tween for dome path animation
 - `openDetergentSheet()` / `closeDetergentSheet()` — detergent bottom sheet
 - `openLoadTypeSheet()` / `closeLoadTypeSheet()` — load type bottom sheet
+- `openNavDropdown()` / `closeNavDropdown()` — hamburger nav dropdown
 - `syncLoadTypeSheetUI()` — syncs `.active` on load type sheet options to current state
 - `setupSelectors()` — binds size/soil/colour/cycle/detergent button groups + concentration range
 - `roundToFive(n)` — rounds dose to nearest 5mL throughout
@@ -208,6 +223,7 @@ const state = {
 ### Dosage Calculation (`getDoseAndTemp`)
 
 Calculation order:
+
 1. `baseDose` from `dosageData[size][soil]`
 2. Temperature derived from `tempMatrix[loadType][colour]` → snapped to `cycleTemps[cycle]` via `snapToNearest`
 3. Temperature modifier applied to `baseDose`:
@@ -228,6 +244,7 @@ Calculation order:
 - CSS custom properties in `:root` for all colours — never hardcode hex in components
 - `triggerHaptic()` — lightweight haptic on state changes (mobile)
 - Inter-card spacing: **16px** throughout (margin-top on cards, padding-top on wrappers)
+- `body.tab-{sectionId}` class — set by `setActiveSection()` on every tab switch and seeded in `init()`. Drives CSS rules for result card visibility and nav dropdown checkmarks. Use this for any tab-conditional styling.
 
 ---
 
@@ -235,7 +252,7 @@ Calculation order:
 
 - No package manager, no node_modules, no build step
 - Fonts loaded from Google Fonts CDN (preconnect in `<head>`)
-- Service worker cache name: `laundry-guide-v16` — **bump manually on each deploy**
+- Service worker cache name: `laundry-guide-v17` — **bump manually on each deploy**
 - Dev: open `public/index.html` directly in browser; refresh to see changes
 - Platform: Windows 11, bash shell — use Unix syntax, `git -C <path>` instead of `cd`
 - **Deploy workflow:** `git add` → `git commit` → `git push` → `npx wrangler pages deploy` (all from project root; `wrangler.toml` sets project name and `pages_build_output_dir = "public"`; only the `public/` dir is uploaded to Cloudflare; GitHub Pages mirrors automatically on push)
@@ -245,76 +262,96 @@ Calculation order:
 ## Known Issues and Pitfalls
 
 ### `transform` on animated ancestor breaks `position: fixed` descendants
+
 - Per CSS spec, any element with a `transform` (including during a CSS animation) becomes the containing block for all `position: fixed` descendants. The fixed child positions relative to the transformed ancestor, not the viewport.
 - **This was the root cause of the result card tab-switch bounce.** The `.section` `fadeIn` animation used `transform: translateY(8px)`, which caused the fixed result card inside it to offset on every tab switch.
 - `fadeIn` is now opacity-only. **Never add `transform` back to `fadeIn` or any animation on `.section`.**
 - The fix: result card now lives inside `.header` (always rendered, never animated), not inside `.section`.
 
 ### iOS overscroll / rubber-band
+
 - `position: sticky` elements can shift slightly during iOS rubber-band overscroll (negative scrollY). Use `position: fixed` for elements that must never move.
 - Both `.header` and its contents are `position: fixed` — immune to rubber-band.
 
 ### `cycleMaxLoad.wool` vs machine manual (accepted approximation)
+
 - Machine manual specifies 2 kg max for the Wool cycle. The smallest size bucket is `small = 3 kg`, so there is no bucket that enforces the 2 kg limit via `updateSizeConstraints`.
 - **Accepted:** a user-visible caution is rendered in red in the tips panel for Wool. Do not change `cycleMaxLoad.wool` to 2 — that would disable all size buttons and break the UI.
 
 ### SVG Animation
+
 - **CSS `transition: d`** for SVG `<path>` d attribute does not work on iOS Safari — always use `requestAnimationFrame` tween
 - SVG geometry attributes (`x`, `y`, `width`, `height`, `cx`, `cy`, `rx`, `ry`) on `<rect>` / `<ellipse>` ARE CSS-transitionable
 - CSS `transition: all` on `.cup-fill` works because rect attributes are geometry properties
 
 ### iOS Safe Area
+
 - `env(safe-area-inset-bottom)` returns 0 unless `viewport-fit=cover` is in the meta viewport tag
 - Fixed bottom bars need `padding-bottom: env(safe-area-inset-bottom)` AND page needs matching `padding-bottom`
 
 ### Fixed Element Centering
+
 - `position: fixed; left: 0; right: 0; max-width: 480px; margin: 0 auto` correctly centres a fixed element
 
 ### Flex Centering
+
 - `text-align: center` on a flex container does NOT centre flex children — use `justify-content: center` on the row
 
 ### Bottom Sheet `transitionend`
+
 - `transitionend` can fail silently (rapid toggle, backgrounded tab) — always add `setTimeout(fn, 350)` fallback alongside `addEventListener('transitionend', fn)`
 
 ### `applyLoadTypeDefaults` calls `updateResult()`
+
 - `applyLoadTypeDefaults` now calls `updateResult()` internally. Callers must not also call `updateResult()` immediately after — causes double calculation (harmless but wasteful). `init()` currently does this redundantly.
 
 ### `setupDetergentSheet` trigger element
+
 - The detergent sheet is triggered by `#detergentPill`, NOT `#detergentBar` (bar was removed). `setupDetergentSheet` binds to `ui.detergentPill`. Do not revert to `detergentBar`.
 
 ### Pill width and centring
+
 - Both `.cup-container` and `.washer-container` are fixed at `width: 80px`. Pills use `width: 100%; box-sizing: border-box` to fill the column. This ensures the centre `.result-text` (flex:1) always occupies the same space regardless of label length.
 
 ### Information Architecture
+
 - Result card = numbers only (dose + temp). No warnings or tips inline.
 - Tips panel (`#presetTip`) = all contextual text: dynamic temp tip, off-rec warnings, load-type tips, cautions — in that priority order.
 - `updateCycleRec()` and `updateDetergentRec()` are always-hidden (stubs kept for call-site compatibility).
 
 ### Selector Button Hover (touch devices)
+
 - `.selector-btn:hover` MUST stay inside `@media (hover: hover)` — bare `:hover` sticks on touch after tap, causing adjacent buttons to appear highlighted
 
 ### Cycle Indicator Checkmark
+
 - `.selector-btn[data-recommended="true"]::after` uses `position: absolute; top: 3px; right: 3px` with `content: ''`, `width/height: 13px`, and an SVG circle-tick as `background-image` — inline `margin-left` causes button width change on toggle, triggering layout reflow and page shift
 - `.selector-btn` has `position: relative` to support this — do not remove
 
 ### Tips Panel Scroll Anchoring
+
 - `body` has `overflow-anchor: none` — intentional. `#presetTip` height changes when cycle changes; without this Chrome auto-adjusts `scrollTop` and the page appears to scroll
 - `setupSelector` click handler calls `btn.blur()` after `updateResult()` — prevents focus-induced scroll on iOS Safari after tap
 
 ### Service Worker
+
 - Uses `skipWaiting()` + `clients.claim()` for immediate activation
 - Fetch handler scoped to same-origin only — cross-origin requests pass through
-- Cache name is currently `laundry-guide-v16`
+- Cache name is currently `laundry-guide-v17`
 
 ### Landscape / Portrait
-- `site.webmanifest` has `"orientation": "portrait"` — locks orientation for PWA installs
-- CSS at bottom of `styles.css`: `@media (orientation: landscape) and (max-height: 600px)` shows a rotate-device overlay via `body::before`
+
+- `site.webmanifest` has `"orientation": "portrait"` — **iOS/WebKit ignores this field entirely**, even for installed PWAs. It has no effect on iPhone.
+- `screen.orientation.lock()` is also unsupported in iOS Safari/WKWebView. There is no web API to prevent rotation on iOS.
+- CSS `@media (orientation: landscape) and (max-height: 600px)` shows a rotate-device overlay via `body::before` — this is the only available mitigation for iOS.
+- Android Chrome supports `screen.orientation.lock()` in fullscreen mode, but this app does not use fullscreen.
 
 ---
 
 ## PWA Assets
 
 All in `public/`:
+
 - `favicon.ico`, `favicon-16x16.png`, `favicon-32x32.png` — browser favicons
 - `apple-touch-icon.png` — iOS home screen (180×180)
 - `android-chrome-192x192.png`, `android-chrome-512x512.png` — Android PWA icons
@@ -338,6 +375,8 @@ All in `public/`:
 ---
 
 ## Session Log
+
+**2026-02-24 (session 5)** — Navigation redesigned: bottom tab bar removed, replaced with hamburger dropdown inside `.header`. Result card hidden on non-calculator tabs via `body.tab-{section}` class. All collapsibles default to closed. Drum Clean Reminder banner and all related JS/CSS removed. Info note added to Monthly Drum Clean. Confirmed iOS ignores `"orientation": "portrait"` in webmanifest — no web API can lock orientation on iOS. SW cache v16 → v17.
 
 **2026-02-24 (session 4)** — Fixed overscroll and tab-switch layout bugs. Both `.header` and result card are now `position: fixed`; result card merged inside `.header` so it is structurally immune to tab-switch animation recompositing. Root cause of bounce: `fadeIn` used `transform: translateY(8px)` which made `.section` a containing block for fixed descendants — removed transform, animation is now opacity-only. Added portrait lock (`site.webmanifest` + CSS landscape guard). Spacing standardised to 16px between all header/card gaps. SW cache v15 → v16. Deployment rule established: only deploy on explicit user instruction.
 
