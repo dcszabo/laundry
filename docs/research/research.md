@@ -62,8 +62,8 @@ Source: South East Water Annual Drinking Water Quality Report 2023–24.
 | Cottons | 10 kg | Full drum |
 | Everyday | 10 kg | |
 | Heavy | 10 kg | |
-| Bulky | 10 kg | Load must move freely; measured by items (1–2 duvets), not kg |
-| Easy Iron | 10 kg | |
+| Bulky | 4 kg | Manual-confirmed (WH1060P4 cycle table). Earlier estimate of 10 kg was incorrect. |
+| Easy Iron | 4 kg | Manual-confirmed (WH1060P4 cycle table). Earlier estimate of 10 kg was incorrect. |
 | Delicate | 4 kg | Estimated — per-cycle limits not tabled in manual |
 | Wool | 3 kg (2 kg recommended max) | App uses 3 kg as selector limit; 2 kg is practical safe max |
 | Quick | 4 kg | Estimated |
@@ -80,7 +80,7 @@ Source: South East Water Annual Drinking Water Quality Report 2023–24.
 | Delicate | Cold, 30, 40°C | **Manual confirmed max 40°C** |
 | Wool | Cold, 30, 40°C | Woolmark certified; 40°C absolute max |
 | Quick | Cold, 30, 40°C | Short cycle; low-temp only |
-| Bulky | Cold, 30, 40, 60°C | Bedding hygiene option |
+| Bulky | Cold, 30, 40, 60, 90°C | Manual-confirmed range (Cold–90°C). Earlier estimate was incorrect. |
 | Easy Iron | Cold, 30, 40, 60°C | Manual recommends 30–40°C for creasables; 60°C available for white cotton shirts |
 | Sanitise | 75°C (fixed) | Not user-adjustable |
 
@@ -251,9 +251,11 @@ Each load type researched against Australian sources (Choice AU, Canstar Blue, N
 | Everyday cotton | Optional | Acceptable; avoid on moisture-wicking items | — |
 | Bedding | Avoid | Residue aggravates sensitive skin; reduces fabric moisture regulation | Choice AU |
 
-Alternative for towels: white vinegar (1–2 tbsp) in rinse compartment softens without coating fibres.
+**Vinegar:** Do not use white vinegar as a fabric softener alternative in front-loading machines — acetic acid degrades rubber door gaskets over time.
 
 Alternative for wool: specialist wool conditioner or small amount of hair conditioner in rinse.
+
+**TODO: Cycle Options** — The app's Machine tab lists cycle modifier options (ECO, Speed, Quiet, Pre Wash, Rinse+, Wash+, Soak, Wrinkle Free). These have not been verified against the F&P WH1060P4 user manual. Research required before treating as confirmed.
 
 ### Hygiene Standard (Australia)
 

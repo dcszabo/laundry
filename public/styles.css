@@ -1069,7 +1069,7 @@ body.tab-calculator .result-display-sticky {
     display: flex;
     align-items: center;
     gap: 12px;
-    margin-bottom: 12px;
+    margin-bottom: 0;
 }
 
 .machine-icon {
