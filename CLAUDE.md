@@ -34,7 +34,7 @@ Single-page laundry guidance app for a soft water household (~18 mg/L CaCO₃, W
 
 ```text
 public/             — Cloudflare Pages deploy root (only this dir is deployed)
-  index.html        — HTML, 4 tab sections, all SVGs inline
+  index.html        — HTML, 3 tab sections (calculator, rules/guide, machine), all SVGs inline
   styles.css        — CSS custom properties, dark theme, mobile-first (380px breakpoint)
   app.js            — Calculator logic, UI handlers, SVG animation
   sw.js             — Service worker; bump cache name on each deploy (currently v17)
@@ -47,7 +47,7 @@ docs/research/
 
 ### Navigation
 
-Hamburger button (top-right of `.header-content`) opens `.nav-dropdown` (`position: absolute` inside the fixed `.header`, `top: 68px; right: 16px`). 4 sections: calculator, rules, machine, maintenance.
+Hamburger button (top-right of `.header-content`) opens `.nav-dropdown` (`position: absolute` inside the fixed `.header`, `top: 68px; right: 16px`). 3 sections: calculator, rules, machine.
 
 - Active section shown via `.nav-dropdown-check` SVG, driven by `body.tab-{section}` CSS selector
 - Open/close: `transitionend` + `setTimeout(200)` fallback (same pattern as bottom sheets)
@@ -89,9 +89,10 @@ Hamburger button (top-right of `.header-content`) opens `.nav-dropdown` (`positi
 `closeXxxSheet()` — remove `.visible` → `transitionend` + `setTimeout(350)` fallback → set `hidden`
 **Always add `setTimeout` fallback** — `transitionend` fails silently on rapid toggle / backgrounded tab.
 
-### Collapsible Sections (Rules, Machine, Care tabs)
+### Collapsible Sections (Guide, Machine tabs)
 
 All collapsibles start **closed** (no `open` class in HTML). `bindCollapsibles()` handles toggle.
+Machine tab uses `.section-subheader` (`<h3>`) to divide machine specs collapsibles from care collapsibles.
 
 Tips panel (`#presetTip`): `hidden` attr = visibility; `.open` class = expanded. `updateLoadTypeTips()` only auto-opens on first show (`wasHidden === true`); subsequent calls preserve state.
 
@@ -159,13 +160,16 @@ const state = {
 - Storage: `readStorage` / `writeStorage` wrappers around `localStorage`
 - Information architecture: result card = numbers only; tips panel = all contextual text
 - `updateCycleRec()` and `updateDetergentRec()` are stubs (always hidden) — kept for call-site compatibility
+- `.tip-note` — secondary/restriction line inside a tip item (12px, `--text-muted`, `display: block`, `margin-top: 2px`)
+- `.section-subheader` — in-section grouping label (11px, uppercase, `--text-muted`; used in Machine tab to divide specs from care)
 
 ---
 
 ## Environment
 
 - No package manager, no node_modules, no build step
-- SW cache: `laundry-guide-v17` — **bump on every deploy** (string in `sw.js`)
+- SW cache: `laundry-guide-v18` — **bump on every deploy** (string in `sw.js`)
+- **PDF reading:** `Read` tool fails on Windows (pdftoppm not installed). Use `pdfplumber` via Bash: `python -c "import pdfplumber; ..."`. Add `sys.stdout.reconfigure(encoding='utf-8')` when parsing files containing emoji.
 - Dev: open `public/index.html` in browser, refresh to see changes
 - Platform: Windows 11, bash shell (Unix syntax)
 - Deploy root: `public/` only (`wrangler.toml` sets `pages_build_output_dir = "public"`)
@@ -205,6 +209,9 @@ Bulky: 4 kg, Cold–90°C. Easy Iron: 4 kg, Cold–60°C. Wool: 2 kg (app uses 3
 **Selector button hover (touch)**
 `.selector-btn:hover` MUST stay inside `@media (hover: hover)` — bare `:hover` sticks on touch after tap.
 
+**Removing a nav section requires 3 touchpoints**
+HTML (nav button + `<section>` element), JS (`SECTION_SUBTITLES`), CSS (checkmark selector `body.tab-X`).
+
 ---
 
 ## Theme Colours
@@ -218,6 +225,10 @@ Bulky: 4 kg, Cold–90°C. Easy Iron: 4 kg, Cold–60°C. Wool: 2 kg (app uses 3
 ---
 
 ## Session Log
+
+**2026-02-26 (session 8)** — Full content audit against F&P PDF (pdfplumber). Added to Guide tab: scrud explanation, softener cycle restrictions (not with Quick/Steam Refresh). Added to Machine tab: Detergent Requirements converted to collapsible (moved to top), pods placement warning, nappy/bleach warning, beach towel tip for single bulky items. Added pods red warning to tips panel (`dynamicItems`, fires when `state.detergent === 'pods'`). Deleted `.bottom-note` block and CSS. Renamed Rules → Guide (nav + section header). Merged Machine Care into Machine tab under `.section-subheader`; removed maintenance section, nav item, JS subtitle entry, CSS checkmark. Added `.tip-note` and `.section-subheader` CSS classes. **SW cache v17 still not bumped — bump to v18 on next deploy.**
+
+**2026-02-26 (session 7)** — Cycle Options audit: read F&P PDF user guide (pp. 22–27) via pdfplumber. All 8 options confirmed real. Descriptions rewritten in index.html with verified content: cycle restrictions, incompatibilities, Pre Wash compartment detail, Quiet→Wrinkle Free auto-enable link, Soak 30-min duration confirmed. Added `.tip-note` CSS class for restriction lines. research.md TODO removed; verified Cycle Options table added. **SW cache v17 still not bumped — bump to v18 on next deploy.**
 
 **2026-02-25 (session 6)** — Content audit of Rules, Machine, Machine Care tabs against research.md and F&P manual. Corrections: NHS→NSW Health, bleach→bio detergent, temperature table restructured (whites split: 100% cotton 60°C / synthetic 40°C max), softener never-list expanded (towels/activewear/wool/delicates), vinegar tip removed (gasket degradation), 90°C availability corrected (Cottons/Heavy/Bulky/Drum Clean), Easy Iron and Bulky capacity corrected to 4 kg, Steam Refresh merged into Available Cycles collapsible, Drum Clean renamed "every 100 cycles", machine card padding equalised. research.md updated to match. **SW cache not bumped — bump to v18 on next deploy.**
 

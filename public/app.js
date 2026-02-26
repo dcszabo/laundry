@@ -665,6 +665,9 @@ function updateLoadTypeTips() {
         const hasColourVariation = tempValues.length > 0 && new Set(tempValues).size > 1;
 
         const dynamicItems = [];
+        if (state.detergent === 'pods') {
+            dynamicItems.push({ icon: '\u26A0\uFE0F', text: 'Pods must go at the back of the drum before loading clothes \u2014 not in the detergent drawer.', warn: true });
+        }
         if (hasColourVariation && loadTemps[state.colour] !== undefined) {
             const t = loadTemps[state.colour];
             const isLight = state.colour === 'whites' || state.colour === 'lights';
@@ -758,7 +761,6 @@ const SECTION_SUBTITLES = {
     calculator:  'Calculate your dose',
     rules:       'Soft water guidelines',
     machine:     'Fisher & Paykel Series 7',
-    maintenance: 'Keep your machine clean',
 };
 
 function setActiveSection(sectionId) {

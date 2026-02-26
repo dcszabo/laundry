@@ -274,19 +274,19 @@ The project root `CLAUDE.md` is the single source of truth for project context. 
 Trigger phrases:
 
 - **`@memory`** — primary trigger.
-- *"Save session"*, *"record this"*, *"update context"*, *"persist learnings"*
+- *"Save session"*, *"record this"*, *"update context"*, *"persist learnings"*, *"update claude.md"*
 - *"What should we remember?"*, *"wrap up"*, *"end of session"*
 
 If the user asks to summarise without requesting a CLAUDE.md update, provide the summary first, then ask: *"Should I write this into CLAUDE.md?"*
 
 ### How to update
 
-Every update is a **full rewrite**. Do not append or patch.
+Every update is an append or patch, unless the user specifically asks for a **full rewrite** or **full review**.
 
 1. Read the current `CLAUDE.md` in full.
 2. Merge new learnings from the current session.
 3. Remove outdated, redundant, or contradicted information. Resolve conflicts.
-4. Write the complete file. Present a summary of changes (added, updated, removed) for confirmation before saving.
+4. Write the updated information to the file. Present a summary of changes (added, updated, removed) for confirmation before saving.
 
 ### Required sections in CLAUDE.md
 

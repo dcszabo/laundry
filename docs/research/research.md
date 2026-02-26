@@ -255,7 +255,6 @@ Each load type researched against Australian sources (Choice AU, Canstar Blue, N
 
 Alternative for wool: specialist wool conditioner or small amount of hair conditioner in rinse.
 
-**TODO: Cycle Options** — The app's Machine tab lists cycle modifier options (ECO, Speed, Quiet, Pre Wash, Rinse+, Wash+, Soak, Wrinkle Free). These have not been verified against the F&P WH1060P4 user manual. Research required before treating as confirmed.
 
 ### Hygiene Standard (Australia)
 
@@ -395,6 +394,32 @@ Denim: blue jeans, black denim, stretch denim.
 | All | 30°C | 40°C absolute max; cold preserves indigo-dye bond |
 
 Cycle: Everyday or Heavy (manufacturer recommendation; lower agitation than Cottons preserves dye). Wash inside-out. Bio liquid; use colour-protect formula for dark/black denim. Wash frequency: every 10 wears (Levi's guidance); airing preferred between wears.
+
+---
+
+## Cycle Options (Wash Modifiers)
+
+Verified against F&P WH9060P4/WH1060P4 User Guide (NZ/AU/SG edition, pages 22–27). All eight options exist on this machine.
+
+Options are accessed via three physical buttons on the control panel: **Optimise Wash** (Speed / ECO), **Wash Boost** (Pre Wash / Rinse+ / Wash+ / Soak), and a dedicated **Options** button (Wrinkle Free). Quiet has its own button. ECO and Speed cannot be selected together.
+
+| Option | Group | Function | Cycle restrictions | Incompatible with |
+|--------|-------|----------|--------------------|-------------------|
+| ECO | Optimise Wash | Reduces wash temp slightly; alters wash & rinse programming to save water & energy | Everyday, Cottons, Heavy, Easy Iron, Bulky only | Speed, Pre Wash, Rinse+ |
+| Speed | Optimise Wash | Shortens cycle while maintaining good wash performance. Selecting Speed on Quick runs the Quick 15 cycle. | Cottons, Heavy, Easy Iron only | ECO, Soak |
+| Quiet | — | Reduces spin speed to limit noise — for night washing or timber floors. Automatically enables Wrinkle Free post-cycle. | No cycle restriction noted | — |
+| Pre Wash | Wash Boost | Short cool-water wash before main cycle to remove excess soil. Requires detergent in pre-wash compartment (right side of drawer). Must be selected before cycle starts. | No cycle restriction noted | ECO |
+| Rinse+ | Wash Boost | Adds an extra rinse; for heavily soiled loads or sensitive skin | No cycle restriction noted | ECO |
+| Wash+ | Wash Boost | Extends wash time for extra tumbling on heavily soiled loads | No cycle restriction noted | — |
+| Soak | Wash Boost | 30-minute soak mid-cycle (tumbling + soaking periods) to lift stubborn stains | "Selected wash cycles" per manual — not explicitly enumerated | ECO, Speed |
+| Wrinkle Free | Options | Tumbles every 15 minutes for up to 12 hours post-cycle; machine beeps at intervals as reminders. Activates automatically under Quiet mode. | No cycle restriction noted | — |
+
+Additional options confirmed in manual (not wash modifiers; not shown in app):
+- **Delay Start** — delays cycle start by 15 minutes to 12 hours
+- **Add a Garment** — pause during wash stage to add/remove items (available below 60°C)
+- **Keylock** — locks control panel buttons
+
+Source: F&P WH9060P4/WH1060P4 User Guide (NZ/AU/SG edition), pages 22–31.
 
 ---
 

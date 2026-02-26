@@ -215,8 +215,7 @@ body.tab-calculator .app-container {
 /* Show checkmark on active section */
 body.tab-calculator .nav-dropdown-item[data-section="calculator"] .nav-dropdown-check,
 body.tab-rules .nav-dropdown-item[data-section="rules"] .nav-dropdown-check,
-body.tab-machine .nav-dropdown-item[data-section="machine"] .nav-dropdown-check,
-body.tab-maintenance .nav-dropdown-item[data-section="maintenance"] .nav-dropdown-check {
+body.tab-machine .nav-dropdown-item[data-section="machine"] .nav-dropdown-check {
     opacity: 1;
 }
 
@@ -953,6 +952,12 @@ body.tab-calculator .result-display-sticky {
     color: var(--accent-pink);
 }
 
+.tip-note {
+    display: block;
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
 
 /* Info note (used inside Monthly Drum Clean) */
 .info-note {
@@ -1019,26 +1024,6 @@ body.tab-calculator .result-display-sticky {
     color: var(--text-muted);
 }
 
-/* Bottom Note */
-.bottom-note {
-    background: var(--bg-card);
-    border-radius: var(--radius-lg);
-    padding: 16px;
-    margin-top: 24px;
-    text-align: center;
-    border: 1px solid var(--border-subtle);
-}
-
-.bottom-note-text {
-    font-size: 13px;
-    color: var(--text-muted);
-    line-height: 1.6;
-}
-
-.bottom-note-text strong {
-    color: var(--accent-cyan);
-}
-
 .version-tag {
     display: inline-block;
     font-size: 11px;
@@ -1048,6 +1033,15 @@ body.tab-calculator .result-display-sticky {
 }
 
 /* Section Headers */
+.section-subheader {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    margin: 24px 0 12px 2px;
+}
+
 .section-header {
     font-family: 'Fraunces', serif;
     font-size: 20px;
