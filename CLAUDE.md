@@ -37,7 +37,7 @@ public/             — Cloudflare Pages deploy root (only this dir is deployed)
   index.html        — HTML, 3 tab sections (calculator, rules/guide, machine), all SVGs inline
   styles.css        — CSS custom properties, dark theme, mobile-first (380px breakpoint)
   app.js            — Calculator logic, UI handlers, SVG animation
-  sw.js             — Service worker; bump cache name on each deploy (currently v17)
+  sw.js             — Service worker; bump cache name on each deploy (currently v18)
   site.webmanifest  — PWA manifest
   *.png / *.ico     — Favicon and PWA icons
 docs/research/
@@ -63,7 +63,7 @@ Hamburger button (top-right of `.header-content`) opens `.nav-dropdown` (`positi
   └── .nav-dropdown           (position:absolute; hidden by default)
 ```
 
-- Calculator tab: `body.tab-calculator .app-container { padding-top: 202px }`
+- Calculator tab: `body.tab-calculator .app-container { padding-top: 208px }`
 - Other tabs: `.app-container { padding-top: 68px }` (result card hidden via `display: none`)
 - `body.tab-calculator .result-display-sticky { display: block }` shows result card
 - Scroll-fade gradient: `.header::after`, opacity 0→1 when `.scrolled` on `.header` (toggled at `scrollY > 8`)
@@ -78,11 +78,12 @@ Hamburger button (top-right of `.header-content`) opens `.nav-dropdown` (`positi
 
 ### Result Display Layout
 
-3-column flex row: `[cup SVG + detergent pill]  [dose / temp]  [washer SVG + load type pill]`
+3-column flex row: `[cup SVG + detergent pill]  [dose / temp / cycle row]  [washer SVG + load type pill]`
 
 - Left/right columns: `width: 80px` fixed. Centre: `flex: 1; text-align: center`
 - `#detergentPill` → opens detergent bottom sheet
 - `#loadTypePill` → opens load type bottom sheet
+- `.result-cycle-row` — cycle name pill (`.cycle-label`, blue accent) + recommended option pills (`.cycle-option-pill`, cyan accent). Updated by `updateCycleDisplay()` on every state change.
 
 ### Bottom Sheet Pattern
 
@@ -111,7 +112,9 @@ Tips panel (`#presetTip`): `hidden` attr = visibility; `.open` class = expanded.
 - `tempMatrix[loadType][colour]` — recommended temperature
 - `cycleTemps[cycle]` — available temps per cycle (used by `snapToNearest`)
 - `cycleMaxLoad[cycle]` — max kg per cycle (used by `updateSizeConstraints`)
-- `loadTypeMeta[loadType]` — `{ emoji, label, defaultColour, defaultSoil, defaultSize, recommendedCycle, recDetergent, tips[], cautions[] }`
+- `loadTypeMeta[loadType]` — `{ emoji, label, defaultColour, defaultSoil, defaultSize, recommendedCycle, recDetergent, recOptions[], tips[], cautions[] }`
+- `cycleLabelMap[cycle]` — display name per cycle key
+- `cycleOptionLabels[opt]` — display name per option key (rinseplus, washplus, soak, prewash)
 - `detergentTypes[type]` — `{ doseMultiplier, guideKey }`
 - `sizeKg[size]` — small=3, medium=6, large=10
 
@@ -139,6 +142,7 @@ const state = {
 - `applyLoadTypeDefaults(loadType)` — sets state + syncs button groups; calls `updateResult()` internally (callers must not call it again)
 - `updateLoadTypeTips()` — single source for all tips panel content
 - `animateWasherFill(targetFillY, domeH)` — rAF tween for dome path
+- `updateCycleDisplay()` — sets cycle label + recommended option pills in result card; called by `updateResult()`
 - `roundToFive(n)` — rounds dose to nearest 5 mL
 
 ### Dosage Calculation (`getDoseAndTemp`)
@@ -159,7 +163,7 @@ const state = {
 - CSS custom properties for all colours — never hardcode hex in components
 - Inter-card spacing: **16px** throughout
 - Storage: `readStorage` / `writeStorage` wrappers around `localStorage`
-- Information architecture: result card = numbers only; tips panel = all contextual text
+- Information architecture: result card = numbers + cycle/options; tips panel = all contextual text
 - `updateCycleRec()` and `updateDetergentRec()` are stubs (always hidden) — kept for call-site compatibility
 - `.tip-note` — secondary/restriction line inside a tip item (12px, `--text-muted`, `display: block`, `margin-top: 2px`)
 - `.section-subheader` — in-section grouping label (11px, uppercase, `--text-muted`; used in Machine tab to divide specs from care)
@@ -227,11 +231,13 @@ HTML (nav button + `<section>` element), JS (`SECTION_SUBTITLES`), CSS (checkmar
 
 ## Session Log
 
-**2026-02-26 (session 8)** — Full content audit against F&P PDF (pdfplumber). Added to Guide tab: scrud explanation, softener cycle restrictions (not with Quick/Steam Refresh). Added to Machine tab: Detergent Requirements converted to collapsible (moved to top), pods placement warning, nappy/bleach warning, beach towel tip for single bulky items. Added pods red warning to tips panel (`dynamicItems`, fires when `state.detergent === 'pods'`). Deleted `.bottom-note` block and CSS. Renamed Rules → Guide (nav + section header). Merged Machine Care into Machine tab under `.section-subheader`; removed maintenance section, nav item, JS subtitle entry, CSS checkmark. Added `.tip-note` and `.section-subheader` CSS classes. **SW cache v17 still not bumped — bump to v18 on next deploy.**
+**2026-03-13 (session 9)** — Added cycle name + recommended options row to result card (`.result-cycle-row`). Cycle pill (`.cycle-label`, blue) and option pills (`.cycle-option-pill`, cyan). `recOptions[]` added to `loadTypeMeta`; heavy soil adds Wash+/Soak dynamically. Dose font reduced (48→36px), temp badge stripped to plain text. `padding-top` adjusted 202→208px. Codex implemented initial plan; reviewed and cleaned up indentation, dead code, missing `.cycle-label` class. SW cache v18, deployed to Cloudflare.
 
-**2026-02-26 (session 7)** — Cycle Options audit: read F&P PDF user guide (pp. 22–27) via pdfplumber. All 8 options confirmed real. Descriptions rewritten in index.html with verified content: cycle restrictions, incompatibilities, Pre Wash compartment detail, Quiet→Wrinkle Free auto-enable link, Soak 30-min duration confirmed. Added `.tip-note` CSS class for restriction lines. research.md TODO removed; verified Cycle Options table added. **SW cache v17 still not bumped — bump to v18 on next deploy.**
+**2026-02-26 (session 8)** — Full content audit against F&P PDF. Guide tab: scrud explanation, softener cycle restrictions. Machine tab: Detergent Requirements collapsible, pods placement warning, nappy/bleach warning, beach towel tip. Pods red warning in tips panel. Renamed Rules → Guide. Merged Machine Care into Machine tab. SW cache v17 → v18.
 
-**2026-02-25 (session 6)** — Content audit of Rules, Machine, Machine Care tabs against research.md and F&P manual. Corrections: NHS→NSW Health, bleach→bio detergent, temperature table restructured (whites split: 100% cotton 60°C / synthetic 40°C max), softener never-list expanded (towels/activewear/wool/delicates), vinegar tip removed (gasket degradation), 90°C availability corrected (Cottons/Heavy/Bulky/Drum Clean), Easy Iron and Bulky capacity corrected to 4 kg, Steam Refresh merged into Available Cycles collapsible, Drum Clean renamed "every 100 cycles", machine card padding equalised. research.md updated to match. **SW cache not bumped — bump to v18 on next deploy.**
+**2026-02-26 (session 7)** — Cycle Options audit against F&P PDF (pp. 22–27). All 8 options verified. Descriptions rewritten with confirmed content. Added `.tip-note` CSS class.
+
+**2026-02-25 (session 6)** — Content audit of Rules, Machine, Machine Care tabs against research.md and F&P manual. Multiple corrections: NSW Health, temperature table restructured, softener never-list expanded, vinegar removed, 90°C availability corrected, Easy Iron/Bulky capacity corrected to 4 kg.
 
 **2026-02-24 (session 5)** — Navigation redesigned: bottom tab bar → hamburger dropdown inside `.header`. Result card hidden on non-calculator tabs via `body.tab-{section}`. All collapsibles default closed. Drum Clean Reminder banner removed. SW cache v16 → v17.
 
