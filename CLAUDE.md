@@ -1,7 +1,7 @@
 # CLAUDE.md
 
 > Read CONTRACT.md at session start and follow all rules defined there. Once read, reply "I've read the contract".
-> CONTRACT.md is located at: `C:\Users\dcsza\OneDrive\Projects\laundry\CONTRACT.md`
+> CONTRACT.md is located at: `C:\Projects\laundry\CONTRACT.md`
 
 ---
 
@@ -70,6 +70,7 @@ Hamburger button (top-right of `.header-content`) opens `.nav-dropdown` (`positi
 - `ui.resultDisplaySticky` → `document.querySelector('.header')` in app.js
 
 **DO NOT:**
+
 - Put result card inside `#calculator` — `fadeIn` on `.section` would bounce it
 - Add `transform` back to `fadeIn` — makes `.section` a containing block for fixed descendants
 - Add `position: fixed/sticky` to `.result-display-sticky` — already inside a fixed parent

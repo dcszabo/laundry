@@ -117,6 +117,7 @@ const loadTypeMeta = {
         defaultColour: 'mixed', defaultSoil: 'normal', defaultSize: 'medium',
         recommendedCycle: 'everyday',
         recDetergent: 'liquid',
+        recOptions: [],
         cycle: 'Everyday', maxLoad: '10 kg',
         tips: [
             'Empty pockets and close zips before washing.',
@@ -130,6 +131,7 @@ const loadTypeMeta = {
         defaultColour: 'whites', defaultSoil: 'normal', defaultSize: 'large',
         recommendedCycle: 'cottons',
         recDetergent: 'powder',
+        recOptions: ['prewash'],
         cycle: 'Cottons 60°C', maxLoad: '10 kg',
         tips: [
             'Wash sheets every 1 to 2 weeks.',
@@ -145,6 +147,7 @@ const loadTypeMeta = {
         defaultColour: 'whites', defaultSoil: 'normal', defaultSize: 'large',
         recommendedCycle: 'everyday',
         recDetergent: 'powder',
+        recOptions: ['rinseplus'],
         cycle: 'Everyday', maxLoad: '10 kg',
         tips: [
             'Shake towels out before loading for better results.'
@@ -158,6 +161,7 @@ const loadTypeMeta = {
         defaultColour: 'mixed', defaultSoil: 'light', defaultSize: 'small',
         recommendedCycle: 'delicates',
         recDetergent: 'liquid',
+        recOptions: [],
         cycle: 'Delicate', maxLoad: '4 kg',
         tips: [
             'Turn inside out to protect the outer surface.',
@@ -174,6 +178,7 @@ const loadTypeMeta = {
         defaultColour: 'mixed', defaultSoil: 'light', defaultSize: 'small',
         recommendedCycle: 'wool',
         recDetergent: 'liquid',
+        recOptions: [],
         cycle: 'Wool', maxLoad: '2 kg',
         tips: [
             'Turn inside out to protect the outer texture.',
@@ -190,6 +195,7 @@ const loadTypeMeta = {
         defaultColour: 'darks', defaultSoil: 'heavy', defaultSize: 'medium',
         recommendedCycle: 'everyday',
         recDetergent: 'liquid',
+        recOptions: ['rinseplus'],
         cycle: 'Everyday', maxLoad: '10 kg',
         tips: [
             'Turn inside out before washing.',
@@ -205,6 +211,7 @@ const loadTypeMeta = {
         defaultColour: 'darks', defaultSoil: 'normal', defaultSize: 'medium',
         recommendedCycle: 'everyday',
         recDetergent: 'liquid',
+        recOptions: [],
         cycle: 'Everyday', maxLoad: '10 kg',
         tips: [
             'Turn inside out to prevent fading and white streaks.',
@@ -220,6 +227,7 @@ const loadTypeMeta = {
         defaultColour: 'whites', defaultSoil: 'normal', defaultSize: 'small',
         recommendedCycle: 'cottons',
         recDetergent: 'liquid',
+        recOptions: ['rinseplus'],
         cycle: 'Cottons', maxLoad: '10 kg',
         tips: [
             'Turn inside out.',
@@ -230,6 +238,25 @@ const loadTypeMeta = {
             'Synthetic underwear max 40°C. High heat damages elastane.'
         ]
     }
+};
+
+const cycleLabelMap = {
+    everyday: 'Everyday',
+    cottons: 'Cottons',
+    heavy: 'Heavy',
+    delicates: 'Delicate',
+    wool: 'Wool',
+    quick: 'Quick',
+    bulky: 'Bulky',
+    easyiron: 'Easy Iron',
+    sanitise: 'Sanitise'
+};
+
+const cycleOptionLabels = {
+    rinseplus: 'Rinse+',
+    washplus: 'Wash+',
+    soak: 'Soak',
+    prewash: 'Pre Wash'
 };
 
 const storageKeys = {
@@ -290,6 +317,8 @@ const ui = {
     doseAmount: document.getElementById('doseAmount'),
     doseUnit: document.getElementById('doseUnit'),
     tempBadge: document.getElementById('tempBadge'),
+    cycleLabel: document.getElementById('cycleLabel'),
+    cycleOptions: document.getElementById('cycleOptions'),
     concentrationRange: document.getElementById('concentrationRange'),
     concentrationValue: document.getElementById('concentrationValue'),
     detergentGuide: document.getElementById('detergentGuide'),
@@ -365,6 +394,30 @@ function updateCycleIndicators() {
     document.querySelectorAll('#cycleGroup .selector-btn').forEach(function(btn) {
         btn.dataset.recommended = btn.dataset.cycle === rec ? 'true' : 'false';
     });
+}
+
+function updateCycleDisplay() {
+    ui.cycleLabel.textContent = cycleLabelMap[state.cycle] || state.cycle;
+
+    const meta = loadTypeMeta[state.loadType];
+    const options = meta ? meta.recOptions.slice() : [];
+
+    if (state.soil === 'heavy') {
+        if (!options.includes('washplus')) options.push('washplus');
+        if (!options.includes('soak')) options.push('soak');
+    }
+
+    ui.cycleOptions.textContent = '';
+    options.forEach(function(opt) {
+        var label = cycleOptionLabels[opt];
+        if (!label) return;
+        var pill = document.createElement('span');
+        pill.className = 'cycle-option-pill';
+        pill.textContent = label;
+        ui.cycleOptions.appendChild(pill);
+    });
+
+    ui.cycleOptions.hidden = options.length === 0;
 }
 
 function updateCycleRec() {
@@ -755,6 +808,7 @@ function updateResult() {
     updateDetergentRec();
     updateCycleIndicators();
     updateCycleRec();
+    updateCycleDisplay();
 }
 
 const SECTION_SUBTITLES = {
